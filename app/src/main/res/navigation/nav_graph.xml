@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mediaSelect">
+    <fragment
+        android:id="@+id/mediaSelect"
+        android:name="com.example.wco_wrapper.MediaSelect"
+        android:label="media_selection"
+        tools:layout="@layout/fragment_media_select" >
+        <action
+            android:id="@+id/action_mediaSelect_to_mediaSearch"
+            app:destination="@id/mediaSearch" />
+    </fragment>
+    <fragment
+        android:id="@+id/mediaSearch"
+        android:name="com.example.wco_wrapper.MediaSearch"
+        android:label="media_search"
+        tools:layout="@layout/fragment_media_search" >
+        <argument
+            android:name="mediaType"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_mediaSearch_to_episode_select"
+            app:destination="@id/episode_select" />
+    </fragment>
+    <fragment
+        android:id="@+id/episode_select"
+        android:name="com.example.wco_wrapper.EpisodeSelect"
+        android:label="episode_select" >
+        <argument android:name="series_link" />
+    </fragment>
+</navigation>
