@@ -1,13 +1,15 @@
-package com.example.wco_wrapper;
+package com.example.wco_wrapper.classes;
 
 import org.jsoup.nodes.Element;
 
-public class Episode {
+public class SeriesSearchable {
+
     private String title = null;
     private String src = null;
+//    private String imgLink = null;
 
     // public constructor
-    public Episode(Element node) {
+    public SeriesSearchable(Element node) {
         if (node != null) {
             title = node.hasAttr("title")
                     ? node.attr("title")
@@ -27,9 +29,24 @@ public class Episode {
     public String getTitle() {
         return title;
     }
+
+    public boolean subStringMatches(String comp) {
+        if (comp.length() < title.length()) {
+            String subString = title.substring(0, comp.length());
+            return subString.equalsIgnoreCase(comp);
+        } else {
+            return false;
+        }
+    }
+
+    public boolean contains(String comp) {
+        return title.toLowerCase().contains(comp.toLowerCase());
+    }
+
     // src getter
     public String getSrc() {
         return src;
     }
 
 }
+

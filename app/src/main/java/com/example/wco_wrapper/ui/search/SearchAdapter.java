@@ -1,4 +1,4 @@
-package com.example.wco_wrapper;
+package com.example.wco_wrapper.ui.search;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,25 +7,26 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.wco_wrapper.R;
+import com.example.wco_wrapper.classes.SeriesSearchable;
 
 import java.util.ArrayList;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
 
-    private ArrayList<Series> results = new ArrayList<Series>();
-    private ArrayList<Series> legacyRes = new ArrayList<Series>();
+    private ArrayList<SeriesSearchable> results = new ArrayList<SeriesSearchable>();
+    private ArrayList<SeriesSearchable> legacyRes = new ArrayList<SeriesSearchable>();
     private NavController parent;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
-        private Series series;
+        private SeriesSearchable series;
         private NavController host;
-        public void setSeries(Series s) {
+        public void setSeries(SeriesSearchable s) {
             series = s;
         }
         public void setHost(NavController h) {
@@ -53,9 +54,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         }
     }
 
-    public SearchAdapter(ArrayList<Series> res) {
+    public SearchAdapter(ArrayList<SeriesSearchable> res) {
 //        results = new ArrayList<Series>(res);
-        legacyRes = new ArrayList<Series>(res);
+        legacyRes = new ArrayList<SeriesSearchable>(res);
     }
 
     @Override
@@ -93,7 +94,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     public void searchData(String str) {
         if (results.isEmpty()){
-            for (Series s: legacyRes){
+            for (SeriesSearchable s: legacyRes){
                 if (s.contains(str)) {
                     results.add(s);
                 }

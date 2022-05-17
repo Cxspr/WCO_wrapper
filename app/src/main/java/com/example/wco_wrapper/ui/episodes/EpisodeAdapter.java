@@ -1,4 +1,4 @@
-package com.example.wco_wrapper;
+package com.example.wco_wrapper.ui.episodes;
 
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -9,6 +9,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.wco_wrapper.R;
+import com.example.wco_wrapper.classes.Episode;
 
 import java.util.ArrayList;
 

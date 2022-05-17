@@ -1,4 +1,4 @@
-package com.example.wco_wrapper;
+package com.example.wco_wrapper.ui.search;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -6,17 +6,14 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.wco_wrapper.classes.SeriesSearchable;
 import com.example.wco_wrapper.databinding.FragmentMediaSearchBinding;
 
 import org.jsoup.Jsoup;
@@ -24,7 +21,6 @@ import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class MediaSearch extends Fragment {
@@ -41,8 +37,8 @@ public class MediaSearch extends Fragment {
     private int numChars = 0;
     private SearchAdapter searchAdapter;
 //    private char firstCharArch;
-    private ArrayList<Series> allSeries = new ArrayList<Series>();
-    private ArrayList<Series> seriesSubList = new ArrayList<Series>();
+    private ArrayList<SeriesSearchable> allSeries = new ArrayList<SeriesSearchable>();
+    private ArrayList<SeriesSearchable> seriesSubList = new ArrayList<SeriesSearchable>();
 
     public MediaSearch() {}
 
@@ -65,7 +61,7 @@ public class MediaSearch extends Fragment {
                 Element charCollect = seriesHtmlData.child(idx);
                 for (Element el : charCollect.children()) {
                     el = el.child(0);
-                    Series e = new Series(el);
+                    SeriesSearchable e = new SeriesSearchable(el);
                     if (e.isValid()) {
                         allSeries.add(e);
                     }

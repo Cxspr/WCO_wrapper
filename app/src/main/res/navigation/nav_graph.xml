@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/mediaSearch"
-        android:name="com.example.wco_wrapper.MediaSearch"
+        android:name="com.example.wco_wrapper.ui.search.MediaSearch"
         android:label="media_search"
         tools:layout="@layout/fragment_media_search" >
         <argument
@@ -27,8 +27,17 @@
     </fragment>
     <fragment
         android:id="@+id/episode_select"
-        android:name="com.example.wco_wrapper.EpisodeSelect"
+        android:name="com.example.wco_wrapper.ui.episodes.EpisodeSelect"
         android:label="episode_select" >
         <argument android:name="series_link" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeScreen"
+        android:name="com.example.wco_wrapper.ui.home.Home"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeScreen_to_episode_select"
+            app:destination="@id/episode_select" />
     </fragment>
 </navigation>
