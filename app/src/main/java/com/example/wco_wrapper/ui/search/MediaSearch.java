@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class MediaSearch extends Fragment {
 
-
+    //TODO find and fix what's causing the bug allowing for duplicate entries when backing out from episode list to media search
 
     //    private String[] testArray = {"string 1", "string 2", "string 3", "string 4"};
     private FragmentMediaSearchBinding binding;
@@ -87,7 +87,10 @@ public class MediaSearch extends Fragment {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void afterTextChanged(Editable s) {
-                searchAdapter.reflectSearch(s.toString());
+                if (!(s.toString() == null)){ //added to address infrequent error due to the argument being a null reference
+                    searchAdapter.reflectSearch(s.toString());
+                }
+
             }
 
             @Override
@@ -110,6 +113,13 @@ public class MediaSearch extends Fragment {
 //                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
 //            }
 //        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        searchAdapter.reflectSearch(searchbar.getText().toString());
+
     }
 
     @Override

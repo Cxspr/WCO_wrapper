@@ -14,24 +14,85 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.wco_wrapper.classes.Series;
+import com.example.wco_wrapper.classes.Watchlist;
 import com.example.wco_wrapper.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+    private String parentDir;
+    private File watchlistFile;
+    Watchlist wl;
+
+    //    ArrayList<Series> watchlist = new ArrayList<Series>();
+    public Watchlist getWatchlist() {
+        return wl;
+    }
+    public void updateWatchlistJson() {
+        try {
+            FileOutputStream stream = new FileOutputStream(parentDir + "/watchlist.json");
+            Log.i("File Written at: ", parentDir + "/watchlist.json");
+            stream.write(wl.watchlistToJson().getBytes());
+            stream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+    public void updateWatchlist(Watchlist watchlist) {
+        wl = watchlist;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        parentDir = String.valueOf(this.getFilesDir());
+        File watchlistFile = new File(parentDir, "watchlist.json");
+        StringBuilder text = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(watchlistFile));
+            String line;
+
+            while ((line = br.readLine()) != null){
+                text.append(line);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            wl = Watchlist.genWatchlist(text.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (wl == null) { wl = new Watchlist(new ArrayList<Series>());}
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

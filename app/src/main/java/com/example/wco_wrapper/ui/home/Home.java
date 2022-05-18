@@ -13,8 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.wco_wrapper.MainActivity;
 import com.example.wco_wrapper.R;
 import com.example.wco_wrapper.classes.Episode;
+import com.example.wco_wrapper.classes.Watchlist;
 import com.example.wco_wrapper.databinding.FragmentEpisodeSelectBinding;
 import com.example.wco_wrapper.databinding.FragmentHomeBinding;
 import com.example.wco_wrapper.ui.episodes.EpisodeAdapter;
@@ -29,6 +31,9 @@ public class Home extends Fragment {
 
 
     private FragmentHomeBinding binding;
+    private RecyclerView watchlistRecycler;
+    private Watchlist watchlist;
+    private WatchlistAdapter watchlistAdapter;
 
     @Override
     public View onCreateView(
@@ -37,6 +42,16 @@ public class Home extends Fragment {
     ) {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
+        watchlist = ((MainActivity)getActivity()).getWatchlist();
+        watchlistRecycler = binding.watchlistRecycler;
+        RecyclerView.LayoutManager watchlistLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+//        watchlistLayoutManager.
+        watchlistRecycler.setLayoutManager(watchlistLayoutManager);
+        watchlistAdapter = new WatchlistAdapter((watchlist==null)
+                ? null
+                : watchlist.getReversed());
+        watchlistRecycler.setAdapter(watchlistAdapter);
+
 
         return binding.getRoot();
     }
@@ -52,6 +67,24 @@ public class Home extends Fragment {
 //        });
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        watchlist = ((MainActivity)getActivity()).getWatchlist();
+        watchlistAdapter.rebaseWatchlist((watchlist==null)
+                ? null
+                : watchlist.getReversed());
+    }
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        watchlist = ((MainActivity)getActivity()).getWatchlist();
+//        watchlistAdapter.rebaseWatchlist((watchlist==null)
+//                ? null
+//                : watchlist.getReversed());
+//    }
 
     @Override
     public void onDestroyView() {
