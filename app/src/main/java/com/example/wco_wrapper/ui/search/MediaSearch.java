@@ -21,6 +21,7 @@ import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 
 public class MediaSearch extends Fragment {
@@ -32,6 +33,10 @@ public class MediaSearch extends Fragment {
     private RecyclerView recyclerView;
     private TextView searchbar;
     private Element seriesHtmlData;
+
+    private String url;
+    private ThreadedSearch threadedSearch;
+    private Thread searchThread;
 
     //live search variables
     private int numChars = 0;
@@ -50,34 +55,43 @@ public class MediaSearch extends Fragment {
 
         binding = FragmentMediaSearchBinding.inflate(inflater, container, false);
 
-        try {
-            //scrape for series list html
-            seriesHtmlData = (Jsoup.connect(getArguments().getString("link"))
-                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                    .get()).getElementById("ddmcc_container").child(0).child(0);
-            //pre-collect series data
-            for (int i = 0; i <= (int) 'Z' - 64; i++) {
-                int idx = i * 3 + 2;
-                Element charCollect = seriesHtmlData.child(idx);
-                for (Element el : charCollect.children()) {
-                    el = el.child(0);
-                    SeriesSearchable e = new SeriesSearchable(el);
-                    if (e.isValid()) {
-                        allSeries.add(e);
-                    }
-                }
-            }
-            searchAdapter = new SearchAdapter(allSeries);
+//        try {
+//            //scrape for series list html
+//            //TODO get to run on separate thread;
+//            seriesHtmlData = (Jsoup.connect(getArguments().getString("link"))
+//                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+//                    .get()).getElementById("ddmcc_container").child(0).child(0);
+//            //pre-collect series data
+//            for (int i = 0; i <= (int) 'Z' - 64; i++) {
+//                int idx = i * 3 + 2;
+//                Element charCollect = seriesHtmlData.child(idx);
+//                for (Element el : charCollect.children()) {
+//                    el = el.child(0);
+//                    SeriesSearchable e = new SeriesSearchable(el);
+//                    if (e.isValid()) {
+//                        allSeries.add(e);
+//                    }
+//                }
+//            }
+//            searchAdapter = new SearchAdapter(allSeries);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        url = getArguments().getString("link");
+        threadedSearch = new ThreadedSearch(url);
+        searchThread = new Thread(threadedSearch);
+        searchThread.start();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        searchAdapter = new SearchAdapter(allSeries);
         recyclerView = binding.resultContainer;
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 //        recyclerView.setVisibility(View.INVISIBLE);
         recyclerView.setAdapter(searchAdapter);
+
+        binding.resultIndicator.setVisibility(View.VISIBLE);
+        binding.resultIndicator.setText("Start typing to search...");
 
         searchbar = binding.searchbar;
         searchbar.addTextChangedListener(new TextWatcher() {
@@ -89,6 +103,15 @@ public class MediaSearch extends Fragment {
             public void afterTextChanged(Editable s) {
                 if (!(s.toString() == null)){ //added to address infrequent error due to the argument being a null reference
                     searchAdapter.reflectSearch(s.toString());
+                    if (s.toString().length() == 0) {
+                        binding.resultIndicator.setVisibility(View.VISIBLE);
+                        binding.resultIndicator.setText("Start typing to search...");
+                    } else if (searchAdapter.getItemCount() == 0) {
+                        binding.resultIndicator.setVisibility(View.VISIBLE);
+                        binding.resultIndicator.setText("No results found...");
+                    } else {
+                        binding.resultIndicator.setVisibility(View.GONE);
+                    }
                 }
 
             }
@@ -105,22 +128,15 @@ public class MediaSearch extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-//        binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                NavHostFragment.findNavController(MediaSearch.this)
-//                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
-//            }
-//        });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        searchAdapter.reflectSearch(searchbar.getText().toString());
+        try {
+            searchThread.join();
+            searchAdapter.rebaseLegacyData(threadedSearch.get());
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
     }
+
 
     @Override
     public void onDestroyView() {

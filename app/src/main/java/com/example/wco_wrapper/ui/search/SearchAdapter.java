@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
 
     private ArrayList<SeriesSearchable> results = new ArrayList<SeriesSearchable>();
-    private ArrayList<SeriesSearchable> legacyRes = new ArrayList<SeriesSearchable>();
+    private ArrayList<SeriesSearchable> legacyData = new ArrayList<SeriesSearchable>();
     private NavController parent;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -56,7 +56,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     public SearchAdapter(ArrayList<SeriesSearchable> res) {
 //        results = new ArrayList<Series>(res);
-        legacyRes = new ArrayList<SeriesSearchable>(res);
+        legacyData = res;
     }
 
     @Override
@@ -78,6 +78,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         return results.size();
     }
 
+    public void rebaseLegacyData(ArrayList<SeriesSearchable> newData) {
+        legacyData = newData;
+    }
+
     public void reflectSearch(String str) {
         if (str.length() == 0) {
             revertToLegacy();
@@ -94,7 +98,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     public void searchData(String str) {
         if (results.isEmpty()){
-            for (SeriesSearchable s: legacyRes){
+            for (SeriesSearchable s: legacyData){
                 if (s.contains(str)) {
                     results.add(s);
                 }

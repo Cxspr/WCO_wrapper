@@ -1,6 +1,5 @@
 package com.example.wco_wrapper.classes;
 
-import android.content.Context;
 import android.widget.ImageView;
 
 import com.squareup.moshi.JsonAdapter;
@@ -8,10 +7,9 @@ import com.squareup.moshi.Moshi;
 import com.squareup.picasso.Picasso;
 
 public class Series {
-    private String src, imgUrl, title, lastEpisode;
-    private int numEpisodes;
+    private String src, imgUrl, title, curEp, nextEp;
+    private int numEpisodes, curEpIdx;
     private boolean onWatchlist = false;
-
 
     //todo docstrings for functions
     //todo add episode tracking
@@ -26,7 +24,7 @@ public class Series {
         this.imgUrl = imgUrl;
         this.title = title;
         this.numEpisodes = numEpisodes;
-        this.lastEpisode = lastEpisode;
+        this.curEp = lastEpisode;
     }
 
     public void getSeriesImage(ImageView toWrite){
@@ -54,6 +52,44 @@ public class Series {
         JsonAdapter<Series> jsonAdapter = moshi.adapter((Series.class));
         String json = jsonAdapter.toJson(this);
         return json;
+    }
+
+    //EPISODE STUFF
+    public void setCurEp(String url){
+        curEp = url;
+    }
+    public String getCurEp() {
+        return curEp;
+    }
+
+    public void setNextEp(String url){
+        nextEp = url;
+    }
+    public String getNextEp() {
+        return nextEp;
+    }
+
+    public void setEpIdx(int i){
+        curEpIdx = i;
+    }
+    public int getEpIdx() {
+        return curEpIdx;
+    }
+
+    public void overrideEpInfo(Series series){
+        if (series == null) return;
+        if (series.getSeriesTitle().matches(this.title)){
+            this.curEp = series.getCurEp();
+            this.nextEp = series.getNextEp();
+            this.curEpIdx = series.getEpIdx();
+        }
+    }
+
+    public boolean hasEpInfo() {
+        return !(curEp == null);
+    }
+    public boolean hasNextEp() {
+        return !(nextEp == null);
     }
 
     public boolean compare(Series comp) {

@@ -1,6 +1,7 @@
 package com.example.wco_wrapper.ui.episodes;
 
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,8 +11,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -56,7 +61,6 @@ public class EpisodeSelect extends Fragment {
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-
         binding = FragmentEpisodeSelectBinding.inflate(inflater, container, false);
         Document Html;
         try {
@@ -81,14 +85,21 @@ public class EpisodeSelect extends Fragment {
                     episodes.add(e);
                 }
             }
+
             series.setEpisodeCount(episodes.size());
             Collections.reverse(episodes);//reverse order to have first episode displayed first
-            epAdapter = new EpisodeAdapter(episodes);
+            epAdapter = new EpisodeAdapter(episodes, series);
             watchlist = ((MainActivity)getActivity()).getWatchlist();
-
-            series.onWatchlist((watchlist == null)
+            series.onWatchlist((watchlist == null) //get watchlist state
                     ? false
                     : watchlist.containsTitle(series.getSeriesTitle()));
+            series.overrideEpInfo(watchlist.getStoredSeries(series));
+
+            //play button configs
+//            if (series.hasEpInfo()){
+//                binding.buttonPlay.setText("Play\nEp. " + ((Integer) (series.getEpIdx() + 1)).toString());
+//            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -110,6 +121,16 @@ public class EpisodeSelect extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(epAdapter);
 
+        //define back press behavior
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                NavHostFragment.findNavController(EpisodeSelect.this).popBackStack();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+
+
         return binding.getRoot();
     }
 
@@ -124,27 +145,66 @@ public class EpisodeSelect extends Fragment {
                 Watchlist wl = ((MainActivity)getActivity()).getWatchlist();
                 if (saveState) {
                     saveState = false;
-                    wl.removeFromWatchlist(series);
-                    wl.pendingChanges = true;
+                    wl.removeFromWatchlist(series); //no need to update instance in MainActivity, auto updates
                     saveButton.setText("Add to watchlist");
-                    ((MainActivity)getActivity()).updateWatchlist(wl);
-                    ((MainActivity)getActivity()).updateWatchlistJson();
                 } else {
-                    if (!wl.containsTitle(series.getSeriesTitle())){ //double verification to prevent multiple instances
-                        series.onWatchlist(true);
-                        wl.addToWatchlist(series);
-                        wl.pendingChanges = true;
-                        ((MainActivity)getActivity()).updateWatchlist(wl);
-                        ((MainActivity)getActivity()).updateWatchlistJson();
-                        saveState = true;
-                        saveButton.setText("Remove from watchlist");
-                    }
+                    series.onWatchlist(true);
+                    wl.addToWatchlist(series);
+                    saveState = true;
+                    saveButton.setText("Remove from watchlist");
                 }
-
+                wl.updateWatchlistJSON();
 
             }
 
         });
+
+//        binding.buttonPlay.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String url;
+//                if (series.hasEpInfo()) {
+//                    url = series.getCurEp();
+//                } else { //update current episode and next to 1 and 2 respectively
+//                    url = episodes.get(0).getSrc();
+//                    series.setCurEp(url);
+//                    series.setEpIdx(0);
+//                    series.setNextEp((episodes.size() >= 2) ? episodes.get(1).getSrc() : null);
+//                    ((MainActivity)getActivity()).getWatchlist().updateEp(series);
+//
+//                }
+//
+//                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+//                CustomTabsIntent customTabsIntent = builder.build();
+//                customTabsIntent.launchUrl(view.getContext(), Uri.parse(url));
+//            }
+//        });
+
+//        if (series.hasNextEp()){
+//            binding.buttonContinue.setVisibility(View.VISIBLE);
+//            binding.buttonContinue.setText("Play Next\nEp. " + ((Integer) (series.getEpIdx() + 2)).toString());
+//            binding.buttonContinue.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    String url = series.getNextEp();
+//                    //update current episode to next episode and update next episode if possible
+//                    series.setCurEp(url);
+//                    series.setEpIdx(series.getEpIdx() + 1);
+//                    if (series.getEpIdx() >= episodes.size() - 1) { //current 'next' episode is last available episode
+//                        series.setNextEp(null);
+//                    } else {
+//                        series.setNextEp(episodes.get(series.getEpIdx()).getSrc());
+//                    }
+//                    ((MainActivity)getActivity()).getWatchlist().updateEp(series);
+//                    CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+//                    CustomTabsIntent customTabsIntent = builder.build();
+//                    customTabsIntent.launchUrl(view.getContext(), Uri.parse(url));
+//                }
+//            });
+//        } else {
+//            binding.buttonContinue.setVisibility(View.GONE);
+//        }
+
 
     }
 
@@ -152,6 +212,66 @@ public class EpisodeSelect extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        ((MainActivity)getActivity()).getWatchlist().updateEp(series);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (series.hasEpInfo()){
+            binding.buttonPlay.setText("Play\nEp. " + ((Integer) (series.getEpIdx() + 1)).toString());
+        }
+        binding.buttonPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url;
+                if (series.hasEpInfo()) {
+                    url = series.getCurEp();
+                } else { //update current episode and next to 1 and 2 respectively
+                    url = episodes.get(0).getSrc();
+                    series.setCurEp(url);
+                    series.setEpIdx(0);
+                    series.setNextEp((episodes.size() >= 2) ? episodes.get(1).getSrc() : null);
+                    ((MainActivity)getActivity()).getWatchlist().updateEp(series);
+
+                }
+
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                CustomTabsIntent customTabsIntent = builder.build();
+                customTabsIntent.launchUrl(view.getContext(), Uri.parse(url));
+            }
+        });
+
+        if (series.hasNextEp()){
+            binding.buttonContinue.setVisibility(View.VISIBLE);
+            binding.buttonContinue.setText("Play Next\nEp. " + ((Integer) (series.getEpIdx() + 2)).toString());
+            binding.buttonContinue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String url = series.getNextEp();
+                    //update current episode to next episode and update next episode if possible
+                    series.setCurEp(url);
+                    series.setEpIdx(series.getEpIdx() + 1);
+                    if (series.getEpIdx() >= episodes.size() - 1) { //current 'next' episode is last available episode
+                        series.setNextEp(null);
+                    } else {
+                        series.setNextEp(episodes.get(series.getEpIdx()).getSrc());
+                    }
+                    ((MainActivity)getActivity()).getWatchlist().updateEp(series);
+                    CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                    CustomTabsIntent customTabsIntent = builder.build();
+                    customTabsIntent.launchUrl(view.getContext(), Uri.parse(url));
+                }
+            });
+        } else {
+            binding.buttonContinue.setVisibility(View.GONE);
+        }
     }
 
     //https://stackoverflow.com/questions/6407324/how-to-display-image-from-url-on-android

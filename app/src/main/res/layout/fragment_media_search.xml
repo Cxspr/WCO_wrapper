@@ -35,7 +35,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-<!--        <GridView-->
+    <TextView
+        android:id="@+id/resultIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Start typing to search..."
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/resultContainer"
+        app:layout_constraintStart_toStartOf="@+id/resultContainer"
+        app:layout_constraintTop_toTopOf="@+id/resultContainer"
+        tools:visibility="gone" />
+
+    <!--        <GridView-->
 <!--        android:id="@+id/results"-->
 <!--        android:layout_width="fill_parent"-->
 <!--        android:layout_height="0dp"-->

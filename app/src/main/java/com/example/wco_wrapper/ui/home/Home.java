@@ -53,6 +53,7 @@ public class Home extends Fragment {
         watchlistRecycler.setAdapter(watchlistAdapter);
 
 
+
         return binding.getRoot();
     }
 
@@ -69,22 +70,18 @@ public class Home extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        watchlist = ((MainActivity)getActivity()).getWatchlist();
-        watchlistAdapter.rebaseWatchlist((watchlist==null)
+    public void onStart() {
+        super.onStart();
+        watchlist = ((MainActivity) getActivity()).getWatchlist();
+        watchlistAdapter.rebaseWatchlist((watchlist == null)
                 ? null
                 : watchlist.getReversed());
+        if (watchlist.getWatchlist().isEmpty()) {
+            binding.emptyWlIndic.setVisibility(View.VISIBLE);
+        } else {
+            binding.emptyWlIndic.setVisibility(View.GONE);
+        }
     }
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        watchlist = ((MainActivity)getActivity()).getWatchlist();
-//        watchlistAdapter.rebaseWatchlist((watchlist==null)
-//                ? null
-//                : watchlist.getReversed());
-//    }
 
     @Override
     public void onDestroyView() {
