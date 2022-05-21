@@ -108,8 +108,8 @@ public class EpisodeSelect extends Fragment {
         title.setText(series.getSeriesTitle());
 
         saveButton = binding.buttonSave;
-        saveState = series.isOnWatchlist();
-        if (saveState) {
+//        saveState = series.onWatchlist();
+        if (series.onWatchlist()) {
             saveButton.setText("Remove from watchlist");
         } else {
             saveButton.setText("Add to watchlist");
@@ -136,21 +136,20 @@ public class EpisodeSelect extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //TODO implement the ability to track the last episode watched
-        //TODO implement the play button to play the last episode watched
 
         binding.buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Watchlist wl = ((MainActivity)getActivity()).getWatchlist();
-                if (saveState) {
-                    saveState = false;
+                if (series.onWatchlist()) {
+//                    saveState = false;
+                    series.onWatchlist(false);
                     wl.removeFromWatchlist(series); //no need to update instance in MainActivity, auto updates
                     saveButton.setText("Add to watchlist");
                 } else {
                     series.onWatchlist(true);
                     wl.addToWatchlist(series);
-                    saveState = true;
+//                    saveState = true;
                     saveButton.setText("Remove from watchlist");
                 }
                 wl.updateWatchlistJSON();
@@ -158,52 +157,6 @@ public class EpisodeSelect extends Fragment {
             }
 
         });
-
-//        binding.buttonPlay.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String url;
-//                if (series.hasEpInfo()) {
-//                    url = series.getCurEp();
-//                } else { //update current episode and next to 1 and 2 respectively
-//                    url = episodes.get(0).getSrc();
-//                    series.setCurEp(url);
-//                    series.setEpIdx(0);
-//                    series.setNextEp((episodes.size() >= 2) ? episodes.get(1).getSrc() : null);
-//                    ((MainActivity)getActivity()).getWatchlist().updateEp(series);
-//
-//                }
-//
-//                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-//                CustomTabsIntent customTabsIntent = builder.build();
-//                customTabsIntent.launchUrl(view.getContext(), Uri.parse(url));
-//            }
-//        });
-
-//        if (series.hasNextEp()){
-//            binding.buttonContinue.setVisibility(View.VISIBLE);
-//            binding.buttonContinue.setText("Play Next\nEp. " + ((Integer) (series.getEpIdx() + 2)).toString());
-//            binding.buttonContinue.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    String url = series.getNextEp();
-//                    //update current episode to next episode and update next episode if possible
-//                    series.setCurEp(url);
-//                    series.setEpIdx(series.getEpIdx() + 1);
-//                    if (series.getEpIdx() >= episodes.size() - 1) { //current 'next' episode is last available episode
-//                        series.setNextEp(null);
-//                    } else {
-//                        series.setNextEp(episodes.get(series.getEpIdx()).getSrc());
-//                    }
-//                    ((MainActivity)getActivity()).getWatchlist().updateEp(series);
-//                    CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-//                    CustomTabsIntent customTabsIntent = builder.build();
-//                    customTabsIntent.launchUrl(view.getContext(), Uri.parse(url));
-//                }
-//            });
-//        } else {
-//            binding.buttonContinue.setVisibility(View.GONE);
-//        }
 
 
     }
@@ -225,7 +178,10 @@ public class EpisodeSelect extends Fragment {
     public void onResume() {
         super.onResume();
         if (series.hasEpInfo()){
-            binding.buttonPlay.setText("Play\nEp. " + ((Integer) (series.getEpIdx() + 1)).toString());
+            binding.buttonPlay.setText("Play\n" + ((series.getAbrEpTitle()==null)
+                    ?"Ep. " + ((Integer) (series.getEpIdx() + 1)).toString()
+                    : series.getAbrEpTitle()));
+
         }
         binding.buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -236,8 +192,10 @@ public class EpisodeSelect extends Fragment {
                 } else { //update current episode and next to 1 and 2 respectively
                     url = episodes.get(0).getSrc();
                     series.setCurEp(url);
+                    series.setAbrEpTitle(episodes.get(0).getAbrTitle());
                     series.setEpIdx(0);
                     series.setNextEp((episodes.size() >= 2) ? episodes.get(1).getSrc() : null);
+                    series.setNextAbrEpTitle((episodes.size() >= 2) ? episodes.get(1).getAbrTitle() : null);
                     ((MainActivity)getActivity()).getWatchlist().updateEp(series);
 
                 }
@@ -250,18 +208,23 @@ public class EpisodeSelect extends Fragment {
 
         if (series.hasNextEp()){
             binding.buttonContinue.setVisibility(View.VISIBLE);
-            binding.buttonContinue.setText("Play Next\nEp. " + ((Integer) (series.getEpIdx() + 2)).toString());
+            binding.buttonContinue.setText("Play Next\n" + ((series.getNextAbrEpTitle()==null)
+                    ? "Ep. " + ((Integer) (series.getEpIdx() + 2)).toString()
+                    : series.getNextAbrEpTitle()));
             binding.buttonContinue.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     String url = series.getNextEp();
                     //update current episode to next episode and update next episode if possible
                     series.setCurEp(url);
+                    series.setAbrEpTitle(series.getNextAbrEpTitle());
                     series.setEpIdx(series.getEpIdx() + 1);
                     if (series.getEpIdx() >= episodes.size() - 1) { //current 'next' episode is last available episode
                         series.setNextEp(null);
+                        series.setNextAbrEpTitle(null);
                     } else {
                         series.setNextEp(episodes.get(series.getEpIdx()).getSrc());
+                        series.setNextAbrEpTitle(episodes.get(series.getEpIdx()).getAbrTitle());
                     }
                     ((MainActivity)getActivity()).getWatchlist().updateEp(series);
                     CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();

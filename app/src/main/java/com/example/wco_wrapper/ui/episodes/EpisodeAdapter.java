@@ -24,6 +24,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
         private String url, nextUrl;
+        private String abrTitle, nextAbrTitle;
         private Series hostSeries;
         private int epIdx;
 
@@ -32,6 +33,10 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
             url = s;
         }
         public void setNextUrl(String s) {nextUrl = s;}
+        public void setAbrTitle(String s){
+            abrTitle = s;
+        }
+        public void setNextAbrTitle(String s) {nextAbrTitle = s;}
         public void setEpIdx(int i) {epIdx = i;}
         public void setHostSeries(Series s){
             hostSeries = s;
@@ -45,10 +50,11 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
                 @Override
                 public void onClick(View view) {
                     //TODO implement custom tab buttons to allow quick traversal between episodes
-                    //TODO implement tracker of last episode watched
                     hostSeries.setCurEp(url);
                     hostSeries.setNextEp(nextUrl);
                     hostSeries.setEpIdx(epIdx);
+                    hostSeries.setAbrEpTitle(abrTitle);
+                    hostSeries.setNextAbrEpTitle(nextAbrTitle);
                     CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
                     CustomTabsIntent customTabsIntent = builder.build();
                     customTabsIntent.launchUrl(view.getContext(), Uri.parse(url));
@@ -78,13 +84,20 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull EpisodeAdapter.ViewHolder holder, int position) {
         holder.getTextView().setText(episodes.get(position).getTitle().substring(6));
-        holder.setUrl(episodes.get(position).getSrc());
+
         holder.setHostSeries(hostSeries);
+        holder.setUrl(episodes.get(position).getSrc());
+        holder.setAbrTitle(episodes.get(position).getAbrTitle());
         holder.setEpIdx(position);
-        holder.setNextUrl(((position+1)>=episodes.size()-1)
-            ? null
-            : episodes.get(position+1).getSrc()
-        );
+
+        if ((position + 1) >= episodes.size() - 1) {
+            holder.setNextUrl(null);
+            holder.setNextAbrTitle(null);
+        }
+        else {
+            holder.setNextUrl(episodes.get(position + 1).getSrc());
+            holder.setNextAbrTitle(episodes.get(position + 1).getAbrTitle());
+        }
 
     }
 

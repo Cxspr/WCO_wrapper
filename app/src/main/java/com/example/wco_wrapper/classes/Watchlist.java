@@ -14,7 +14,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+//TODO allow series to be on watchlist without being added (started watching only)
+//TODO implement isolation of watchlist entries based on their 'onWatchlist' state
+//TODO implement isolation of watchlist entries based on whether or not their epDetails are defined
+//TODO implement a recency parameter to sort series on continue watching page
 public class Watchlist {
     private List<Series> watchlist;
     private String parentDir;

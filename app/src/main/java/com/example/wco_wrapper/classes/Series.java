@@ -9,6 +9,8 @@ import com.squareup.picasso.Picasso;
 public class Series {
     private String src, imgUrl, title, curEp, nextEp;
     private int numEpisodes, curEpIdx;
+    private String abrEpTitle, nextAbrEpTitle;
+
     private boolean onWatchlist = false;
 
     //todo docstrings for functions
@@ -19,6 +21,7 @@ public class Series {
         this.imgUrl = imgUrl;
         this.title = title;
     }
+
     public Series (String src, String title, String imgUrl, int numEpisodes, String lastEpisode) {
         this.src = src;
         this.imgUrl = imgUrl;
@@ -45,7 +48,7 @@ public class Series {
     public void onWatchlist(boolean state) {
         onWatchlist = state;
     }
-    public boolean isOnWatchlist() {return onWatchlist;}
+    public boolean onWatchlist() {return onWatchlist;}
 
     public String seriesToJson() {
         Moshi moshi = new Moshi.Builder().build();
@@ -58,6 +61,8 @@ public class Series {
     public void setCurEp(String url){
         curEp = url;
     }
+    public void setAbrEpTitle(String title) { abrEpTitle = title;}
+    public String getAbrEpTitle() {return abrEpTitle;}
     public String getCurEp() {
         return curEp;
     }
@@ -65,6 +70,8 @@ public class Series {
     public void setNextEp(String url){
         nextEp = url;
     }
+    public void setNextAbrEpTitle(String title) { nextAbrEpTitle = title;}
+    public String getNextAbrEpTitle() {return nextAbrEpTitle;}
     public String getNextEp() {
         return nextEp;
     }
@@ -75,6 +82,7 @@ public class Series {
     public int getEpIdx() {
         return curEpIdx;
     }
+    
 
     public void overrideEpInfo(Series series){
         if (series == null) return;
