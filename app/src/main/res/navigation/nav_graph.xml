@@ -6,7 +6,7 @@
     app:startDestination="@id/homeScreen">
     <fragment
         android:id="@+id/mediaSelect"
-        android:name="com.example.wco_wrapper.MediaSelect"
+        android:name="com.wco_fun.wco_wrapper.MediaSelect"
         android:label="media_selection"
         tools:layout="@layout/fragment_media_select" >
         <action
@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/mediaSearch"
-        android:name="com.example.wco_wrapper.ui.search.MediaSearch"
+        android:name="com.wco_fun.wco_wrapper.ui.search.MediaSearch"
         android:label="media_search"
         tools:layout="@layout/fragment_media_search" >
         <argument
@@ -27,17 +27,29 @@
     </fragment>
     <fragment
         android:id="@+id/episode_select"
-        android:name="com.example.wco_wrapper.ui.episodes.EpisodeSelect"
+        android:name="com.wco_fun.wco_wrapper.ui.episodes.EpisodeSelect"
         android:label="episode_select" >
         <argument android:name="series_link" />
     </fragment>
     <fragment
         android:id="@+id/homeScreen"
-        android:name="com.example.wco_wrapper.ui.home.Home"
+        android:name="com.wco_fun.wco_wrapper.ui.home.Home"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeScreen_to_episode_select"
+            app:destination="@id/episode_select" />
+        <action
+            android:id="@+id/action_homeScreen_to_seeAllSeries"
+            app:destination="@id/seeAllSeries" />
+    </fragment>
+    <fragment
+        android:id="@+id/seeAllSeries"
+        android:name="com.wco_fun.wco_wrapper.ui.home.see_all.SeeAllSeries"
+        android:label="fragment_series_see_all"
+        tools:layout="@layout/fragment_series_see_all" >
+        <action
+            android:id="@+id/action_seeAllSeries_to_episode_select"
             app:destination="@id/episode_select" />
     </fragment>
 </navigation>

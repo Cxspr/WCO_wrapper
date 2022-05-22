@@ -7,8 +7,9 @@
     tools:context=".ui.home.Home">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,8 +53,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/watchlistRecycler"
             android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:layout_marginStart="8dp"
+            android:layout_height="160dp"
             android:layout_marginTop="8dp"
             android:overScrollMode="never"
             android:scrollIndicators="none"
@@ -73,8 +73,79 @@
             app:layout_constraintBottom_toBottomOf="@+id/watchlistRecycler"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/watchlistRecycler"
-            app:layout_constraintTop_toTopOf="@+id/watchlistRecycler"
-            tools:visibility="gone" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+        <TextView
+            android:id="@+id/continueWatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Continue Watching"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/continue_see_all"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/continue_see_all" />
+
+        <ImageButton
+            android:id="@+id/continue_access"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:rotation="180"
+            android:src="?attr/actionModeCloseDrawable"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/continue_see_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="See All"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/continue_access"
+            app:layout_constraintEnd_toStartOf="@+id/continue_access"
+            app:layout_constraintTop_toTopOf="@+id/continue_access" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/continueRecycler"
+            android:layout_width="wrap_content"
+            android:layout_height="160dp"
+            android:layout_marginTop="8dp"
+            android:overScrollMode="never"
+            android:scrollIndicators="none"
+            android:scrollbarAlwaysDrawHorizontalTrack="false"
+            android:scrollbars="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/continueWatch" />
+
+        <TextView
+            android:id="@+id/empty_ct_indic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Nothing added yet..."
+            android:textSize="34sp"
+            app:layout_constraintBottom_toBottomOf="@+id/continueRecycler"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/continueRecycler"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
