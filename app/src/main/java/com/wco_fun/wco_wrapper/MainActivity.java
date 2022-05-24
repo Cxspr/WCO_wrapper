@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.toolbar);
-        getSupportActionBar().hide();
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         BottomNavigationView bottomNav = findViewById(R.id.nav_view);
         bottomNav.setSelectedItemId(R.id.homeScreen);
 
