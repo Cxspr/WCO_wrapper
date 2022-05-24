@@ -15,6 +15,12 @@ public class Series {
     private boolean onWatchlist = false;
 
     //todo docstrings for functions
+    public Series(Series s) {
+        this.src = s.getSeriesSrc();
+        this.imgUrl = s.getSeriesImgUrl();
+        this.title = s.getSeriesTitle();
+        this.overrideAll(s);
+    }
 
     public Series (String src, String title, String imgUrl) {
         this.src = src;
@@ -126,5 +132,24 @@ public class Series {
             this.curEpIdx = series.getEpIdx();
             this.lastWatched = series.getLastWatched();
         }
+    }
+
+    public void removeEpInfo(){
+        this.curEp = null;
+        this.abrEpTitle = null;
+        this.nextEp = null;
+        this.nextAbrEpTitle = null;
+        this.curEpIdx = 0;
+        this.lastWatched = 0;
+    }
+
+    public void epInfoShift(){
+        if (!this.hasNextEp()) return;
+
+        this.curEp = this.nextEp;
+        this.abrEpTitle = this.nextAbrEpTitle;
+        this.curEpIdx += 1;
+        this.nextEp = null;
+        this.nextAbrEpTitle = null;
     }
 }

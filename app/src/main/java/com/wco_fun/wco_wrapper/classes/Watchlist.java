@@ -38,8 +38,14 @@ public class Watchlist {
 
     public void addToWatchlist(Series series) {
         for (Series s: watchlist) {
-            if (s.compare(series)){
-                return;
+            if (s.compare(series)){ //escape if entry found and it's not epInfo
+                if (s.hasEpInfo() && !s.onWatchlist()) {
+                    series.overrideAll(s);
+                    watchlist.remove(s);
+                    break;
+                } else {
+                    return;
+                }
             }
         }
 //        Collections.reverse(watchlist);
@@ -53,6 +59,31 @@ public class Watchlist {
             if (s.compare(series)){
                 watchlist.remove(s);
                 pendingChanges = true;
+                return;
+            }
+        }
+    }
+
+    public void removeSeriesFromWatchlist(Series series) {
+        for (Series s: watchlist) {
+            if (s.compare(series)){
+                if (s.hasEpInfo()) {
+                    s.onWatchlist(false);
+                } else {
+                    watchlist.remove(s);
+                }
+                pendingChanges = true;
+                return;
+            }
+        }
+    }
+
+    public void removeEpInfoFromWatchlist(Series series) {
+        for (Series s: watchlist) {
+            if (s.compare(series)){
+                s.removeEpInfo();
+                pendingChanges = true;
+                this.updateWatchlistJSON(); //done immediately since most triggers of this function don't cause a pause
                 return;
             }
         }
@@ -120,6 +151,13 @@ public class Watchlist {
             if (series.getSeriesTitle().matches(title)){
                 return true;
             }
+        }
+        return false;
+    }
+
+    public boolean titleOnWatchlist(Series series){
+        for (Series s: watchlist) {
+            if (s.compare(series)) return s.onWatchlist();
         }
         return false;
     }
