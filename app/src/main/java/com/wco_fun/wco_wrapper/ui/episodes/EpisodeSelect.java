@@ -83,9 +83,7 @@ public class EpisodeSelect extends Fragment {
             Collections.reverse(episodes);//reverse order to have first episode displayed first
             epAdapter = new EpisodeAdapter(episodes, series);
             watchlist = ((MainActivity)getActivity()).getWatchlist();
-            series.onWatchlist((watchlist == null) //get watchlist state
-                    ? false
-                    : watchlist.containsTitle(series.getSeriesTitle()));
+            series.onWatchlist(watchlist.titleOnWatchlist(series));
             series.overrideEpInfo(watchlist.getStoredSeries(series));
 
 
@@ -136,7 +134,7 @@ public class EpisodeSelect extends Fragment {
                 if (series.onWatchlist()) {
 //                    saveState = false;
                     series.onWatchlist(false);
-                    wl.removeFromWatchlist(series); //no need to update instance in MainActivity, auto updates
+                    wl.removeSeriesFromWatchlist(series); //no need to update instance in MainActivity, auto updates
                     saveButton.setText("Add to watchlist");
                 } else {
                     series.onWatchlist(true);
@@ -177,7 +175,7 @@ public class EpisodeSelect extends Fragment {
             }
 
 
-            binding.buttonPlay.setText("Play\n" + ((series.getAbrEpTitle()==null)
+            binding.buttonPlay.setText("Play " + ((series.getAbrEpTitle()==null)
                     ?"Ep. " + ((Integer) (series.getEpIdx() + 1)).toString()
                     : series.getAbrEpTitle()));
 
@@ -212,7 +210,7 @@ public class EpisodeSelect extends Fragment {
 
         if (series.hasNextEp()){
             binding.buttonContinue.setVisibility(View.VISIBLE);
-            binding.buttonContinue.setText("Play Next\n" + ((series.getNextAbrEpTitle()==null)
+            binding.buttonContinue.setText("Play Next " + ((series.getNextAbrEpTitle()==null)
                     ? "Ep. " + ((Integer) (series.getEpIdx() + 2)).toString()
                     : series.getNextAbrEpTitle()));
             binding.buttonContinue.setOnClickListener(new View.OnClickListener() {

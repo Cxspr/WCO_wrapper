@@ -30,7 +30,7 @@ public class Home extends Fragment {
     private Watchlist watchlist;
     private ArrayList<Series> trueWatchlist, continueWatchlist;
     private WatchlistAdapter watchlistAdapter;
-    private WatchlistAdapter continueAdapter;
+    private ContinueAdapter continueAdapter;
 
 
     //TODO modify UI of continue watching to allow user to play episode directly from the home screen
@@ -57,28 +57,18 @@ public class Home extends Fragment {
 
         continueRecycler = binding.continueRecycler;
         RecyclerView.LayoutManager continueLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-//        watchlistLayoutManager.
         continueRecycler.setLayoutManager(continueLayoutManager);
         continueWatchlist = watchlist.getWatching();
-        continueAdapter = new WatchlistAdapter(continueWatchlist.isEmpty()
+        continueAdapter = new ContinueAdapter(continueWatchlist.isEmpty()
                 ? null
-                : continueWatchlist);
+                : watchlist);
         continueRecycler.setAdapter(continueAdapter);
-
-
 
         return binding.getRoot();
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                NavHostFragment.findNavController(MediaSelect.this)
-//                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
-//            }
-//        });
 
         binding.watchlistAccess.setOnClickListener((new View.OnClickListener() {
             @Override
