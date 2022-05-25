@@ -3,13 +3,11 @@ package com.wco_fun.wco_wrapper;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.StrictMode;
 
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -17,9 +15,8 @@ import androidx.navigation.ui.NavigationUI;
 import com.wco_fun.wco_wrapper.classes.Series;
 import com.wco_fun.wco_wrapper.classes.Watchlist;
 import com.wco_fun.wco_wrapper.databinding.ActivityMainBinding;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -33,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private String parentDir;
     private File watchlistFile;
+    private Menu menu;
     Watchlist wl;
 
     //globalized GETTER for the watchlist
@@ -58,52 +56,44 @@ public class MainActivity extends AppCompatActivity {
             } if (wl == null) {wl = new Watchlist(new ArrayList<Series>(), parentDir);}
         }
 
-//        if (wl == null) { wl = new Watchlist(new ArrayList<Series>());}
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        BottomNavigationView bottomNav = findViewById(R.id.nav_view);
-        bottomNav.setSelectedItemId(R.id.homeScreen);
+//        BottomNavigationView bottomNav = findViewById(R.id.nav_view);
+//        bottomNav.setSelectedItemId(R.id.homeScreen);
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupWithNavController(bottomNav, navController);
-
-        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
-            @Override
-            public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
-                if (destination.getId() == R.id.mediaSelect || destination.getId() == R.id.homeScreen){
-                    bottomNav.setVisibility(View.VISIBLE);
-                } else {
-                    bottomNav.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
-
-        bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.homeScreen:
-                        navController.navigate(R.id.homeScreen);
-                        return true;
-                    case R.id.mediaSelect:
-                        navController.navigate(R.id.mediaSelect);
-                        return true;
-                }
-
-                return false;
-            }
-        });
-
-
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(bottomNav, navController);
+    }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        this.menu = menu;
+        menu.findItem(R.id.menu_search).setVisible(true);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.menu_search){
+            Bundle bundle = new Bundle();
+            bundle.putString("link","https://www.wcofun.com/dubbed-anime-list");
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.media_search, bundle);
+            menu.findItem(R.id.menu_search).setVisible(false);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

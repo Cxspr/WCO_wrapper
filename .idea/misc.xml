@@ -4,7 +4,10 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/drawable/app_icon_background.xml" value="0.211" />
+        <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/drawable/ic_arrow_back.xml" value="0.347" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.282" />
+        <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/drawable/ic_remove_filled.xml" value="0.3565" />
+        <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/drawable/ic_search.xml" value="0.347" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/activity_main2.xml" value="0.1" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/content_main.xml" value="0.25" />
@@ -12,7 +15,7 @@
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/fragment_episode_select.xml" value="0.33" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/fragment_first.xml" value="0.33" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/fragment_home.xml" value="0.33" />
-        <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/fragment_media_search.xml" value="0.2695035460992908" />
+        <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/fragment_media_search.xml" value="0.5" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/fragment_media_select.xml" value="0.1956521739130435" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/fragment_series_see_all.xml" value="0.43697916666666664" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/list_item_photo.xml" value="0.553125" />
@@ -23,6 +26,7 @@
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/watchlist_entry.xml" value="0.5" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/menu/bottom_nav_menu.xml" value="0.36203703703703705" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/menu/menu_main.xml" value="0.5541666666666667" />
+        <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/menu/toolbar_nav_menu.xml" value="0.434375" />
       </map>
     </option>
   </component>

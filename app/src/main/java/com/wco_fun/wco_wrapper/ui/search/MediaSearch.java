@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.tabs.TabLayout;
 import com.wco_fun.wco_wrapper.classes.SeriesSearchable;
 import com.wco_fun.wco_wrapper.databinding.FragmentMediaSearchBinding;
 
@@ -33,7 +34,9 @@ public class MediaSearch extends Fragment {
 
     private String url;
     private ThreadedSearch threadedSearch;
-    private Thread searchThread;
+    private ConnectedSearchThread searchThread;
+
+    private ArrayList<SeriesSearchable> dubbed, subbed, cartoon;
 
     //live search variables
     private SearchAdapter searchAdapter;
@@ -53,18 +56,20 @@ public class MediaSearch extends Fragment {
         binding = FragmentMediaSearchBinding.inflate(inflater, container, false);
 
         url = getArguments().getString("link");
-        threadedSearch = new ThreadedSearch(url);
-        searchThread = new Thread(threadedSearch);
-        searchThread.start();
 
         searchAdapter = new SearchAdapter(allSeries);
+        searchAdapter.attachProgressSpinner(binding.progressBar);
+//        binding.progressBar.setVisibility(View.VISIBLE);
+        searchAdapter.setThreadActive();
+        searchThread = new ConnectedSearchThread(getActivity(), searchAdapter, url); //start search thread
+        searchThread.start();
+
         recyclerView = binding.resultContainer;
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 recyclerView.getContext(), DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
-//        recyclerView.setVisibility(View.INVISIBLE);
         recyclerView.setAdapter(searchAdapter);
 
         binding.resultIndicator.setVisibility(View.VISIBLE);
@@ -72,7 +77,6 @@ public class MediaSearch extends Fragment {
 
         searchbar = binding.searchbar;
         searchbar.addTextChangedListener(new TextWatcher() {
-//            boolean wasEmpty = true;
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -98,28 +102,86 @@ public class MediaSearch extends Fragment {
             }
         });
 
+        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) { //run thread with corresponding urls for catagories
+                //todo maybe verify a better workflow of the tread
+                searchThread.cancel();
+                try {
+                    searchThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                boolean toRun = true;
+                if (tab.getPosition() == 0 ) { //dubbed
+                    if (dubbed == null) {
+                        url = "https://www.wcofun.com/dubbed-anime-list";
+                    } else {
+                        searchAdapter.rebaseLegacyData(dubbed);
+                        toRun = false;
+                    }
+                } else if (tab.getPosition() == 1) { //cartoons
+                    if (cartoon == null) {
+                        url = "https://www.wcofun.com/cartoon-list";
+                    } else {
+                        searchAdapter.rebaseLegacyData(cartoon);
+                        toRun = false;
+                    }
+                } else { //subbed
+                    if (subbed == null) {
+                        url = "https://www.wcofun.com/subbed-anime-list";
+                    } else {
+                        searchAdapter.rebaseLegacyData(subbed);
+                        toRun = false;
+                    }
+                }
+                if (toRun) {
+                    searchThread = new ConnectedSearchThread(getActivity(), searchAdapter, url);
+                    searchThread.start();
+                    searchAdapter.setThreadActive();
+                }
+            }
 
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) { //ensure that prev results are stored to reduce later loads
+                if (tab.getPosition() == 0 ) { //dubbed
+                    if (dubbed == null && !searchAdapter.getThreadActive()) {
+                        dubbed = searchAdapter.getLegacyData();
+                    }
+                } else if (tab.getPosition() == 1) { //cartoons
+                    if (cartoon == null && !searchAdapter.getThreadActive()) {
+                        cartoon = searchAdapter.getLegacyData();
+                    }
+                } else { //subbed
+                    if (subbed == null && !searchAdapter.getThreadActive()) {
+                        subbed = searchAdapter.getLegacyData();
+                    }
+                }
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         return binding.getRoot();
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        try {
-            searchThread.join();
-            searchAdapter.rebaseLegacyData(threadedSearch.get());
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!binding.searchbar.getText().toString().isEmpty()) binding.resultIndicator.setVisibility(View.GONE);
+
+    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
-
-
 }

@@ -39,6 +39,7 @@ public class WatchlistAdapter extends  RecyclerView.Adapter<WatchlistAdapter.Vie
         public ViewHolder(View view) {
             super(view);
             //define on click listener
+
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -66,7 +67,7 @@ public class WatchlistAdapter extends  RecyclerView.Adapter<WatchlistAdapter.Vie
     @Override
     public WatchlistAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.watchlist_entry, parent, false);
+                .inflate(R.layout.watchlist_continue_entry, parent, false);
         return new ViewHolder(view);
     }
 

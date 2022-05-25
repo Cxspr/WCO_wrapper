@@ -14,9 +14,9 @@
         android:id="@+id/wl_series_Img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/edit_text" />
+        app:srcCompat="@android:drawable/edit_text"
+        tools:layout_editor_absoluteX="4dp"
+        tools:layout_editor_absoluteY="28dp" />
 
     <TextView
         android:id="@+id/wl_series_title"
@@ -36,33 +36,50 @@
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:background="#00FFFFFF"
+        android:scaleType="centerInside"
+        android:tint="#FF0000"
         app:layout_constraintEnd_toEndOf="@+id/wl_series_Img"
         app:layout_constraintTop_toTopOf="@+id/wl_series_Img"
-        app:srcCompat="@android:drawable/ic_delete" />
+        app:srcCompat="@drawable/ic_remove_filled" />
 
-    <ImageButton
-        android:id="@+id/continue_play"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#00FFFFFF"
-        app:layout_constraintEnd_toStartOf="@+id/continue_next"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="@+id/wl_series_Img"
-        app:layout_constraintTop_toBottomOf="@+id/wl_series_Img"
-        app:srcCompat="@android:drawable/ic_media_play" />
-
-    <ImageButton
-        android:id="@+id/continue_next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#00FFFFFF"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/continue_play"
         app:layout_constraintEnd_toEndOf="@+id/wl_series_Img"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/continue_play"
-        app:layout_constraintTop_toTopOf="@+id/continue_play"
-        app:srcCompat="@android:drawable/ic_media_next" />
+        app:layout_constraintStart_toStartOf="@+id/wl_series_Img"
+        app:layout_constraintTop_toBottomOf="@+id/wl_series_Img">
+
+        <ImageButton
+            android:id="@+id/continue_play"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="#00FFFFFF"
+            android:scaleType="centerInside"
+            android:tint="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/continue_next"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/ic_play_arrow" />
+
+        <ImageButton
+            android:id="@+id/continue_next"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginEnd="4dp"
+            android:background="#00FFFFFF"
+            android:scaleType="centerInside"
+            android:tint="#FFFFFF"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/continue_play"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/continue_play"
+            app:layout_constraintTop_toTopOf="@+id/continue_play"
+            app:srcCompat="@drawable/ic_skip_next" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

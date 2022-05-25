@@ -5,16 +5,7 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/homeScreen">
     <fragment
-        android:id="@+id/mediaSelect"
-        android:name="com.wco_fun.wco_wrapper.MediaSelect"
-        android:label="media_selection"
-        tools:layout="@layout/fragment_media_select" >
-        <action
-            android:id="@+id/action_mediaSelect_to_mediaSearch"
-            app:destination="@id/mediaSearch" />
-    </fragment>
-    <fragment
-        android:id="@+id/mediaSearch"
+        android:id="@+id/media_search"
         android:name="com.wco_fun.wco_wrapper.ui.search.MediaSearch"
         android:label="media_search"
         tools:layout="@layout/fragment_media_search" >
@@ -42,6 +33,9 @@
         <action
             android:id="@+id/action_homeScreen_to_seeAllSeries"
             app:destination="@id/seeAllSeries" />
+        <action
+            android:id="@+id/action_homeScreen_to_menu_search"
+            app:destination="@id/media_search" />
     </fragment>
     <fragment
         android:id="@+id/seeAllSeries"
