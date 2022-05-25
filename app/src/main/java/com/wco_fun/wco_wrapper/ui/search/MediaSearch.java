@@ -15,13 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabLayout;
-import com.wco_fun.wco_wrapper.classes.SeriesSearchable;
+import com.wco_fun.wco_wrapper.classes.SeriesSearchable_LE;
 import com.wco_fun.wco_wrapper.databinding.FragmentMediaSearchBinding;
 
 import org.jsoup.nodes.Element;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 
 public class MediaSearch extends Fragment {
@@ -36,14 +35,14 @@ public class MediaSearch extends Fragment {
     private ThreadedSearch threadedSearch;
     private ConnectedSearchThread searchThread;
 
-    private ArrayList<SeriesSearchable> dubbed, subbed, cartoon;
+    private ArrayList<SeriesSearchable_LE> dubbed, subbed, cartoon;
 
     //live search variables
     private SearchAdapter searchAdapter;
 
 //    private char firstCharArch;
-    private ArrayList<SeriesSearchable> allSeries = new ArrayList<SeriesSearchable>();
-    private ArrayList<SeriesSearchable> seriesSubList = new ArrayList<SeriesSearchable>();
+    private ArrayList<SeriesSearchable_LE> allSeries = new ArrayList<SeriesSearchable_LE>();
+    private ArrayList<SeriesSearchable_LE> seriesSubList = new ArrayList<SeriesSearchable_LE>();
 
     public MediaSearch() {}
 

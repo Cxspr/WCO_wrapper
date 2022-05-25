@@ -19,9 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wco_fun.wco_wrapper.MainActivity;
-import com.wco_fun.wco_wrapper.classes.Episode;
-import com.wco_fun.wco_wrapper.classes.Series;
-import com.wco_fun.wco_wrapper.classes.Watchlist;
+import com.wco_fun.wco_wrapper.classes.Episode_LE;
+import com.wco_fun.wco_wrapper.classes.Series_LE;
+import com.wco_fun.wco_wrapper.classes.Watchlist_LE;
 import com.wco_fun.wco_wrapper.databinding.FragmentEpisodeSelectBinding;
 
 import org.jsoup.Jsoup;
@@ -41,12 +41,12 @@ public class EpisodeSelect extends Fragment {
     private TextView title;
     private ImageView seriesImage;
     private Elements seriesHtmlData;
-    private Series series;
+    private Series_LE seriesLE;
     private EpisodeAdapter epAdapter;
-    private ArrayList<Episode> episodes = new ArrayList<Episode>();
+    private ArrayList<Episode_LE> episodeLES = new ArrayList<Episode_LE>();
     private Button saveButton;
     private boolean saveState;
-    private Watchlist watchlist;
+    private Watchlist_LE watchlistLE;
 
     public EpisodeSelect() {}
     @Override
@@ -65,26 +65,26 @@ public class EpisodeSelect extends Fragment {
             //get series image link
             Elements imageEl = Html.getElementsByClass("img5");
             //create series object
-            series = new Series(src, getArguments().getString("title"), "https:" + imageEl.get(0).attr("src"));
+            seriesLE = new Series_LE(src, getArguments().getString("title"), "https:" + imageEl.get(0).attr("src"));
 
             seriesImage = binding.seriesImage;
-            series.getSeriesImage(seriesImage);
+            seriesLE.getSeriesImage(seriesImage);
 
             seriesHtmlData = Html.getElementsByClass("cat-eps");
             for (Element ep: seriesHtmlData) {
                 ep = ep.child(0);
-                Episode e = new Episode(ep);
+                Episode_LE e = new Episode_LE(ep);
                 if (e.isValid()){
-                    episodes.add(e);
+                    episodeLES.add(e);
                 }
             }
 
-            series.setEpisodeCount(episodes.size());
-            Collections.reverse(episodes);//reverse order to have first episode displayed first
-            epAdapter = new EpisodeAdapter(episodes, series);
-            watchlist = ((MainActivity)getActivity()).getWatchlist();
-            series.onWatchlist(watchlist.titleOnWatchlist(series));
-            series.overrideEpInfo(watchlist.getStoredSeries(series));
+            seriesLE.setEpisodeCount(episodeLES.size());
+            Collections.reverse(episodeLES);//reverse order to have first episode displayed first
+            epAdapter = new EpisodeAdapter(episodeLES, seriesLE);
+            watchlistLE = ((MainActivity)getActivity()).getWatchlist();
+            seriesLE.onWatchlist(watchlistLE.titleOnWatchlist(seriesLE));
+            seriesLE.overrideEpInfo(watchlistLE.getStoredSeries(seriesLE));
 
 
         } catch (IOException e) {
@@ -92,11 +92,11 @@ public class EpisodeSelect extends Fragment {
         }
 
         title = binding.seriesTitle;
-        title.setText(series.getSeriesTitle());
+        title.setText(seriesLE.getSeriesTitle());
 
         saveButton = binding.buttonSave;
 //        saveState = series.onWatchlist();
-        if (series.onWatchlist()) {
+        if (seriesLE.onWatchlist()) {
             saveButton.setText("Remove from watchlist");
         } else {
             saveButton.setText("Add to watchlist");
@@ -130,15 +130,15 @@ public class EpisodeSelect extends Fragment {
         binding.buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Watchlist wl = ((MainActivity)getActivity()).getWatchlist();
-                if (series.onWatchlist()) {
+                Watchlist_LE wl = ((MainActivity)getActivity()).getWatchlist();
+                if (seriesLE.onWatchlist()) {
 //                    saveState = false;
-                    series.onWatchlist(false);
-                    wl.removeSeriesFromWatchlist(series); //no need to update instance in MainActivity, auto updates
+                    seriesLE.onWatchlist(false);
+                    wl.removeSeriesFromWatchlist(seriesLE); //no need to update instance in MainActivity, auto updates
                     saveButton.setText("Add to watchlist");
                 } else {
-                    series.onWatchlist(true);
-                    wl.addToWatchlist(series);
+                    seriesLE.onWatchlist(true);
+                    wl.addToWatchlist(seriesLE);
 //                    saveState = true;
                     saveButton.setText("Remove from watchlist");
                 }
@@ -161,46 +161,46 @@ public class EpisodeSelect extends Fragment {
     public void onPause() {
         super.onPause();
 
-        ((MainActivity)getActivity()).getWatchlist().updateEp(series);
+        ((MainActivity)getActivity()).getWatchlist().updateEp(seriesLE);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (series.hasEpInfo()){ //nested if statements assure if series is timestamped that it will
-            if (series.getLastWatched() >= 0){ //be added to the watchlist
-                if (!series.onWatchlist()) {
-                    ((MainActivity)getActivity()).getWatchlist().addToWatchlist(series);
-                } ((MainActivity)getActivity()).getWatchlist().updateEp(series);
+        if (seriesLE.hasEpInfo()){ //nested if statements assure if series is timestamped that it will
+            if (seriesLE.getLastWatched() >= 0){ //be added to the watchlist
+                if (!seriesLE.onWatchlist()) {
+                    ((MainActivity)getActivity()).getWatchlist().addToWatchlist(seriesLE);
+                } ((MainActivity)getActivity()).getWatchlist().updateEp(seriesLE);
             }
 
 
-            binding.buttonPlay.setText("Play " + ((series.getAbrEpTitle()==null)
-                    ?"Ep. " + ((Integer) (series.getEpIdx() + 1)).toString()
-                    : series.getAbrEpTitle()));
+            binding.buttonPlay.setText("Play " + ((seriesLE.getAbrEpTitle()==null)
+                    ?"Ep. " + ((Integer) (seriesLE.getEpIdx() + 1)).toString()
+                    : seriesLE.getAbrEpTitle()));
 
         }
         binding.buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String url;
-                series.setLastWatched(new Date());
-                if (series.hasEpInfo()) {
-                    url = series.getCurEp();
+                seriesLE.setLastWatched(new Date());
+                if (seriesLE.hasEpInfo()) {
+                    url = seriesLE.getCurEp();
                 } else { //update current episode and next to 1 and 2 respectively
-                    url = episodes.get(0).getSrc();
-                    series.setCurEp(url);
-                    series.setAbrEpTitle(episodes.get(0).getAbrTitle());
-                    series.setEpIdx(0);
-                    series.setNextEp((episodes.size() >= 2) ? episodes.get(1).getSrc() : null);
-                    series.setNextAbrEpTitle((episodes.size() >= 2) ? episodes.get(1).getAbrTitle() : null);
+                    url = episodeLES.get(0).getSrc();
+                    seriesLE.setCurEp(url);
+                    seriesLE.setAbrEpTitle(episodeLES.get(0).getAbrTitle());
+                    seriesLE.setEpIdx(0);
+                    seriesLE.setNextEp((episodeLES.size() >= 2) ? episodeLES.get(1).getSrc() : null);
+                    seriesLE.setNextAbrEpTitle((episodeLES.size() >= 2) ? episodeLES.get(1).getAbrTitle() : null);
 //                    ((MainActivity)getActivity()).getWatchlist().updateEp(series);
 
                 }
 
-                if (!series.onWatchlist()) {
-                    ((MainActivity)getActivity()).getWatchlist().addToWatchlist(series);
-                } ((MainActivity)getActivity()).getWatchlist().updateEp(series);
+                if (!seriesLE.onWatchlist()) {
+                    ((MainActivity)getActivity()).getWatchlist().addToWatchlist(seriesLE);
+                } ((MainActivity)getActivity()).getWatchlist().updateEp(seriesLE);
 
                 CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
                 CustomTabsIntent customTabsIntent = builder.build();
@@ -208,31 +208,31 @@ public class EpisodeSelect extends Fragment {
             }
         });
 
-        if (series.hasNextEp()){
+        if (seriesLE.hasNextEp()){
             binding.buttonContinue.setVisibility(View.VISIBLE);
-            binding.buttonContinue.setText("Play Next " + ((series.getNextAbrEpTitle()==null)
-                    ? "Ep. " + ((Integer) (series.getEpIdx() + 2)).toString()
-                    : series.getNextAbrEpTitle()));
+            binding.buttonContinue.setText("Play Next " + ((seriesLE.getNextAbrEpTitle()==null)
+                    ? "Ep. " + ((Integer) (seriesLE.getEpIdx() + 2)).toString()
+                    : seriesLE.getNextAbrEpTitle()));
             binding.buttonContinue.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    series.setLastWatched(new Date());
-                    String url = series.getNextEp();
+                    seriesLE.setLastWatched(new Date());
+                    String url = seriesLE.getNextEp();
                     //update current episode to next episode and update next episode if possible
-                    series.setCurEp(url);
-                    series.setAbrEpTitle(series.getNextAbrEpTitle());
-                    series.setEpIdx(series.getEpIdx() + 1);
-                    if (series.getEpIdx() >= episodes.size() - 1) { //current 'next' episode is last available episode
-                        series.setNextEp(null);
-                        series.setNextAbrEpTitle(null);
+                    seriesLE.setCurEp(url);
+                    seriesLE.setAbrEpTitle(seriesLE.getNextAbrEpTitle());
+                    seriesLE.setEpIdx(seriesLE.getEpIdx() + 1);
+                    if (seriesLE.getEpIdx() >= episodeLES.size() - 1) { //current 'next' episode is last available episode
+                        seriesLE.setNextEp(null);
+                        seriesLE.setNextAbrEpTitle(null);
                     } else {
-                        series.setNextEp(episodes.get(series.getEpIdx()).getSrc());
-                        series.setNextAbrEpTitle(episodes.get(series.getEpIdx()).getAbrTitle());
+                        seriesLE.setNextEp(episodeLES.get(seriesLE.getEpIdx()).getSrc());
+                        seriesLE.setNextAbrEpTitle(episodeLES.get(seriesLE.getEpIdx()).getAbrTitle());
                     }
 
-                    if (!series.onWatchlist()) {
-                        ((MainActivity)getActivity()).getWatchlist().addToWatchlist(series);
-                    } ((MainActivity)getActivity()).getWatchlist().updateEp(series);
+                    if (!seriesLE.onWatchlist()) {
+                        ((MainActivity)getActivity()).getWatchlist().addToWatchlist(seriesLE);
+                    } ((MainActivity)getActivity()).getWatchlist().updateEp(seriesLE);
 
 
                     CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();

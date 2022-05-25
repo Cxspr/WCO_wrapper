@@ -2,13 +2,9 @@ package com.wco_fun.wco_wrapper.ui.search;
 
 import android.app.Activity;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
-import androidx.core.os.HandlerCompat;
-import androidx.fragment.app.Fragment;
-
-import com.wco_fun.wco_wrapper.classes.SeriesSearchable;
+import com.wco_fun.wco_wrapper.classes.SeriesSearchable_LE;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -38,7 +34,7 @@ public class ConnectedSearchThread extends Thread {
     @Override
     public void run() {
         try {
-            ArrayList<SeriesSearchable> retList = new ArrayList<SeriesSearchable>();
+            ArrayList<SeriesSearchable_LE> retList = new ArrayList<SeriesSearchable_LE>();
             try {
                 //scrape for series list html
                 Element seriesHtmlData = (Jsoup.connect(url)
@@ -50,7 +46,7 @@ public class ConnectedSearchThread extends Thread {
                     Element charCollect = seriesHtmlData.child(idx);
                     for (Element el : charCollect.children()) {
                         el = el.child(0);
-                        SeriesSearchable e = new SeriesSearchable(el);
+                        SeriesSearchable_LE e = new SeriesSearchable_LE(el);
                         if (e.isValid()) {
                             retList.add(e);
                         }
@@ -70,7 +66,7 @@ public class ConnectedSearchThread extends Thread {
         }
     }
 
-    private void notifyResult(ArrayList<SeriesSearchable> retList) {
+    private void notifyResult(ArrayList<SeriesSearchable_LE> retList) {
         resHandler.post(new Runnable() {
             @Override
             public void run() {

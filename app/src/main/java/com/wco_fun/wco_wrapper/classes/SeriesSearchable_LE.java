@@ -2,14 +2,14 @@ package com.wco_fun.wco_wrapper.classes;
 
 import org.jsoup.nodes.Element;
 
-public class SeriesSearchable {
+public class SeriesSearchable_LE {
 
     private String title = null;
     private String src = null;
 //    private String imgLink = null;
 
     // public constructor
-    public SeriesSearchable(Element node) {
+    public SeriesSearchable_LE(Element node) {
         if (node != null) {
             title = node.hasAttr("title")
                     ? node.attr("title")

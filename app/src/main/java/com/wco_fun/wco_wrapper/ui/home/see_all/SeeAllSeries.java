@@ -12,11 +12,10 @@ import android.view.ViewGroup;
 
 import com.wco_fun.wco_wrapper.databinding.FragmentSeriesSeeAllBinding;
 import com.wco_fun.wco_wrapper.MainActivity;
-import com.wco_fun.wco_wrapper.classes.Series;
-import com.wco_fun.wco_wrapper.classes.Watchlist;
+import com.wco_fun.wco_wrapper.classes.Series_LE;
+import com.wco_fun.wco_wrapper.classes.Watchlist_LE;
 import com.wco_fun.wco_wrapper.ui.home.ContinueAdapter;
 import com.wco_fun.wco_wrapper.ui.home.WatchlistAdapter;
-import com.wco_fun.wco_wrapper.ui.home.see_all.SeeAllAdapter;
 
 import java.util.ArrayList;
 
@@ -30,7 +29,7 @@ public class SeeAllSeries extends Fragment {
 
     private FragmentSeriesSeeAllBinding binding;
     private RecyclerView recycler;
-    private Watchlist watchlist;
+    private Watchlist_LE watchlistLE;
 //    private SeeAllAdapter adapter;
 
 
@@ -46,19 +45,19 @@ public class SeeAllSeries extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentSeriesSeeAllBinding.inflate(inflater,container,false);
-        watchlist = ((MainActivity)getActivity()).getWatchlist();
+        watchlistLE = ((MainActivity)getActivity()).getWatchlist();
         recycler = binding.seeAllRecycler;
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
         recycler.setLayoutManager(layoutManager);
-        ArrayList<Series> dispSeriesList = new ArrayList<Series>();
+        ArrayList<Series_LE> dispSeriesLEList = new ArrayList<Series_LE>();
         String passedArg = getArguments().getString("variant");
         if (passedArg.equals("TrueWatchlist")){
 //            dispSeriesList = watchlist.getTrueWatchlist();
-            recycler.setAdapter(new WatchlistAdapter(watchlist.getTrueWatchlist()));
+            recycler.setAdapter(new WatchlistAdapter(watchlistLE.getTrueWatchlist()));
             binding.textView.setText("Watchlist");
         } else if (passedArg.equals("Continue")) {
 //            dispSeriesList = watchlist.getWatching();
-            recycler.setAdapter(new ContinueAdapter(watchlist));
+            recycler.setAdapter(new ContinueAdapter(watchlistLE));
             binding.textView.setText("Continue");
         } else { recycler.setAdapter(null); }
 

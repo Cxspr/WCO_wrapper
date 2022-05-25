@@ -6,7 +6,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 
-public class Series {
+public class Series_LE {
     private String src, imgUrl, title, curEp, nextEp;
     private int numEpisodes, curEpIdx;
     private String abrEpTitle, nextAbrEpTitle;
@@ -15,20 +15,20 @@ public class Series {
     private boolean onWatchlist = false;
 
     //todo docstrings for functions
-    public Series(Series s) {
+    public Series_LE(Series_LE s) {
         this.src = s.getSeriesSrc();
         this.imgUrl = s.getSeriesImgUrl();
         this.title = s.getSeriesTitle();
         this.overrideAll(s);
     }
 
-    public Series (String src, String title, String imgUrl) {
+    public Series_LE(String src, String title, String imgUrl) {
         this.src = src;
         this.imgUrl = imgUrl;
         this.title = title;
     }
 
-    public Series (String src, String title, String imgUrl, int numEpisodes, String lastEpisode) {
+    public Series_LE(String src, String title, String imgUrl, int numEpisodes, String lastEpisode) {
         this.src = src;
         this.imgUrl = imgUrl;
         this.title = title;
@@ -60,14 +60,6 @@ public class Series {
     }
     public boolean onWatchlist() {return onWatchlist;}
 
-    //deprecated
-//    public String seriesToJson() {
-//        Moshi moshi = new Moshi.Builder().build();
-//        JsonAdapter<Series> jsonAdapter = moshi.adapter((Series.class));
-//        String json = jsonAdapter.toJson(this);
-//        return json;
-//    }
-
     //EPISODE STUFF
     public void setCurEp(String url){
         curEp = url;
@@ -94,14 +86,14 @@ public class Series {
         return curEpIdx;
     }
 
-    public void overrideEpInfo(Series series){
-        if (series == null) return;
-        if (series.getSeriesTitle().matches(this.title)){
-            this.curEp = series.getCurEp();
-            this.abrEpTitle = series.getAbrEpTitle();
-            this.nextEp = series.getNextEp();
-            this.nextAbrEpTitle = series.getNextAbrEpTitle();
-            this.curEpIdx = series.getEpIdx();
+    public void overrideEpInfo(Series_LE seriesLE){
+        if (seriesLE == null) return;
+        if (seriesLE.getSeriesTitle().matches(this.title)){
+            this.curEp = seriesLE.getCurEp();
+            this.abrEpTitle = seriesLE.getAbrEpTitle();
+            this.nextEp = seriesLE.getNextEp();
+            this.nextAbrEpTitle = seriesLE.getNextAbrEpTitle();
+            this.curEpIdx = seriesLE.getEpIdx();
         }
     }
 
@@ -116,21 +108,21 @@ public class Series {
     public long getLastWatched() { return this.lastWatched; }
 
     //true comparison for series objects, compares only the non volatile parameters
-    public boolean compare(Series comp) {
+    public boolean compare(Series_LE comp) {
         if (this.src.matches(comp.getSeriesSrc()) && this.imgUrl.matches(comp.getSeriesImgUrl()) && this.title.matches(comp.getSeriesTitle())){
             return true;
         } return false;
     }
 
-    public void overrideAll(Series series){
-        if (series == null) return;
-        if (series.getSeriesTitle().matches(this.title)){
-            this.curEp = series.getCurEp();
-            this.abrEpTitle = series.getAbrEpTitle();
-            this.nextEp = series.getNextEp();
-            this.nextAbrEpTitle = series.getNextAbrEpTitle();
-            this.curEpIdx = series.getEpIdx();
-            this.lastWatched = series.getLastWatched();
+    public void overrideAll(Series_LE seriesLE){
+        if (seriesLE == null) return;
+        if (seriesLE.getSeriesTitle().matches(this.title)){
+            this.curEp = seriesLE.getCurEp();
+            this.abrEpTitle = seriesLE.getAbrEpTitle();
+            this.nextEp = seriesLE.getNextEp();
+            this.nextAbrEpTitle = seriesLE.getNextAbrEpTitle();
+            this.curEpIdx = seriesLE.getEpIdx();
+            this.lastWatched = seriesLE.getLastWatched();
         }
     }
 
@@ -145,7 +137,6 @@ public class Series {
 
     public void epInfoShift(){
         if (!this.hasNextEp()) return;
-
         this.curEp = this.nextEp;
         this.abrEpTitle = this.nextAbrEpTitle;
         this.curEpIdx += 1;

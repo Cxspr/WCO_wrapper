@@ -6,6 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.Home">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/home_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,7 +44,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/watchlist"
+                    android:id="@+id/watchlistLE"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -51,7 +66,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/watchlistRecycler"
+                    android:id="@+id/watchlist_recycler"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -60,7 +75,7 @@
                     android:scrollbarAlwaysDrawHorizontalTrack="false"
                     android:scrollbars="horizontal"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/watchlist" />
+                    app:layout_constraintTop_toBottomOf="@+id/watchlistLE" />
 
                 <TextView
                     android:id="@+id/empty_wl_indic"
@@ -73,8 +88,8 @@
                     android:textSize="34sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/watchlistRecycler"
-                    app:layout_constraintTop_toBottomOf="@+id/watchlist"
+                    app:layout_constraintStart_toStartOf="@+id/watchlist_recycler"
+                    app:layout_constraintTop_toBottomOf="@+id/watchlistLE"
                     tools:visibility="visible" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -142,5 +157,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.wco_fun.wco_wrapper.classes;
+package com.wco_fun.wco_wrapper.classes.episode;
 
 import org.jsoup.nodes.Element;
 
@@ -6,11 +6,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Episode {
-    private String title = null;
-    private String src = null;
-    private String abrTitle = null;
+    protected String title;
+    protected String src;
+    protected String abrTitle;
 
-    // public constructor
+    //constructors
+    public Episode() { }
+
     public Episode(Element node) {
         if (node != null) {
             title = node.hasAttr("title")
@@ -28,19 +30,10 @@ public class Episode {
         return !(title.isEmpty() || src.isEmpty());
     }
 
-    // title getter
-    public String getTitle() {
-        return title;
-    }
-    // src getter
-    public String getSrc() {
-        return src;
-    }
+    public String getTitle() {return title;}
+    public String getSrc() {return src;}
+    public String getAbrTitle() {return abrTitle;}
 
-    public String getAbrTitle() { return abrTitle; }
-    //will attempt to parse the title for a few variations of title structures to abbreviate the episode index
-    //Special Cases
-    //Demon Slayer (does not use conventional season notations)
     public String abrString() {
         String res = "";
 
@@ -52,7 +45,6 @@ public class Episode {
             a+=("Season ").length();
             res = "S";
             String sNum = title.substring(a,b-1);
-//            sNum.trim(); //might be able to get rid of
             res = res.concat(sNum + " Ep. ");
             b+=("Episode ").length();
             for (b=b ; b < title.length(); b++) {

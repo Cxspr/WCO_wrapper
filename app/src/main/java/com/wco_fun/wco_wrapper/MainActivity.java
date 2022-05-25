@@ -12,13 +12,12 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.wco_fun.wco_wrapper.classes.Series;
-import com.wco_fun.wco_wrapper.classes.Watchlist;
+import com.wco_fun.wco_wrapper.classes.Series_LE;
+import com.wco_fun.wco_wrapper.classes.Watchlist_LE;
 import com.wco_fun.wco_wrapper.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,10 +30,10 @@ public class MainActivity extends AppCompatActivity {
     private String parentDir;
     private File watchlistFile;
     private Menu menu;
-    Watchlist wl;
+    Watchlist_LE wl;
 
     //globalized GETTER for the watchlist
-    public Watchlist getWatchlist() {
+    public Watchlist_LE getWatchlist() {
         return wl;
     }
 
@@ -47,13 +46,13 @@ public class MainActivity extends AppCompatActivity {
         parentDir = String.valueOf(this.getFilesDir());
 
         if (!(new File(parentDir + "/watchlist.json")).exists()){
-            wl = new Watchlist(new ArrayList<Series>(), parentDir);
+            wl = new Watchlist_LE(new ArrayList<Series_LE>(), parentDir);
         } else {
             try {
-                wl = Watchlist.genWatchlist(parentDir);
+                wl = Watchlist_LE.genWatchlist(parentDir);
             } catch (IOException e) {
                 e.printStackTrace();
-            } if (wl == null) {wl = new Watchlist(new ArrayList<Series>(), parentDir);}
+            } if (wl == null) {wl = new Watchlist_LE(new ArrayList<Series_LE>(), parentDir);}
         }
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());

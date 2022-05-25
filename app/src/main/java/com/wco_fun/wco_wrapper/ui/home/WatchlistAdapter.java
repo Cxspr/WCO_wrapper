@@ -13,26 +13,26 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wco_fun.wco_wrapper.R;
-import com.wco_fun.wco_wrapper.classes.Series;
+import com.wco_fun.wco_wrapper.classes.Series_LE;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class WatchlistAdapter extends  RecyclerView.Adapter<WatchlistAdapter.ViewHolder> {
     //TODO implement a limiter for shown series (particularly for the continue watching category
-    private ArrayList<Series> watchlist;
+    private ArrayList<Series_LE> watchlist;
     private Context parentContext;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
         private ImageView imageView;
-        private Series series;
+        private Series_LE seriesLE;
 
         public void setSeriesImage() {
-            Picasso.get().load(series.getSeriesImgUrl()).into(imageView);
+            Picasso.get().load(seriesLE.getSeriesImgUrl()).into(imageView);
         }
-        public void setSeries(Series series) {
-            this.series = series;
+        public void setSeries(Series_LE seriesLE) {
+            this.seriesLE = seriesLE;
             this.setSeriesImage();
         }
 
@@ -44,8 +44,8 @@ public class WatchlistAdapter extends  RecyclerView.Adapter<WatchlistAdapter.Vie
                 @Override
                 public void onClick(View view) {
                     Bundle bundle = new Bundle();
-                    bundle.putString("link", series.getSeriesSrc());
-                    bundle.putString("title", series.getSeriesTitle());
+                    bundle.putString("link", seriesLE.getSeriesSrc());
+                    bundle.putString("title", seriesLE.getSeriesTitle());
                     Navigation.findNavController(view)
                             .navigate(R.id.action_homeScreen_to_episode_select, bundle);
                 }
@@ -60,14 +60,14 @@ public class WatchlistAdapter extends  RecyclerView.Adapter<WatchlistAdapter.Vie
         }
     }
 
-    public WatchlistAdapter(ArrayList<Series> watchlist) {
+    public WatchlistAdapter(ArrayList<Series_LE> watchlist) {
         this.watchlist = watchlist;
     }
 
     @Override
     public WatchlistAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.watchlist_continue_entry, parent, false);
+                .inflate(R.layout.home_recycler_entry, parent, false);
         return new ViewHolder(view);
     }
 
@@ -88,7 +88,7 @@ public class WatchlistAdapter extends  RecyclerView.Adapter<WatchlistAdapter.Vie
                 : watchlist.size();
     }
 
-    public void rebaseWatchlist(ArrayList<Series> watchlist) {
+    public void rebaseWatchlist(ArrayList<Series_LE> watchlist) {
         this.watchlist = watchlist;
         this.notifyDataSetChanged();
     }

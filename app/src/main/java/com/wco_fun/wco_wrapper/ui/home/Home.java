@@ -14,9 +14,8 @@ import android.view.ViewGroup;
 
 import com.wco_fun.wco_wrapper.MainActivity;
 import com.wco_fun.wco_wrapper.R;
-import com.wco_fun.wco_wrapper.classes.Series;
-import com.wco_fun.wco_wrapper.classes.Watchlist;
-import com.wco_fun.wco_wrapper.databinding.FragmentEpisodeSelectBinding;
+import com.wco_fun.wco_wrapper.classes.Series_LE;
+import com.wco_fun.wco_wrapper.classes.Watchlist_LE;
 import com.wco_fun.wco_wrapper.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
@@ -27,8 +26,11 @@ public class Home extends Fragment {
     private FragmentHomeBinding binding;
     private RecyclerView watchlistRecycler;
     private RecyclerView continueRecycler;
-    private Watchlist watchlist;
-    private ArrayList<Series> trueWatchlist, continueWatchlist;
+//    private RecyclerView homeRecycler;
+//    private WatchgroupsAdapter watchgroupsAdapter;
+    private Watchlist_LE watchlistLE;
+//    private ArrayList<WatchgroupData> watchgroupData;
+    private ArrayList<Series_LE> trueWatchlist, continueWatchlist;
     private WatchlistAdapter watchlistAdapter;
     private ContinueAdapter continueAdapter;
 
@@ -43,12 +45,34 @@ public class Home extends Fragment {
     ) {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-        watchlist = ((MainActivity)getActivity()).getWatchlist();
+
+        watchlistLE = ((MainActivity)getActivity()).getWatchlist();
+//        watchgroupData = new ArrayList<WatchgroupData>();
+//        watchgroupData.add(new WatchgroupData( //add watchlist
+//                new WatchlistAdapter(watchlist.getTrueWatchlist()),
+//                "Watchlist"
+//        ));
+//        watchgroupData.add(new WatchgroupData( //add continue watching data
+//                new ContinueAdapter(watchlist),
+//                "Continue"
+//        ));
+
+//        homeRecycler = binding.homeRecycler;
+//        RecyclerView.LayoutManager homeLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+//        homeRecycler.setLayoutManager(homeLayoutManager);
+//        watchgroupsAdapter = new WatchgroupsAdapter((watchgroupData.isEmpty())
+//                ? null
+//                : watchgroupData);
+//        homeRecycler.setAdapter(watchgroupsAdapter);
+
+
+
+
         watchlistRecycler = binding.watchlistRecycler;
         RecyclerView.LayoutManager watchlistLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 //        watchlistLayoutManager.
         watchlistRecycler.setLayoutManager(watchlistLayoutManager);
-        trueWatchlist = watchlist.getTrueWatchlist();
+        trueWatchlist = watchlistLE.getTrueWatchlist();
         watchlistAdapter = new WatchlistAdapter(trueWatchlist.isEmpty()
                 ? null
                 : trueWatchlist);
@@ -58,10 +82,10 @@ public class Home extends Fragment {
         continueRecycler = binding.continueRecycler;
         RecyclerView.LayoutManager continueLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         continueRecycler.setLayoutManager(continueLayoutManager);
-        continueWatchlist = watchlist.getWatching();
+        continueWatchlist = watchlistLE.getWatching();
         continueAdapter = new ContinueAdapter(continueWatchlist.isEmpty()
                 ? null
-                : watchlist);
+                : watchlistLE);
         continueRecycler.setAdapter(continueAdapter);
 
         return binding.getRoot();
@@ -99,16 +123,16 @@ public class Home extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-//        watchlist = ((MainActivity) getActivity()).getWatchlist();
-//        watchlistAdapter.rebaseWatchlist((watchlist == null)
-//                ? null
-//                : watchlist.getTrueWatchlist());
-        if (watchlist.getTrueWatchlist().isEmpty()) {
+        watchlistLE = ((MainActivity) getActivity()).getWatchlist();
+        watchlistAdapter.rebaseWatchlist((watchlistLE == null)
+                ? null
+                : watchlistLE.getTrueWatchlist());
+        if (watchlistLE.getTrueWatchlist().isEmpty()) {
             binding.emptyWlIndic.setVisibility(View.VISIBLE);
         } else {
             binding.emptyWlIndic.setVisibility(View.GONE);
         }
-        if (watchlist.getWatching().isEmpty()) {
+        if (watchlistLE.getWatching().isEmpty()) {
             binding.emptyCtIndic.setVisibility(View.VISIBLE);
         } else {
             binding.emptyCtIndic.setVisibility(View.GONE);

@@ -1,6 +1,6 @@
 package com.wco_fun.wco_wrapper.ui.search;
 
-import com.wco_fun.wco_wrapper.classes.SeriesSearchable;
+import com.wco_fun.wco_wrapper.classes.SeriesSearchable_LE;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -12,10 +12,10 @@ import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class ThreadedSearch implements RunnableFuture<ArrayList<SeriesSearchable>> {
+public class ThreadedSearch implements RunnableFuture<ArrayList<SeriesSearchable_LE>> {
 
     private String url;
-    private ArrayList<SeriesSearchable> allSeries = new ArrayList<SeriesSearchable>();
+    private ArrayList<SeriesSearchable_LE> allSeries = new ArrayList<SeriesSearchable_LE>();
 
     public ThreadedSearch(String url){
         this.url = url;
@@ -34,7 +34,7 @@ public class ThreadedSearch implements RunnableFuture<ArrayList<SeriesSearchable
                 Element charCollect = seriesHtmlData.child(idx);
                 for (Element el : charCollect.children()) {
                     el = el.child(0);
-                    SeriesSearchable e = new SeriesSearchable(el);
+                    SeriesSearchable_LE e = new SeriesSearchable_LE(el);
                     if (e.isValid()) {
                         allSeries.add(e);
                     }
@@ -61,12 +61,12 @@ public class ThreadedSearch implements RunnableFuture<ArrayList<SeriesSearchable
     }
 
     @Override
-    public ArrayList<SeriesSearchable> get() throws ExecutionException, InterruptedException {
+    public ArrayList<SeriesSearchable_LE> get() throws ExecutionException, InterruptedException {
         return allSeries;
     }
 
     @Override
-    public ArrayList<SeriesSearchable> get(long l, TimeUnit timeUnit) throws ExecutionException, InterruptedException, TimeoutException {
+    public ArrayList<SeriesSearchable_LE> get(long l, TimeUnit timeUnit) throws ExecutionException, InterruptedException, TimeoutException {
         return null;
     }
 }

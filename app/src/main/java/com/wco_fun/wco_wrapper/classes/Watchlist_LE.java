@@ -16,31 +16,32 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class Watchlist {
-    private List<Series> watchlist;
+public class Watchlist_LE {
+    private List<Series_LE> watchlist;
     private String parentDir;
     private boolean pendingChanges;
 
-    public Watchlist(ArrayList<Series> list) {
+    public Watchlist_LE(ArrayList<Series_LE> list) {
         watchlist = list;
     };
-    public Watchlist(ArrayList<Series> list, String parentDir) {
+    public Watchlist_LE(ArrayList<Series_LE> list, String parentDir) {
         watchlist = list;
         this.parentDir = parentDir;
-    };
+    }
+
     //Reconstruct watchlist from JSON
     public String watchlistToJson() {
         Moshi moshi = new Moshi.Builder().build();
-        JsonAdapter<Watchlist> jsonAdapter = moshi.adapter(Watchlist.class);
+        JsonAdapter<Watchlist_LE> jsonAdapter = moshi.adapter(Watchlist_LE.class);
         String json = jsonAdapter.toJson(this);
         return json;
     }
 
-    public void addToWatchlist(Series series) {
-        for (Series s: watchlist) {
-            if (s.compare(series)){ //escape if entry found and it's not epInfo
+    public void addToWatchlist(Series_LE seriesLE) {
+        for (Series_LE s: watchlist) {
+            if (s.compare(seriesLE)){ //escape if entry found and it's not epInfo
                 if (s.hasEpInfo() && !s.onWatchlist()) {
-                    series.overrideAll(s);
+                    seriesLE.overrideAll(s);
                     watchlist.remove(s);
                     break;
                 } else {
@@ -49,14 +50,14 @@ public class Watchlist {
             }
         }
 //        Collections.reverse(watchlist);
-        watchlist.add(series);
+        watchlist.add(seriesLE);
 //        Collections.reverse(watchlist);
         pendingChanges = true;
     }
 
-    public void removeFromWatchlist(Series series) {
-        for (Series s: watchlist) {
-            if (s.compare(series)){
+    public void removeFromWatchlist(Series_LE seriesLE) {
+        for (Series_LE s: watchlist) {
+            if (s.compare(seriesLE)){
                 watchlist.remove(s);
                 pendingChanges = true;
                 return;
@@ -64,9 +65,9 @@ public class Watchlist {
         }
     }
 
-    public void removeSeriesFromWatchlist(Series series) {
-        for (Series s: watchlist) {
-            if (s.compare(series)){
+    public void removeSeriesFromWatchlist(Series_LE seriesLE) {
+        for (Series_LE s: watchlist) {
+            if (s.compare(seriesLE)){
                 if (s.hasEpInfo()) {
                     s.onWatchlist(false);
                 } else {
@@ -78,9 +79,9 @@ public class Watchlist {
         }
     }
 
-    public void removeEpInfoFromWatchlist(Series series) {
-        for (Series s: watchlist) {
-            if (s.compare(series)){
+    public void removeEpInfoFromWatchlist(Series_LE seriesLE) {
+        for (Series_LE s: watchlist) {
+            if (s.compare(seriesLE)){
                 s.removeEpInfo();
                 pendingChanges = true;
                 this.updateWatchlistJSON(); //done immediately since most triggers of this function don't cause a pause
@@ -89,20 +90,20 @@ public class Watchlist {
         }
     }
 
-    public void updateEp(Series series){
+    public void updateEp(Series_LE seriesLE){
         int i;
         for (i = 0; i < watchlist.size(); i++){
-            if ((watchlist.get(i).compare(series))){
-                watchlist.get(i).overrideAll(series);
+            if ((watchlist.get(i).compare(seriesLE))){
+                watchlist.get(i).overrideAll(seriesLE);
                 pendingChanges = true;
                 return;
             }
         }
     }
 
-    public Series getStoredSeries(Series series) {
-        for (Series s: watchlist) {
-            if (s.compare(series)){
+    public Series_LE getStoredSeries(Series_LE seriesLE) {
+        for (Series_LE s: watchlist) {
+            if (s.compare(seriesLE)){
                 return s;
             }
         }
@@ -110,13 +111,13 @@ public class Watchlist {
     }
 
     //getters for watchlist and variants
-    public ArrayList<Series> getWatchlist() {
-        return (ArrayList<Series>) watchlist;
+    public ArrayList<Series_LE> getWatchlist() {
+        return (ArrayList<Series_LE>) watchlist;
     }
     //get true watchlist elements
-    public ArrayList<Series> getTrueWatchlist() {
-        ArrayList<Series> res = new ArrayList<Series>();
-        for (Series s : this.watchlist){
+    public ArrayList<Series_LE> getTrueWatchlist() {
+        ArrayList<Series_LE> res = new ArrayList<Series_LE>();
+        for (Series_LE s : this.watchlist){
             if (s.onWatchlist()){
                 res.add(s);
             }
@@ -125,19 +126,18 @@ public class Watchlist {
         return res;
     }
     //get series that user has started watching
-    public ArrayList<Series> getWatching() {
-        ArrayList<Series> res = new ArrayList<Series>();
-        for (Series s : this.watchlist) {
+    public ArrayList<Series_LE> getWatching() {
+        ArrayList<Series_LE> res = new ArrayList<Series_LE>();
+        for (Series_LE s : this.watchlist) {
             if (s.hasEpInfo()) {
                 res.add(s);
             }
         }
-
         if (!res.isEmpty()) { //sort by last watched timestamp
-            Collections.sort(res, new Comparator<Series>() {
+            Collections.sort(res, new Comparator<Series_LE>() {
                 @Override
-                public int compare(Series series, Series s) {
-                    return Long.valueOf(s.getLastWatched()).compareTo(Long.valueOf(series.getLastWatched()));
+                public int compare(Series_LE seriesLE, Series_LE s) {
+                    return Long.valueOf(s.getLastWatched()).compareTo(Long.valueOf(seriesLE.getLastWatched()));
                 }
             });
         }
@@ -145,36 +145,14 @@ public class Watchlist {
         return res;
     }
 
-    //checks if a series with the given title is already on the watchlist
-    public boolean containsTitle(String title){
-        for (Series series: watchlist){
-            if (series.getSeriesTitle().matches(title)){
-                return true;
-            }
+    public boolean titleOnWatchlist(Series_LE seriesLE){
+        for (Series_LE s: watchlist) {
+            if (s.compare(seriesLE)) return s.onWatchlist();
         }
         return false;
     }
 
-    public boolean titleOnWatchlist(Series series){
-        for (Series s: watchlist) {
-            if (s.compare(series)) return s.onWatchlist();
-        }
-        return false;
-    }
-
-    public ArrayList<Series> getReversed() {
-        ArrayList<Series> revWatchlist = (ArrayList<Series>) watchlist;
-        Collections.reverse(revWatchlist);
-        return revWatchlist;
-    }
-
-    public static Watchlist genWatchlistFromJson(String json) throws IOException {
-        Moshi moshi = new Moshi.Builder().build();
-        JsonAdapter<Watchlist> jsonAdapter = moshi.adapter(Watchlist.class);
-        return jsonAdapter.fromJson(json);
-    }
-
-    public static Watchlist genWatchlist(String parentDir) throws IOException {
+    public static Watchlist_LE genWatchlist(String parentDir) throws IOException {
         File watchlistFile = new File(parentDir, "watchlist.json");
         //Read JSON and build into string
         StringBuilder text = new StringBuilder();
@@ -194,7 +172,7 @@ public class Watchlist {
 
         //Create Watchlist object from JSON using Moshi library
         Moshi moshi = new Moshi.Builder().build();
-        JsonAdapter<Watchlist> jsonAdapter = moshi.adapter(Watchlist.class);
+        JsonAdapter<Watchlist_LE> jsonAdapter = moshi.adapter(Watchlist_LE.class);
         return jsonAdapter.fromJson(json);
     }
 
