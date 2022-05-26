@@ -1,6 +1,5 @@
-package com.wco_fun.wco_wrapper.ui.home;
+package com.wco_fun.wco_wrapper.ui.home.watch_adapters;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,15 +12,17 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wco_fun.wco_wrapper.R;
-import com.wco_fun.wco_wrapper.classes.Series;
-import com.squareup.picasso.Picasso;
+import com.wco_fun.wco_wrapper.classes.series.Series;
 
 import java.util.ArrayList;
 
-public class WatchlistAdapter extends  RecyclerView.Adapter<WatchlistAdapter.ViewHolder> {
+public class WatchAdapter extends  RecyclerView.Adapter<WatchAdapter.ViewHolder> {
     //TODO implement a limiter for shown series (particularly for the continue watching category
-    private ArrayList<Series> watchlist;
-    private Context parentContext;
+    private ArrayList<Series> watchgroup;
+
+    public WatchAdapter(ArrayList<Series> watchgroup) {
+        this.watchgroup = watchgroup;
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
@@ -29,7 +30,7 @@ public class WatchlistAdapter extends  RecyclerView.Adapter<WatchlistAdapter.Vie
         private Series series;
 
         public void setSeriesImage() {
-            Picasso.get().load(series.getSeriesImgUrl()).into(imageView);
+            series.getSeriesImage(imageView);
         }
         public void setSeries(Series series) {
             this.series = series;
@@ -39,12 +40,13 @@ public class WatchlistAdapter extends  RecyclerView.Adapter<WatchlistAdapter.Vie
         public ViewHolder(View view) {
             super(view);
             //define on click listener
+            view.findViewById(R.id.wg_button_bar).setVisibility(View.GONE);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Bundle bundle = new Bundle();
-                    bundle.putString("link", series.getSeriesSrc());
-                    bundle.putString("title", series.getSeriesTitle());
+                    bundle.putString("link", series.getSrc());
+                    bundle.putString("title", series.getTitle());
                     Navigation.findNavController(view)
                             .navigate(R.id.action_homeScreen_to_episode_select, bundle);
                 }
@@ -59,36 +61,31 @@ public class WatchlistAdapter extends  RecyclerView.Adapter<WatchlistAdapter.Vie
         }
     }
 
-    public WatchlistAdapter(ArrayList<Series> watchlist) {
-        this.watchlist = watchlist;
-    }
-
     @Override
-    public WatchlistAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public WatchAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.watchlist_entry, parent, false);
+                .inflate(R.layout.home_recycler_entry, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WatchlistAdapter.ViewHolder holder, int position) {
-        if (!(watchlist.isEmpty())){
-            holder.getTextView().setText(watchlist.get(position).getSeriesTitle());
-            holder.setSeries(watchlist.get(position));
-//            holder.setSeriesImage();
+    public void onBindViewHolder(@NonNull WatchAdapter.ViewHolder holder, int position) {
+        if (!(watchgroup.isEmpty())){
+            holder.getTextView().setText(watchgroup.get(position).getTitle());
+            holder.setSeries(watchgroup.get(position));
         }
 
     }
 
     @Override
     public int getItemCount() {
-        return (watchlist == null)
+        return (watchgroup.isEmpty())
                 ? 0
-                : watchlist.size();
+                : watchgroup.size();
     }
 
-    public void rebaseWatchlist(ArrayList<Series> watchlist) {
-        this.watchlist = watchlist;
+    public void rebaseWatchgroup(ArrayList<Series> watchgroup) {
+        this.watchgroup = watchgroup;
         this.notifyDataSetChanged();
     }
 

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,7 +13,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wco_fun.wco_wrapper.R;
-import com.wco_fun.wco_wrapper.classes.SeriesSearchable;
+import com.wco_fun.wco_wrapper.classes.series.SeriesSearchable;
 
 import java.util.ArrayList;
 
@@ -20,7 +21,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     private ArrayList<SeriesSearchable> results = new ArrayList<SeriesSearchable>();
     private ArrayList<SeriesSearchable> legacyData = new ArrayList<SeriesSearchable>();
-    private NavController parent;
+    private ProgressBar progressBar;
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
@@ -80,16 +82,21 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     public void rebaseLegacyData(ArrayList<SeriesSearchable> newData) {
         legacyData = newData;
+        results.clear();
+        reflectSearch(localSearch);
+        this.notifyDataSetChanged();
     }
 
-    private int prevSearchlen = 0;
+    private int prevSearchLen = 0;
+    private String localSearch = "";
     public void reflectSearch(String str) {
         if (str.length() == 0 ) {
             revertToLegacy();
         } else {
             searchData(str);
         }
-        this.prevSearchlen = str.length();
+        this.prevSearchLen = str.length();
+        this.localSearch = str;
         this.notifyDataSetChanged();
     }
 
@@ -99,7 +106,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     }
 
     public void searchData(String str) {
-        if (results.isEmpty() || str.length() <= prevSearchlen){
+        if (results.isEmpty() || str.length() <= prevSearchLen){
             for (SeriesSearchable s: legacyData){
                 if (s.contains(str) && !results.contains(s)) {
                     results.add(s);
@@ -113,7 +120,28 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                 }
             }
         }
-
     }
+
+    public void onThreadConcluded(ArrayList<SeriesSearchable> retList) {
+        this.rebaseLegacyData(retList);
+        this.hideProgressSpinner();
+        threadActive=false;
+    }
+
+    public void attachProgressSpinner(ProgressBar progressBar) {this.progressBar = progressBar; }
+    public void hideProgressSpinner() {progressBar.setVisibility(View.GONE);}
+    public void showProgressSpinner() {progressBar.setVisibility(View.VISIBLE);}
+
+    public ArrayList<SeriesSearchable> getLegacyData() {
+        return legacyData;
+    }
+
+    private boolean threadActive;
+    public void setThreadActive() {
+        threadActive = true;
+        this.showProgressSpinner();
+    }
+    public boolean getThreadActive() {return threadActive;}
+
 
 }
