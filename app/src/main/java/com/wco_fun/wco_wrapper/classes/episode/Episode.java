@@ -8,7 +8,8 @@ import java.util.regex.Pattern;
 public class Episode {
     protected String title;
     protected String src;
-    protected String abrTitle;
+//    protected String abrTitle;
+    protected int idx = 0;
 
     //constructors
     public Episode() { }
@@ -21,9 +22,11 @@ public class Episode {
             src = node.hasAttr("href")
                     ? node.attr("href")
                     : null;
-            abrTitle = abrString();
+//            abrTitle = abrString();
         }
     }
+
+
 
     // return true if series has a title and src
     public boolean isValid() {
@@ -32,9 +35,11 @@ public class Episode {
 
     public String getTitle() {return title;}
     public String getSrc() {return src;}
-    public String getAbrTitle() {return abrTitle;}
+    public String getAbrTitle() {return genAbrTitle();}
+    public int getIdx() {return idx;}
+    public void setIdx(int idx) {this.idx = idx;}
 
-    public String abrString() {
+    public String genAbrTitle() {
         String res = "";
 
         //Season xyz Episode xyz

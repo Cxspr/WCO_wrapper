@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
 
-import com.wco_fun.wco_wrapper.classes.SeriesSearchable_LE;
+import com.wco_fun.wco_wrapper.classes.series.SeriesSearchable;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -34,7 +34,7 @@ public class ConnectedSearchThread extends Thread {
     @Override
     public void run() {
         try {
-            ArrayList<SeriesSearchable_LE> retList = new ArrayList<SeriesSearchable_LE>();
+            ArrayList<SeriesSearchable> retList = new ArrayList<SeriesSearchable>();
             try {
                 //scrape for series list html
                 Element seriesHtmlData = (Jsoup.connect(url)
@@ -46,7 +46,7 @@ public class ConnectedSearchThread extends Thread {
                     Element charCollect = seriesHtmlData.child(idx);
                     for (Element el : charCollect.children()) {
                         el = el.child(0);
-                        SeriesSearchable_LE e = new SeriesSearchable_LE(el);
+                        SeriesSearchable e = new SeriesSearchable(el);
                         if (e.isValid()) {
                             retList.add(e);
                         }
@@ -66,7 +66,7 @@ public class ConnectedSearchThread extends Thread {
         }
     }
 
-    private void notifyResult(ArrayList<SeriesSearchable_LE> retList) {
+    private void notifyResult(ArrayList<SeriesSearchable> retList) {
         resHandler.post(new Runnable() {
             @Override
             public void run() {

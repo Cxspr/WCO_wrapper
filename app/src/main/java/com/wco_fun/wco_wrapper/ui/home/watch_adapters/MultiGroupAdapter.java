@@ -1,17 +1,15 @@
-package com.wco_fun.wco_wrapper.ui.home.watchgroups;
+package com.wco_fun.wco_wrapper.ui.home.watch_adapters;
 
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-//TODO figure out if this would work or is even possible!!!
-public class WatchgroupAdapter extends RecyclerView.Adapter<WatchgroupAdapter.ViewHolder> {
 
+public class MultiGroupAdapter extends RecyclerView.Adapter<MultiGroupAdapter.ViewHolder> {
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
         }
@@ -32,6 +30,5 @@ public class WatchgroupAdapter extends RecyclerView.Adapter<WatchgroupAdapter.Vi
     public int getItemCount() {
         return 0;
     }
-
 
 }

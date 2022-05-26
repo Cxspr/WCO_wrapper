@@ -24,6 +24,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -44,18 +45,18 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/watchlistLE"
+                    android:id="@+id/wl_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="Watchlist"
                     android:textSize="24sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/watchlist_access"
+                    app:layout_constraintBottom_toBottomOf="@+id/wl_access"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/watchlist_access" />
+                    app:layout_constraintTop_toTopOf="@+id/wl_access" />
 
                 <ImageButton
-                    android:id="@+id/watchlist_access"
+                    android:id="@+id/wl_access"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -66,7 +67,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/watchlist_recycler"
+                    android:id="@+id/wl_recycler"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -75,10 +76,10 @@
                     android:scrollbarAlwaysDrawHorizontalTrack="false"
                     android:scrollbars="horizontal"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/watchlistLE" />
+                    app:layout_constraintTop_toBottomOf="@+id/wl_title" />
 
                 <TextView
-                    android:id="@+id/empty_wl_indic"
+                    android:id="@+id/wl_empty_ind"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="48dp"
@@ -88,8 +89,8 @@
                     android:textSize="34sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/watchlist_recycler"
-                    app:layout_constraintTop_toBottomOf="@+id/watchlistLE"
+                    app:layout_constraintStart_toStartOf="@+id/wl_recycler"
+                    app:layout_constraintTop_toBottomOf="@+id/wl_title"
                     tools:visibility="visible" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -105,18 +106,18 @@
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
 
                 <TextView
-                    android:id="@+id/continueWatch"
+                    android:id="@+id/wd_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="Continue"
                     android:textSize="24sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/continue_access"
+                    app:layout_constraintBottom_toBottomOf="@+id/wd_access"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/continue_access" />
+                    app:layout_constraintTop_toTopOf="@+id/wd_access" />
 
                 <ImageButton
-                    android:id="@+id/continue_access"
+                    android:id="@+id/wd_access"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -127,7 +128,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/continueRecycler"
+                    android:id="@+id/wd_recycler"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -136,10 +137,10 @@
                     android:scrollbarAlwaysDrawHorizontalTrack="false"
                     android:scrollbars="horizontal"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/continueWatch" />
+                    app:layout_constraintTop_toBottomOf="@+id/wd_title" />
 
                 <TextView
-                    android:id="@+id/empty_ct_indic"
+                    android:id="@+id/wd_empty_ind"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="48dp"
@@ -149,21 +150,13 @@
                     android:textSize="34sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/continueRecycler"
-                    app:layout_constraintTop_toBottomOf="@+id/continueWatch"
+                    app:layout_constraintStart_toStartOf="@+id/wd_recycler"
+                    app:layout_constraintTop_toBottomOf="@+id/wd_title"
                     tools:visibility="visible" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

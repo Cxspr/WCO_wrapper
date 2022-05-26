@@ -1,6 +1,5 @@
-package com.wco_fun.wco_wrapper.ui.home;
+package com.wco_fun.wco_wrapper.ui.home.watch_adapters;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,62 +13,51 @@ import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
 import com.wco_fun.wco_wrapper.R;
-import com.wco_fun.wco_wrapper.classes.Series_LE;
-import com.wco_fun.wco_wrapper.classes.Watchlist_LE;
-import com.wco_fun.wco_wrapper.ui.home.parallel_procs.ThreadedEpUpdater;
+import com.wco_fun.wco_wrapper.classes.episode.Episode;
+import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
+import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.concurrent.ExecutionException;
 
-public class ContinueAdapter extends  RecyclerView.Adapter<ContinueAdapter.ViewHolder> {
+public class ReactiveWatchAdapter extends  RecyclerView.Adapter<ReactiveWatchAdapter.ViewHolder> {
     //TODO implement a limiter for shown series (particularly for the continue watching category
-    private ArrayList<Series_LE> seriesLEList;
-    private Watchlist_LE watchlistLE;
-    private Context parentContext;
+    private ArrayList<SeriesControllable> seriesList;
+    private WatchData watchData;
+
+    public ReactiveWatchAdapter(WatchData watchData) {
+        this.watchData = watchData;
+        this.seriesList = watchData.getWatching();
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private ContinueAdapter host;
-        private Watchlist_LE watchlistLE;
+        private ReactiveWatchAdapter host;
+        private WatchData watchData;
         private ImageView imageView;
         private ImageButton delete,resume,next;
-        private Series_LE seriesLE;
+        private SeriesControllable series;
 
-        public void setHost(ContinueAdapter host) {this.host = host;}
+        public void setHost(ReactiveWatchAdapter host) {this.host = host;}
         public void setSeriesImage() {
-            Picasso.get().load(seriesLE.getSeriesImgUrl()).into(imageView);
+            series.getSeriesImage(imageView);
         }
-        public void setSeries(Series_LE seriesLE) {
-            this.seriesLE = seriesLE;
+        public void setWatchData(WatchData watchData) {this.watchData = watchData;}
+        public void setSeries(SeriesControllable series) {
+            this.series = series;
             this.setSeriesImage();
-            if (seriesLE.hasNextEp()){
+            if (series.hasMoreEps()){
                 next.setEnabled(true);
                 next.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ThreadedEpUpdater epUpdater = new ThreadedEpUpdater(seriesLE);
-                        Thread updater = new Thread(epUpdater);
-                        updater.start();
+                        Episode refEp = series.popEpQueue();//pull next ep and trigger updater
 
                         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
                         CustomTabsIntent customTabsIntent = builder.build();
-                        customTabsIntent.launchUrl(view.getContext(), Uri.parse(seriesLE.getNextEp()));
+                        customTabsIntent.launchUrl(view.getContext(), Uri.parse(refEp.getSrc()));
 
-                        try {
-                            updater.join();
-                            Series_LE resSeriesLE = epUpdater.get();
-                            if (resSeriesLE != null) {
-                                seriesLE.overrideAll(resSeriesLE);
-                                seriesLE.setLastWatched(new Date());
-                                watchlistLE.updateEp(seriesLE);
-                                host.refreshRecycler();
-                            }
-                        } catch (InterruptedException | ExecutionException e) {
-                            e.printStackTrace();
-                        }
-
+                        watchData.update(series);//notify host of changes
+                        watchData.updateWatchDataJson();
                     }
                 });
             } else {
@@ -77,7 +65,7 @@ public class ContinueAdapter extends  RecyclerView.Adapter<ContinueAdapter.ViewH
             }
         }
 
-        public void setWatchlist(Watchlist_LE wl){ this.watchlistLE = wl; }
+//        public void setWatchlist(Watchlist_LE wl){ this.watchlistLE = wl; }
 
         public ViewHolder(View view) {
             super(view);
@@ -86,8 +74,8 @@ public class ContinueAdapter extends  RecyclerView.Adapter<ContinueAdapter.ViewH
                 @Override
                 public void onClick(View view) {
                     Bundle bundle = new Bundle();
-                    bundle.putString("link", seriesLE.getSeriesSrc());
-                    bundle.putString("title", seriesLE.getSeriesTitle());
+                    bundle.putString("link", series.getSrc());
+                    bundle.putString("title", series.getTitle());
                     Navigation.findNavController(view)
                             .navigate(R.id.action_homeScreen_to_episode_select, bundle);
                 }
@@ -99,7 +87,8 @@ public class ContinueAdapter extends  RecyclerView.Adapter<ContinueAdapter.ViewH
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    watchlistLE.removeEpInfoFromWatchlist(seriesLE);
+                    watchData.remove(series.getTitle());
+                    watchData.updateWatchDataJson();
                     host.refreshRecycler();
                 }
             });
@@ -107,11 +96,12 @@ public class ContinueAdapter extends  RecyclerView.Adapter<ContinueAdapter.ViewH
             resume.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    seriesLE.setLastWatched(new Date());
-                    watchlistLE.updateEp(seriesLE);
+                    series.updateLastWatched();
+
                     CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
                     CustomTabsIntent customTabsIntent = builder.build();
-                    customTabsIntent.launchUrl(view.getContext(), Uri.parse(seriesLE.getCurEp()));
+                    customTabsIntent.launchUrl(view.getContext(), Uri.parse(series.getCurEp().getSrc()));
+
                     host.refreshRecycler();
                 }
             });
@@ -125,49 +115,38 @@ public class ContinueAdapter extends  RecyclerView.Adapter<ContinueAdapter.ViewH
 
     }
 
-    public ContinueAdapter(Watchlist_LE watchlistLE) {
-        if (watchlistLE == null) return;
-        this.watchlistLE = watchlistLE;
-        this.seriesLEList = watchlistLE.getWatching();
-    }
-
     @Override
-    public ContinueAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ReactiveWatchAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.home_recycler_entry, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContinueAdapter.ViewHolder holder, int position) {
-        if (!(seriesLEList.isEmpty())){
-//            holder.getTextView().setText(watchlist.get(position).getSeriesTitle());
-            holder.setSeries(seriesLEList.get(position));
-            holder.setWatchlist(watchlistLE);
+    public void onBindViewHolder(@NonNull ReactiveWatchAdapter.ViewHolder holder, int position) {
+        if (!(seriesList.isEmpty())){
+            holder.setSeries(seriesList.get(position));
             holder.setHost(this);
+            holder.setWatchData(watchData);
         }
-
     }
 
     @Override
     public int getItemCount() {
-        return (watchlistLE == null)
+        return (seriesList.isEmpty())
                 ? 0
-                : seriesLEList.size();
+                : seriesList.size();
     }
 
-    public void rebaseWatchlist(ArrayList<Series_LE> watchlist) {
-        this.seriesLEList = watchlist;
+    public void rebaseSeriesList(ArrayList<SeriesControllable> seriesList) {
+        this.seriesList = seriesList;
         this.notifyDataSetChanged();
     }
 
     public void refreshRecycler() {
-        this.seriesLEList = (watchlistLE == null)
-                ? new ArrayList<Series_LE>()
-                : watchlistLE.getWatching();
+        this.seriesList = (watchData.isEmpty())
+                ? new ArrayList<SeriesControllable>()
+                : watchData.getWatching();
         this.notifyDataSetChanged();
     }
-
-
-
 }

@@ -13,22 +13,22 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wco_fun.wco_wrapper.R;
-import com.wco_fun.wco_wrapper.classes.SeriesSearchable_LE;
+import com.wco_fun.wco_wrapper.classes.series.SeriesSearchable;
 
 import java.util.ArrayList;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
 
-    private ArrayList<SeriesSearchable_LE> results = new ArrayList<SeriesSearchable_LE>();
-    private ArrayList<SeriesSearchable_LE> legacyData = new ArrayList<SeriesSearchable_LE>();
+    private ArrayList<SeriesSearchable> results = new ArrayList<SeriesSearchable>();
+    private ArrayList<SeriesSearchable> legacyData = new ArrayList<SeriesSearchable>();
     private ProgressBar progressBar;
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
-        private SeriesSearchable_LE series;
+        private SeriesSearchable series;
         private NavController host;
-        public void setSeries(SeriesSearchable_LE s) {
+        public void setSeries(SeriesSearchable s) {
             series = s;
         }
         public void setHost(NavController h) {
@@ -56,7 +56,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         }
     }
 
-    public SearchAdapter(ArrayList<SeriesSearchable_LE> res) {
+    public SearchAdapter(ArrayList<SeriesSearchable> res) {
 //        results = new ArrayList<Series>(res);
         legacyData = res;
     }
@@ -80,7 +80,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         return results.size();
     }
 
-    public void rebaseLegacyData(ArrayList<SeriesSearchable_LE> newData) {
+    public void rebaseLegacyData(ArrayList<SeriesSearchable> newData) {
         legacyData = newData;
         results.clear();
         reflectSearch(localSearch);
@@ -107,7 +107,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     public void searchData(String str) {
         if (results.isEmpty() || str.length() <= prevSearchLen){
-            for (SeriesSearchable_LE s: legacyData){
+            for (SeriesSearchable s: legacyData){
                 if (s.contains(str) && !results.contains(s)) {
                     results.add(s);
                 }
@@ -122,7 +122,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         }
     }
 
-    public void onThreadConcluded(ArrayList<SeriesSearchable_LE> retList) {
+    public void onThreadConcluded(ArrayList<SeriesSearchable> retList) {
         this.rebaseLegacyData(retList);
         this.hideProgressSpinner();
         threadActive=false;
@@ -132,7 +132,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     public void hideProgressSpinner() {progressBar.setVisibility(View.GONE);}
     public void showProgressSpinner() {progressBar.setVisibility(View.VISIBLE);}
 
-    public ArrayList<SeriesSearchable_LE> getLegacyData() {
+    public ArrayList<SeriesSearchable> getLegacyData() {
         return legacyData;
     }
 

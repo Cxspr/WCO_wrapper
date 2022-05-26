@@ -12,6 +12,7 @@ public class Series {
     protected String title;
     protected String src;
     protected String imgUrl;
+    protected int numEps = 0;
 
     //constructers
     public Series(Series s) {
@@ -35,6 +36,11 @@ public class Series {
 
     //get the series image and apply it to the provided imageview
     public void getSeriesImage(ImageView view) {
+        double imgScalar = 1.25;;
+        this.getSeriesImage(view, imgScalar);
+    }
+
+    public void getSeriesImage(ImageView view, Double imgScalar) {
         if (imgUrl == null || imgUrl.isEmpty()) {
             try {
                 Thread runThread = new Thread(new Runnable() {
@@ -58,7 +64,7 @@ public class Series {
                 e.printStackTrace();
             }
         }
-        Picasso.get().load(imgUrl).resize(360,510).into(view);
+        Picasso.get().load(imgUrl).resize((int) (240*imgScalar), (int) (340*imgScalar)).into(view);
     }
 
     public void setTitle(String title) {this.title = title;}
@@ -69,4 +75,21 @@ public class Series {
 
     public void setImgUrl(String imgUrl) {this.imgUrl = imgUrl;}
     public String getImgUrl() {return imgUrl;}
+
+    public int getNumEps() {return numEps;}
+    public void setNumEps(int numEps) {this.numEps = numEps;}
+
+    public void override(Series s) {
+        this.src = s.getSrc();
+        this.title = s.getTitle();
+        this.imgUrl = s.getImgUrl();
+        this.numEps = s.getNumEps();
+    }
+
+    public boolean equals(Series s) {
+        return (this.title.matches(s.getTitle()) &&
+                this.src.matches(s.getSrc()) &&
+                this.imgUrl.matches(s.getImgUrl()));
+    }
+
 }

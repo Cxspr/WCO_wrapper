@@ -12,8 +12,10 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.wco_fun.wco_wrapper.classes.Series_LE;
-import com.wco_fun.wco_wrapper.classes.Watchlist_LE;
+import com.wco_fun.wco_wrapper.classes.series.Series;
+import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
+import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
+import com.wco_fun.wco_wrapper.classes.user_data.Watchlist;
 import com.wco_fun.wco_wrapper.databinding.ActivityMainBinding;
 
 import android.view.Menu;
@@ -25,34 +27,52 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
-    private String parentDir;
-    private File watchlistFile;
     private Menu menu;
-    Watchlist_LE wl;
+    private File watchlistFile;
+
+
+    private String parentDir;
+    private Watchlist watchlist;
+    private WatchData watchData;
+
 
     //globalized GETTER for the watchlist
-    public Watchlist_LE getWatchlist() {
-        return wl;
+    public Watchlist getWatchlist() {
+        return watchlist;
     }
+    public WatchData getWatchData() { return watchData; }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //TODO get rid of this and ensure no parallel procs run on main thread
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         parentDir = String.valueOf(this.getFilesDir());
 
+        //import Watchlist from files
         if (!(new File(parentDir + "/watchlist.json")).exists()){
-            wl = new Watchlist_LE(new ArrayList<Series_LE>(), parentDir);
+            watchlist = new Watchlist(new ArrayList<Series>(), parentDir);
         } else {
             try {
-                wl = Watchlist_LE.genWatchlist(parentDir);
+                watchlist = Watchlist.genWatchlist(parentDir);
             } catch (IOException e) {
                 e.printStackTrace();
-            } if (wl == null) {wl = new Watchlist_LE(new ArrayList<Series_LE>(), parentDir);}
+            } if (watchlist == null) {watchlist = new Watchlist(new ArrayList<Series>(), parentDir);}
+        }
+        //import Watchdata from files
+        if (!(new File(parentDir + "/watch_data.json")).exists()){
+            watchData = new WatchData(new ArrayList<SeriesControllable>(), parentDir);
+        } else {
+            try {
+                watchData = WatchData.genWatchData(parentDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } if (watchData == null) {watchData = new WatchData(new ArrayList<SeriesControllable>(), parentDir);}
         }
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -61,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-//        BottomNavigationView bottomNav = findViewById(R.id.nav_view);
-//        bottomNav.setSelectedItemId(R.id.homeScreen);
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
@@ -81,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
         int id = item.getItemId();
 
         if (id == R.id.menu_search){
@@ -99,7 +116,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         //modify JSON file only when the app is paused
-        wl.updateWatchlistJSON();
+        watchlist.updateWatchlistJson();
+        watchData.updateWatchDataJson();
     }
 
 //    @Override

@@ -11,36 +11,51 @@ import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wco_fun.wco_wrapper.R;
-import com.wco_fun.wco_wrapper.classes.Episode_LE;
-import com.wco_fun.wco_wrapper.classes.Series_LE;
+import com.wco_fun.wco_wrapper.classes.episode.Episode;
+import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
+import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHolder> {
+    private ArrayList<Episode> episodes = new ArrayList<Episode>();
+    private SeriesControllable hostSeries;
+    private WatchData watchData;
 
-    private ArrayList<Episode_LE> episodeLES = new ArrayList<Episode_LE>();
-    private Series_LE hostSeriesLE;
+    public EpisodeAdapter(ArrayList<Episode> eps, SeriesControllable hostSeries, WatchData watchData){
+        episodes = eps;
+        this.hostSeries = hostSeries;
+        this.watchData = watchData;
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
-        private String url, nextUrl;
-        private String abrTitle, nextAbrTitle;
-        private Series_LE hostSeriesLE;
-        private int epIdx;
+        private SeriesControllable hostSeries;
+        private WatchData watchData;
+        private ArrayList<Episode> epQueue = new ArrayList<Episode>(3);
 
+        public void setWatchData(WatchData wd) { watchData = wd; }
+        public void setHostSeries(SeriesControllable s){
+            hostSeries = s;
+        }
+        public void verifyArrayList() {
+            for (int i = 0; i < epQueue.size(); i++){
+                if (epQueue.get(i) == null) {
+                    epQueue.remove(i);
+                }
+            }
+        }
 
-        public void setUrl(String s){
-            url = s;
+        private void epQueueApplicator(){
+            hostSeries.overrideEpQueue(epQueue);
         }
-        public void setNextUrl(String s) {nextUrl = s;}
-        public void setAbrTitle(String s){
-            abrTitle = s;
-        }
-        public void setNextAbrTitle(String s) {nextAbrTitle = s;}
-        public void setEpIdx(int i) {epIdx = i;}
-        public void setHostSeries(Series_LE s){
-            hostSeriesLE = s;
+
+        private void watchDataUpdater() {
+            if (watchData.contains(hostSeries.getTitle())){
+                watchData.update(hostSeries);
+            } else {
+                watchData.add(hostSeries);
+            }
         }
 
         public ViewHolder(View view) {
@@ -50,16 +65,13 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    hostSeriesLE.setCurEp(url);
-                    hostSeriesLE.setNextEp(nextUrl);
-                    hostSeriesLE.setEpIdx(epIdx);
-                    hostSeriesLE.setAbrEpTitle(abrTitle);
-                    hostSeriesLE.setNextAbrEpTitle(nextAbrTitle);
-                    hostSeriesLE.setLastWatched(new Date());
+                    epQueueApplicator();//update hostSeries episode Queue
 
                     CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
                     CustomTabsIntent customTabsIntent = builder.build();
-                    customTabsIntent.launchUrl(view.getContext(), Uri.parse(url));
+                    customTabsIntent.launchUrl(view.getContext(), Uri.parse(epQueue.get(0).getSrc()));
+
+                    watchDataUpdater();//push changes to watchData
                 }
             });
 
@@ -71,11 +83,6 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
         }
     }
 
-    public EpisodeAdapter(ArrayList<Episode_LE> eps, Series_LE hostSeriesLE){
-        episodeLES = eps;
-        this.hostSeriesLE = hostSeriesLE;
-    }
-
     @Override
     public EpisodeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -85,28 +92,19 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull EpisodeAdapter.ViewHolder holder, int position) {
-        holder.getTextView().setText(episodeLES.get(position).getTitle().substring(6));
-
-        holder.setHostSeries(hostSeriesLE);
-        holder.setUrl(episodeLES.get(position).getSrc());
-        holder.setAbrTitle(episodeLES.get(position).getAbrTitle());
-        holder.setEpIdx(position);
-
-        if ((position + 1) >= episodeLES.size() - 1) {
-            holder.setNextUrl(null);
-            holder.setNextAbrTitle(null);
-        }
-        else {
-            holder.setNextUrl(episodeLES.get(position + 1).getSrc());
-            holder.setNextAbrTitle(episodeLES.get(position + 1).getAbrTitle());
-        }
-
+        holder.getTextView().setText(episodes.get(position).getTitle().substring(6));
+        holder.setHostSeries(hostSeries);
+        holder.setWatchData(watchData);
+        for (int i = position; (i< position + 3); i++) {
+            if (i >= episodes.size()) break;
+            holder.epQueue.add(episodes.get(i));//preload with up to 3 episodes
+        } holder.verifyArrayList();
     }
 
 
     @Override
     public int getItemCount() {
-        return episodeLES.size();
+        return episodes.size();
     }
 
 
