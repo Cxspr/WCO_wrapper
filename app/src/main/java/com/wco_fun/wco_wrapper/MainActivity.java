@@ -1,25 +1,43 @@
 package com.wco_fun.wco_wrapper;
 
+import android.app.ActionBar;
+import android.app.StatusBarManager;
+import android.graphics.Rect;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.StrictMode;
 
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.wco_fun.wco_wrapper.classes.CachedContent.SearchCache;
 import com.wco_fun.wco_wrapper.classes.series.Series;
 import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
 import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 import com.wco_fun.wco_wrapper.classes.user_data.Watchlist;
 import com.wco_fun.wco_wrapper.databinding.ActivityMainBinding;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Toolbar;
+
+import org.jsoup.Jsoup;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,23 +45,21 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
     private Menu menu;
-    private File watchlistFile;
-
 
     private String parentDir;
     private Watchlist watchlist;
     private WatchData watchData;
+    private SearchCache searchCache = new SearchCache();
 
-
-    //globalized GETTER for the watchlist
+    //globalized GETTER for globally accessible data classes
     public Watchlist getWatchlist() {
         return watchlist;
     }
     public WatchData getWatchData() { return watchData; }
+    public SearchCache getSearchCache() { return searchCache; }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +67,22 @@ public class MainActivity extends AppCompatActivity {
         //TODO get rid of this and ensure no parallel procs run on main thread
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Jsoup.connect("https://www.wcofun.com") //Warm up Jsoup || first usage always seems significantly slower than rest
+                            .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                            .timeout(2000)
+                            .maxBodySize(0)
+                            .get();
+                    Log.i("JSOUP: ", "WARMED UP");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
         parentDir = String.valueOf(this.getFilesDir());
 
@@ -79,21 +111,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+//        NavigationUI.setupWithNavController(binding.toolbar, navController, appBarConfiguration);
+//        NavigationUI.setu(this, navController, appBarConfiguration);
     }
 
+    public void restoreMenu() {
+        menu.findItem(R.id.menu_search).setVisible(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         this.menu = menu;
         menu.findItem(R.id.menu_search).setVisible(true);
-
         return true;
     }
 
@@ -107,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.media_search, bundle);
             menu.findItem(R.id.menu_search).setVisible(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         return super.onOptionsItemSelected(item);
@@ -119,11 +156,6 @@ public class MainActivity extends AppCompatActivity {
         watchlist.updateWatchlistJson();
         watchData.updateWatchDataJson();
     }
-
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//    }
 
     @Override
     public boolean onSupportNavigateUp() {

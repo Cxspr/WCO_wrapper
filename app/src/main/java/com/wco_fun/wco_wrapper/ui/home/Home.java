@@ -47,7 +47,6 @@ public class Home extends Fragment {
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
         wl = ((MainActivity)getActivity()).getWatchlist();
@@ -110,6 +109,17 @@ public class Home extends Fragment {
         } else {
             binding.wdEmptyInd.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        binding.getRoot().post(new Runnable() {
+            @Override
+            public void run() {
+                ((MainActivity) getActivity()).restoreMenu();
+            }
+        });
     }
 
     @Override
