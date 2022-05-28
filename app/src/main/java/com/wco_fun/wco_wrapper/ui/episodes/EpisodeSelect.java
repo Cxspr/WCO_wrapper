@@ -1,15 +1,19 @@
 package com.wco_fun.wco_wrapper.ui.episodes;
 
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -17,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wco_fun.wco_wrapper.MainActivity;
+import com.wco_fun.wco_wrapper.R;
 import com.wco_fun.wco_wrapper.classes.episode.Episode;
 import com.wco_fun.wco_wrapper.classes.series.Series;
 import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
@@ -43,7 +48,7 @@ public class EpisodeSelect extends Fragment {
     private SeriesControllable series;
     private EpisodeAdapter epAdapter;
     private ArrayList<Episode> episodes = new ArrayList<Episode>();
-    private Button saveButton;
+    private ImageButton saveButton;
     private Watchlist watchlist;
     private WatchData watchData;
 
@@ -66,7 +71,8 @@ public class EpisodeSelect extends Fragment {
                         try {
                             Html[0] = Jsoup.connect(src)
                                     .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                                    .timeout(10000)
+                                    .timeout(5000)
+                                    .maxBodySize(0)
                                     .get();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -82,7 +88,7 @@ public class EpisodeSelect extends Fragment {
             //create series object
             refSeries = new Series(src, getArguments().getString("title"), "https:" + imageEl.get(0).attr("src"));
             seriesImage = binding.seriesImage;
-            refSeries.getSeriesImage(seriesImage, 1.5);
+//            refSeries.getSeriesImage(seriesImage, 1.5);
 
             seriesHtmlData = Html[0].getElementsByClass("cat-eps");
             for (Element ep: seriesHtmlData) {
@@ -93,7 +99,7 @@ public class EpisodeSelect extends Fragment {
                 }
             }
 
-            refSeries.setNumEps(episodes.size());
+//            refSeries.setNumEps(episodes.size());
             Collections.reverse(episodes);//reverse order to have first episode displayed first
             for (int i = 0; i < episodes.size(); i++) {
                 episodes.get(i).setIdx(i);
@@ -104,6 +110,18 @@ public class EpisodeSelect extends Fragment {
             series = (watchData.contains(refSeries.getTitle()))
                     ? watchData.get(refSeries.getTitle())
                     : new SeriesControllable(refSeries);
+            series.setNumEps(episodes.size());
+            series.fitSeriesImage(seriesImage); //queue the series image addition
+//
+            //post proc constrainer width setting
+//            binding.getRoot().post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    int height = binding.epSelectHeader.getHeight();
+//                    binding.epSelectHeader.setLayoutParams(new ConstraintLayout
+//                            .LayoutParams(binding.getRoot().getWidth(), height));
+//                }
+//            });
 
             epAdapter = new EpisodeAdapter(episodes, series, watchData);
 
@@ -116,9 +134,11 @@ public class EpisodeSelect extends Fragment {
 
         saveButton = binding.buttonSave;
         if (watchlist.contains(series)) {
-            saveButton.setText("Remove from watchlist");
+//            saveButton.setImageDrawable(Drawable.createFromPath("@drawable/ic_done"));
+            saveButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_done));
         } else {
-            saveButton.setText("Add to watchlist");
+//            saveButton.setImageDrawable(Drawable.createFromPath("@drawable/ic_add"));
+            saveButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_add));
         }
 
 
@@ -152,10 +172,12 @@ public class EpisodeSelect extends Fragment {
                 watchlist = ((MainActivity)getActivity()).getWatchlist();
                 if (watchlist.contains(series)) {
                     watchlist.remove(series); //no need to update instance in MainActivity, auto updates
-                    saveButton.setText("Add to watchlist");
+//                    saveButton.setImageDrawable(Drawable.createFromPath("@drawable/ic_done"));
+                    saveButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_add));
                 } else {
                     watchlist.add(series);
-                    saveButton.setText("Remove from watchlist");
+//                    saveButton.setImageDrawable(Drawable.createFromPath("@drawable/ic_done"));
+                    saveButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_done));
                 }
                 watchlist.updateWatchlistJson();
             }
@@ -164,6 +186,7 @@ public class EpisodeSelect extends Fragment {
 
     @Override
     public void onDestroyView() {
+
         super.onDestroyView();
         binding = null;
     }
@@ -186,9 +209,11 @@ public class EpisodeSelect extends Fragment {
                 watchData.updateWatchDataJson();
             }
 
-            binding.buttonPlay.setText("Play " + ((series.getCurEp().getAbrTitle()==null)
+            binding.curEpText.setText("Current Ep: " + ((series.getCurEp().getAbrTitle()==null)
                     ?"Ep. " + ((Integer) (series.getCurEp().getIdx() + 1)).toString()
                     : series.getCurEp().getAbrTitle()));
+        } else {
+            binding.curEpText.setText("Current Ep: none");
         }
         binding.buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,11 +242,13 @@ public class EpisodeSelect extends Fragment {
         });
 //
         if (series.hasMoreEps()){
-            binding.buttonContinue.setVisibility(View.VISIBLE);
-            binding.buttonContinue.setText("Play Next " + ((series.getNextEp().getAbrTitle()==null)
+            binding.buttonNext.setColorFilter(getContext().getColor(R.color.yellow_200));
+            binding.buttonNext.setEnabled(true);
+//            queueButtonUpdate(binding.buttonContinue, View.VISIBLE);
+            binding.nextEpText.setText("Next Ep: " + ((series.getNextEp().getAbrTitle()==null)
                     ? "Ep. " + ((Integer) (series.getNextEp().getIdx() + 2)).toString()
                     : series.getNextEp().getAbrTitle()));
-            binding.buttonContinue.setOnClickListener(new View.OnClickListener() {
+            binding.buttonNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     series.updateLastWatched();
@@ -243,7 +270,20 @@ public class EpisodeSelect extends Fragment {
                 }
             });
         } else {
-            binding.buttonContinue.setVisibility(View.GONE);
+//            queueButtonUpdate(binding.buttonContinue, View.GONE);
+            binding.buttonNext.setColorFilter(getContext().getColor(R.color.dark_grey));
+            binding.buttonNext.setEnabled(false);
+            binding.nextEpText.setText("Next Ep: none");
         }
+    }
+
+    //adds the button update to the end of the UI operation thread, allows post-generation setting of visibility
+    private void queueButtonUpdate(Button btn, int status){
+        getView().post(new Runnable() {
+            @Override
+            public void run() {
+                btn.setVisibility(status);
+            }
+        });
     }
 }

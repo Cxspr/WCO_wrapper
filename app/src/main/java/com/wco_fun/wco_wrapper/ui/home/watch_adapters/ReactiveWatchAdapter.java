@@ -40,6 +40,7 @@ public class ReactiveWatchAdapter extends  RecyclerView.Adapter<ReactiveWatchAda
         public void setHost(ReactiveWatchAdapter host) {this.host = host;}
         public void setSeriesImage() {
             series.getSeriesImage(imageView);
+//            series.fitSeriesImage(imageView);
         }
         public void setWatchData(WatchData watchData) {this.watchData = watchData;}
         public void setSeries(SeriesControllable series) {

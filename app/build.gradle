@@ -11,10 +11,10 @@ android {
 
     defaultConfig {
         applicationId "com.wco_fun.wco_wrapper"
-        minSdk 25
+        minSdk 26
         targetSdk 32
         versionCode 1
-        versionName '0.6'
+        versionName '0.7-dev'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -43,7 +43,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.3.5'
     implementation 'org.jsoup:jsoup:1.14.3'
     implementation 'androidx.browser:browser:1.4.0'
-    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.squareup.picasso:picasso:2.8'
     implementation 'com.squareup.moshi:moshi:1.13.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
