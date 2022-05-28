@@ -1,28 +1,39 @@
 package com.wco_fun.wco_wrapper.ui.search;
 
+import static com.wco_fun.wco_wrapper.ui.search.ConnectedSearchThread.ERR_CODES.*;
+
 import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
 
 import com.wco_fun.wco_wrapper.classes.series.SeriesSearchable;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ConnectedSearchThread extends Thread {
-    private Thread worker;
     private Handler resHandler;
     private String url;
     private SearchAdapter retLoc;
-    public volatile boolean running = true;
+
+    public static final class ERR_CODES {
+        public static final int INTERRUPT = 0;
+        public static final int TIMEOUT = 1;
+        public static final int IOEXCEPTION = 2;
+    }
 
     public ConnectedSearchThread(Activity mainActivity, SearchAdapter retLoc, String url) {
         this.url = url;
         this.resHandler = new Handler(mainActivity.getMainLooper());
-        this.retLoc = retLoc;
+        this.retLoc = retLoc; //return location being a SearchAdapter object
     }
 
     public void setUrl(String url) {
@@ -33,35 +44,58 @@ public class ConnectedSearchThread extends Thread {
 
     @Override
     public void run() {
+        Log.i("Search Thread: ", "STARTED");
         try {
-            ArrayList<SeriesSearchable> retList = new ArrayList<SeriesSearchable>();
+            //TODO add progress reflection
+            long startTime = new Date().getTime();
+            ArrayList<SeriesSearchable> retList = new ArrayList<SeriesSearchable>(1000);
             try {
-                //scrape for series list html
-                Element seriesHtmlData = (Jsoup.connect(url)
+                Document doc = Jsoup.connect(url) //TODO look into more efficient means of this
                         .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                        .get()).getElementById("ddmcc_container").child(0).child(0);
-                //pre-collect series data
-                for (int i = 0; i <= (int) 'Z' - 64; i++) {
-                    int idx = i * 3 + 2;
-                    Element charCollect = seriesHtmlData.child(idx);
-                    for (Element el : charCollect.children()) {
-                        el = el.child(0);
-                        SeriesSearchable e = new SeriesSearchable(el);
-                        if (e.isValid()) {
-                            retList.add(e);
-                        }
-                        if (Thread.currentThread().isInterrupted() || !running) {
-                            throw new InterruptedException();
-                        } //escape clause
+                        .maxBodySize(0)
+                        .timeout(10000)
+                        .get();
+                Log.i("Search Thread: ", "HTML RETRIEVED");
+
+                if (Thread.currentThread().isInterrupted()) { //check for external interrupt call
+                    Log.i("Search Thread: ", "INTERRUPTION");
+                    notifyError(INTERRUPT);
+                    throw new InterruptedException();
+                } //escape clause
+
+                Log.i("Search Thread: ", "JSOUP_PASSED");
+
+                Elements seriesNodes = doc.getElementById("ddmcc_container").getElementsByTag("li");
+                int numEntries = seriesNodes.size();
+                int i = 0;
+                for (Element el : seriesNodes) {
+                    SeriesSearchable s = new SeriesSearchable((el.child(0)));
+                    if (s.isValid()){
+                        retList.add(s);
                     }
+                    if (Thread.currentThread().isInterrupted()) { //check for external interrupt call
+                            Log.i("Search Thread: ", "INTERRUPTION");
+                            notifyError(INTERRUPT);
+                            throw new InterruptedException();
+                    }
+//                    Log.d("Search Thread: ", "PROG: " + (++i) + "/" + numEntries );
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+
+                Log.i("Search Thread: ", "SUCCESS||TIME: " + ((new Date().getTime()) - startTime));
+                notifyResult(retList);
+            } catch (SocketTimeoutException e) {
+                Log.i("Search Thread: ", "TIMED_OUT");
+                notifyError(TIMEOUT);
+//                e.printStackTrace();
+            } catch (IOException | NullPointerException e) {
+                Log.i("Search Thread: ", "IO_EXCEPTION//NULL_PTR");
+                notifyError(IOEXCEPTION);
+//                e.printStackTrace();
             }
-            Log.i("Search Thread: ", "SUCCESS");
-            notifyResult(retList);
         } catch (InterruptedException consumed) {
-            Log.i("Search Thread: ", "INTERRUPTED");
+            Log.i("Search Thread: ", "INTERRUPTION");
+            notifyError(INTERRUPT);
+//            consumed.printStackTrace();
             //force thread to exit
         }
     }
@@ -71,6 +105,15 @@ public class ConnectedSearchThread extends Thread {
             @Override
             public void run() {
                 retLoc.onThreadConcluded(retList);
+            }
+        });
+    }
+
+    private void notifyError(int errCode) {
+        resHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                retLoc.onThreadErr(errCode);
             }
         });
     }

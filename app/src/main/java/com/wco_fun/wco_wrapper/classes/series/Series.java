@@ -41,30 +41,20 @@ public class Series {
     }
 
     public void getSeriesImage(ImageView view, Double imgScalar) {
-        if (imgUrl == null || imgUrl.isEmpty()) {
-            try {
-                Thread runThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            imgUrl = Jsoup.connect(src)
-                                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                                    .timeout(10000) //10 second timeout
-                                    .get()
-                                    .getElementsByClass("img5")
-                                    .get(0)
-                                    .attr("src");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }});
-                runThread.start();
-                runThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        if (!hasSeriesImage()) return;
         Picasso.get().load(imgUrl).resize((int) (240*imgScalar), (int) (340*imgScalar)).into(view);
+    }
+
+    public void fitSeriesImage(ImageView view){
+        if (!hasSeriesImage()) return;
+        final double h2w_scalar = 0.706;
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                final int height = view.getHeight();
+                Picasso.get().load(imgUrl).resize((int) (height*h2w_scalar), (int) (height)).into(view);
+            }
+        });
     }
 
     public void setTitle(String title) {this.title = title;}
@@ -90,6 +80,34 @@ public class Series {
         return (this.title.matches(s.getTitle()) &&
                 this.src.matches(s.getSrc()) &&
                 this.imgUrl.matches(s.getImgUrl()));
+    }
+
+    public boolean hasSeriesImage(){
+        if (imgUrl == null || imgUrl.isEmpty()) {
+            try {
+                Thread runThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            imgUrl = Jsoup.connect(src)
+                                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                                    .timeout(10000) //10 second timeout
+                                    .get()
+                                    .getElementsByClass("img5")
+                                    .get(0)
+                                    .attr("src");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }});
+                runThread.start();
+                runThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return true;
     }
 
 }
