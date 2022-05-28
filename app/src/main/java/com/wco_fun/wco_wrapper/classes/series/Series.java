@@ -45,10 +45,16 @@ public class Series {
         Picasso.get().load(imgUrl).resize((int) (240*imgScalar), (int) (340*imgScalar)).into(view);
     }
 
-    public void fitSeriesImage2Width(ImageView view, int width){
+    public void fitSeriesImage2Width(ImageView view){
         if (!hasSeriesImage()) return;
         final double w2h_scalar = 1.42;
-        Picasso.get().load(imgUrl).resize((int) (width), (int) (width*w2h_scalar)).into(view);
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                final int width = view.getWidth();
+                Picasso.get().load(imgUrl).resize((int) (width), (int) (width*w2h_scalar)).into(view);
+            }
+        });
     }
 
     public void fitSeriesImage(ImageView view){
@@ -62,6 +68,7 @@ public class Series {
             }
         });
     }
+
 
     public void setTitle(String title) {this.title = title;}
     public String getTitle() {return title; }
@@ -84,11 +91,12 @@ public class Series {
 
     public boolean equals(Series s) {
         return (this.title.matches(s.getTitle()) &&
-                this.src.matches(s.getSrc()) &&
-                this.imgUrl.matches(s.getImgUrl()));
+                this.src.matches(s.getSrc())
+//                && this.imgUrl.matches(s.getImgUrl())
+        );
     }
 
-    public boolean hasSeriesImage(){
+    public boolean hasSeriesImage(){ //TODO maybe convert to a runnable future?
         if (imgUrl == null || imgUrl.isEmpty()) {
             try {
                 Thread runThread = new Thread(new Runnable() {

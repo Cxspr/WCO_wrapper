@@ -52,7 +52,7 @@
                         android:layout_height="25dp"
                         android:background="#00FFFFFF"
                         android:scaleType="centerInside"
-                        android:tint="#FF0000"
+                        android:tint="@color/red_900"
                         android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -86,7 +86,7 @@
                         android:layout_weight=".99"
                         android:background="#00FFFFFF"
                         android:scaleType="centerInside"
-                        android:tint="#FFFFFF"
+                        android:tint="?attr/colorAccent"
                         android:visibility="gone"
                         app:srcCompat="@drawable/ic_play_arrow"
                         tools:visibility="visible" />
@@ -105,7 +105,7 @@
                         android:layout_weight=".99"
                         android:background="#00FFFFFF"
                         android:scaleType="centerInside"
-                        android:tint="#FFFFFF"
+                        android:tint="?attr/colorAccent"
                         android:visibility="gone"
                         app:srcCompat="@drawable/ic_skip_next"
                         tools:visibility="visible" />

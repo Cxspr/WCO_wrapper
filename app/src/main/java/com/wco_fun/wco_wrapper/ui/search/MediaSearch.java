@@ -64,7 +64,6 @@ public class MediaSearch extends Fragment {
             searchAdapter.searchState(1);
         }
 
-
         recyclerView = binding.resultContainer;
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -166,6 +165,7 @@ public class MediaSearch extends Fragment {
             public void onTabReselected(TabLayout.Tab tab) { }
         });
 
+        //back nav override
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {
@@ -189,14 +189,12 @@ public class MediaSearch extends Fragment {
                 searchThread.start();
             }
         });
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
         if (!binding.searchbar.getText().toString().isEmpty()) binding.resultIndicator.setVisibility(View.GONE);
-
     }
 
     @Override
@@ -215,7 +213,7 @@ public class MediaSearch extends Fragment {
         SearchCache cache = ((MainActivity)getActivity()).getSearchCache();
         if (cache.hasReturnTab()) {
             int rTab = cache.getReturnTab();
-            switch (retTab) {
+            switch (rTab) {
                 case 0:
                     dubbed = cache.getCache();
                     break;

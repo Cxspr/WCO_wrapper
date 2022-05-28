@@ -26,16 +26,6 @@ public class SeriesControllable extends Series{
         lastWatched = new Date().getTime();
     }
 
-
-    //functions to attach and interact with host WatchData object to push changes to file
-//    public void attach(WatchData host){this.host = host;}
-//    public WatchData getHost() {return host;}
-//    public void notifyHost() {
-//        if (host != null) {
-//            host.notifyTrigger();
-//        }
-//    }
-
     public void addEp(Episode ep){
         epQueue.add(ep);
     }

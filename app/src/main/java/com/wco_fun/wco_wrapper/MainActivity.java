@@ -6,15 +6,18 @@ import android.graphics.Rect;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.StrictMode;
 
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -32,6 +35,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toolbar;
 
 import org.jsoup.Jsoup;
 
@@ -63,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         //TODO get rid of this and ensure no parallel procs run on main thread
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
 
         new Thread(new Runnable() {
             @Override
@@ -108,21 +111,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+//        NavigationUI.setupWithNavController(binding.toolbar, navController, appBarConfiguration);
+//        NavigationUI.setu(this, navController, appBarConfiguration);
     }
 
+    public void restoreMenu() {
+        menu.findItem(R.id.menu_search).setVisible(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         this.menu = menu;
         menu.findItem(R.id.menu_search).setVisible(true);
-
         return true;
     }
 
@@ -136,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.media_search, bundle);
             menu.findItem(R.id.menu_search).setVisible(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         return super.onOptionsItemSelected(item);
@@ -148,12 +156,6 @@ public class MainActivity extends AppCompatActivity {
         watchlist.updateWatchlistJson();
         watchData.updateWatchDataJson();
     }
-
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//    }
-
 
     @Override
     public boolean onSupportNavigateUp() {

@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Wco_wrapper" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Wco_wrapper" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/orange_400</item>
         <item name="colorPrimaryVariant">@color/orange_700</item>
@@ -14,12 +14,15 @@
         <item name="colorOnTertiary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <item name="android:navigationIcon"> @drawable/ic_arrow_back</item>
         <!-- Customize your theme here. -->
     </style>
 
     <style name="Theme.Wco_wrapper.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_navigate_before</item>
+        <item name="android:colorControlNormal">@color/black</item>
     </style>
 
     <style name="Theme.Wco_wrapper.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

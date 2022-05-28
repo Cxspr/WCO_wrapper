@@ -19,7 +19,7 @@
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
             app:menu="@menu/menu_main"
-            app:navigationIcon="@drawable/ic_arrow_back" />
+            app:navigationIcon="@drawable/ic_navigate_before" />
 
 
     </com.google.android.material.appbar.AppBarLayout>

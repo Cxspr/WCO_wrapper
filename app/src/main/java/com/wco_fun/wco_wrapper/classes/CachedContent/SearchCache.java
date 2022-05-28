@@ -8,7 +8,6 @@ import java.util.List;
 
 public class SearchCache {
     private HashMap<Integer, ArrayList<SeriesSearchable>> cacheMap = new HashMap<>();
-//    private List<SeriesSearchable> cache = new ArrayList<SeriesSearchable>();
     private int returnTab = -1;
 
     public SearchCache() {}

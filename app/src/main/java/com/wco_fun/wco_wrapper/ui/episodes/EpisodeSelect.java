@@ -28,6 +28,7 @@ import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
 import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 import com.wco_fun.wco_wrapper.classes.user_data.Watchlist;
 import com.wco_fun.wco_wrapper.databinding.FragmentEpisodeSelectBinding;
+import com.wco_fun.wco_wrapper.ui.search.ConnectedSearchThread;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -43,12 +44,16 @@ public class EpisodeSelect extends Fragment {
     private FragmentEpisodeSelectBinding binding;
     private RecyclerView recyclerView;
     private TextView title;
+    private ImageButton saveButton;
     private ImageView seriesImage;
     private Elements seriesHtmlData;
-    private SeriesControllable series;
+
+    private ConnectedEpSearchThread searchThread;
     private EpisodeAdapter epAdapter;
+
+    private SeriesControllable series;
     private ArrayList<Episode> episodes = new ArrayList<Episode>();
-    private ImageButton saveButton;
+
     private Watchlist watchlist;
     private WatchData watchData;
 
@@ -61,49 +66,8 @@ public class EpisodeSelect extends Fragment {
         binding = FragmentEpisodeSelectBinding.inflate(inflater, container, false);
 
         Series refSeries;
-        try {
             String src = getArguments().getString("link");
-            final Document[] Html = new Document[1];
-            Thread runThread = new Thread(new Runnable() {
-                @Override //TODO improve threaded efficiency of this proc
-                public void run() {
-                    {
-                        try {
-                            Html[0] = Jsoup.connect(src)
-                                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                                    .timeout(5000)
-                                    .maxBodySize(0)
-                                    .get();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
-            runThread.start(); //split to be thread policy safe
-            runThread.join();
-
-            //get series image link
-            Elements imageEl = Html[0].getElementsByClass("img5");
-            //create series object
-            refSeries = new Series(src, getArguments().getString("title"), "https:" + imageEl.get(0).attr("src"));
-            seriesImage = binding.seriesImage;
-//            refSeries.getSeriesImage(seriesImage, 1.5);
-
-            seriesHtmlData = Html[0].getElementsByClass("cat-eps");
-            for (Element ep: seriesHtmlData) {
-                ep = ep.child(0);
-                Episode e = new Episode(ep);
-                if (e.isValid()){
-                    episodes.add(e);
-                }
-            }
-
-//            refSeries.setNumEps(episodes.size());
-            Collections.reverse(episodes);//reverse order to have first episode displayed first
-            for (int i = 0; i < episodes.size(); i++) {
-                episodes.get(i).setIdx(i);
-            }
+            refSeries = new Series(src,getArguments().getString("title"));
 
             watchlist = ((MainActivity)getActivity()).getWatchlist();
             watchData = ((MainActivity)getActivity()).getWatchData();
@@ -111,33 +75,25 @@ public class EpisodeSelect extends Fragment {
                     ? watchData.get(refSeries.getTitle())
                     : new SeriesControllable(refSeries);
             series.setNumEps(episodes.size());
-            series.fitSeriesImage(seriesImage); //queue the series image addition
-//
-            //post proc constrainer width setting
-//            binding.getRoot().post(new Runnable() {
-//                @Override
-//                public void run() {
-//                    int height = binding.epSelectHeader.getHeight();
-//                    binding.epSelectHeader.setLayoutParams(new ConstraintLayout
-//                            .LayoutParams(binding.getRoot().getWidth(), height));
-//                }
-//            });
 
-            epAdapter = new EpisodeAdapter(episodes, series, watchData);
+//            series.fitSeriesImage(seriesImage); //queue the series image addition
 
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        epAdapter = new EpisodeAdapter(episodes, series, watchData);
+        epAdapter = new EpisodeAdapter(series, watchData);
+        epAdapter.attachProgBar(binding.epSearchProg);
+        epAdapter.attachRetryBtn(binding.epSearchRetry);
+        epAdapter.attachSeriesImg(binding.seriesImage);
+
+        searchThread = new ConnectedEpSearchThread(getActivity(), epAdapter, src);
+        searchThread.start();
 
         title = binding.seriesTitle;
         title.setText(series.getTitle());
 
         saveButton = binding.buttonSave;
         if (watchlist.contains(series)) {
-//            saveButton.setImageDrawable(Drawable.createFromPath("@drawable/ic_done"));
             saveButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_done));
         } else {
-//            saveButton.setImageDrawable(Drawable.createFromPath("@drawable/ic_add"));
             saveButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_add));
         }
 
@@ -149,16 +105,6 @@ public class EpisodeSelect extends Fragment {
                 recyclerView.getContext(), DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setAdapter(epAdapter);
-
-        //define back press behavior
-//        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-//            @Override
-//            public void handleOnBackPressed() {
-//                NavHostFragment.findNavController(EpisodeSelect.this).popBackStack();
-//            }
-//        };
-//        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
-
 
         return binding.getRoot();
     }
@@ -172,14 +118,21 @@ public class EpisodeSelect extends Fragment {
                 watchlist = ((MainActivity)getActivity()).getWatchlist();
                 if (watchlist.contains(series)) {
                     watchlist.remove(series); //no need to update instance in MainActivity, auto updates
-//                    saveButton.setImageDrawable(Drawable.createFromPath("@drawable/ic_done"));
                     saveButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_add));
                 } else {
                     watchlist.add(series);
-//                    saveButton.setImageDrawable(Drawable.createFromPath("@drawable/ic_done"));
                     saveButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_done));
                 }
                 watchlist.updateWatchlistJson();
+            }
+        });
+
+        binding.epSearchRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                epAdapter.searchState(0);
+                searchThread = new ConnectedEpSearchThread(getActivity(), epAdapter, series.getSrc());
+                searchThread.start();
             }
         });
     }
@@ -215,31 +168,7 @@ public class EpisodeSelect extends Fragment {
         } else {
             binding.curEpText.setText("Current Ep: none");
         }
-        binding.buttonPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String url;
-                series.updateLastWatched();
-                if (series.hasEp()) {
-                    url = series.getCurEp().getSrc();
-                } else { //update current episode and next to 1 and 2 respectively
-                    url = episodes.get(0).getSrc();
-                    for (int i = 0; (i < 3) || (i >= episodes.size()); i++) {
-                        series.addEp(episodes.get(i));//preload with up to 3 episodes
-                    }
-//                  //need to add to watchdata
-                    ((MainActivity)getActivity()).getWatchData().add(series);
-                }
-
-//                if (!watchData.contains(series.getTitle())) {
-//                    watchData.add(series)
-//                }
-
-                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-                CustomTabsIntent customTabsIntent = builder.build();
-                customTabsIntent.launchUrl(view.getContext(), Uri.parse(url));
-            }
-        });
+        epAdapter.makePlayRqst(binding.buttonPlay);
 //
         if (series.hasMoreEps()){
             binding.buttonNext.setColorFilter(getContext().getColor(R.color.yellow_200));
@@ -248,42 +177,14 @@ public class EpisodeSelect extends Fragment {
             binding.nextEpText.setText("Next Ep: " + ((series.getNextEp().getAbrTitle()==null)
                     ? "Ep. " + ((Integer) (series.getNextEp().getIdx() + 2)).toString()
                     : series.getNextEp().getAbrTitle()));
-            binding.buttonNext.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    series.updateLastWatched();
-                    String url = series.getNextEp().getSrc(); //update episodes
+            epAdapter.makeNextRqst(binding.buttonNext);
 
-                    ArrayList<Episode> epQueue = new ArrayList<Episode>();
-                    epQueue.add(series.getCurEp());
-                    for (int i = series.getNextEp().getIdx(); (i < series.getNextEp().getIdx() + 2) || (i >= episodes.size()); i++) {
-                        epQueue.add(episodes.get(i));//preload with up to 3 episodes
-                    } series.overrideEpQueue(epQueue);
-
-                    //sync with watchdata
-                    watchData.update(series);
-                    watchData.updateWatchDataJson();
-
-                    CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-                    CustomTabsIntent customTabsIntent = builder.build();
-                    customTabsIntent.launchUrl(view.getContext(), Uri.parse(url));
-                }
-            });
         } else {
-//            queueButtonUpdate(binding.buttonContinue, View.GONE);
             binding.buttonNext.setColorFilter(getContext().getColor(R.color.dark_grey));
             binding.buttonNext.setEnabled(false);
             binding.nextEpText.setText("Next Ep: none");
         }
     }
 
-    //adds the button update to the end of the UI operation thread, allows post-generation setting of visibility
-    private void queueButtonUpdate(Button btn, int status){
-        getView().post(new Runnable() {
-            @Override
-            public void run() {
-                btn.setVisibility(status);
-            }
-        });
-    }
+
 }
