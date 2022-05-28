@@ -36,13 +36,19 @@ public class Series {
 
     //get the series image and apply it to the provided imageview
     public void getSeriesImage(ImageView view) {
-        double imgScalar = 1.25;;
+        double imgScalar = 1.1;
         this.getSeriesImage(view, imgScalar);
     }
 
     public void getSeriesImage(ImageView view, Double imgScalar) {
         if (!hasSeriesImage()) return;
         Picasso.get().load(imgUrl).resize((int) (240*imgScalar), (int) (340*imgScalar)).into(view);
+    }
+
+    public void fitSeriesImage2Width(ImageView view, int width){
+        if (!hasSeriesImage()) return;
+        final double w2h_scalar = 1.42;
+        Picasso.get().load(imgUrl).resize((int) (width), (int) (width*w2h_scalar)).into(view);
     }
 
     public void fitSeriesImage(ImageView view){

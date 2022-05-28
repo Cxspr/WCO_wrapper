@@ -10,7 +10,9 @@
         android:id="@+id/ep_select_header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:layout_weight=".6"
         android:clipToPadding="false"
         android:paddingLeft="8dp"
@@ -23,16 +25,17 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
             app:cardCornerRadius="5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/curEpText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/seriesImage"
                 android:layout_width="wrap_content"
-                android:layout_height="200dp"
+                android:layout_height="match_parent"
                 android:layout_weight=".4"
                 android:src="@android:drawable/ic_popup_disk_full" />
         </androidx.cardview.widget.CardView>
@@ -44,10 +47,20 @@
             android:layout_marginStart="8dp"
             android:textAlignment="center"
             android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/cardView2"
             app:layout_constraintTop_toTopOf="@+id/cardView2" />
+
+        <TextView
+            android:id="@+id/curEpText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
@@ -61,13 +74,16 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="0dp"
-            android:layout_height="176dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="3"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/seriesTitle"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/seriesTitle"
-            app:layout_constraintTop_toBottomOf="@+id/seriesTitle">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageButton
                 android:id="@+id/button_save"
@@ -77,7 +93,8 @@
                 android:backgroundTint="#00FFFFFF"
                 android:scaleX="1.5"
                 android:scaleY="1.5"
-                android:src="@drawable/ic_add" />
+                android:src="@drawable/ic_add"
+                android:tint="?attr/colorAccent" />
 
             <ImageButton
                 android:id="@+id/button_play"
@@ -85,7 +102,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="#00FFFFFF"
-                android:src="@drawable/ic_play_arrow" />
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:src="@drawable/ic_play_arrow"
+                android:tint="?attr/colorAccent" />
 
             <ImageButton
                 android:id="@+id/button_next"
@@ -93,8 +113,42 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="#00FFFFFF"
-                android:src="@drawable/ic_skip_next" />
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:src="@drawable/ic_skip_next"
+                android:tint="@color/dark_grey" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/nextEpText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="@+id/curEpText"
+            app:layout_constraintTop_toBottomOf="@+id/curEpText" />
+
+        <View
+            android:id="@+id/divider6"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+            app:layout_constraintStart_toStartOf="@+id/linearLayout" />
+
+        <View
+            android:id="@+id/divider7"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+            app:layout_constraintStart_toStartOf="@+id/linearLayout"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -114,6 +168,17 @@
         tools:visibility="visible">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <View
+        android:id="@+id/divider5"
+        android:layout_width="409dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/resultContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ep_select_header" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

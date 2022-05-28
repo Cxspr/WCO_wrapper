@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wco_fun.wco_wrapper.MainActivity;
+import com.wco_fun.wco_wrapper.R;
 import com.wco_fun.wco_wrapper.classes.episode.Episode;
 import com.wco_fun.wco_wrapper.classes.series.Series;
 import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
@@ -112,14 +114,14 @@ public class EpisodeSelect extends Fragment {
             series.fitSeriesImage(seriesImage); //queue the series image addition
 //
             //post proc constrainer width setting
-            binding.getRoot().post(new Runnable() {
-                @Override
-                public void run() {
-                    int height = binding.epSelectHeader.getHeight();
-                    binding.epSelectHeader.setLayoutParams(new ConstraintLayout
-                            .LayoutParams(binding.getRoot().getWidth(), height));
-                }
-            });
+//            binding.getRoot().post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    int height = binding.epSelectHeader.getHeight();
+//                    binding.epSelectHeader.setLayoutParams(new ConstraintLayout
+//                            .LayoutParams(binding.getRoot().getWidth(), height));
+//                }
+//            });
 
             epAdapter = new EpisodeAdapter(episodes, series, watchData);
 
@@ -132,9 +134,11 @@ public class EpisodeSelect extends Fragment {
 
         saveButton = binding.buttonSave;
         if (watchlist.contains(series)) {
-            saveButton.setImageDrawable(Drawable.createFromPath("@drawable/ic_done"));
+//            saveButton.setImageDrawable(Drawable.createFromPath("@drawable/ic_done"));
+            saveButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_done));
         } else {
-            saveButton.setImageDrawable(Drawable.createFromPath("@drawable/ic_add"));
+//            saveButton.setImageDrawable(Drawable.createFromPath("@drawable/ic_add"));
+            saveButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_add));
         }
 
 
@@ -168,10 +172,12 @@ public class EpisodeSelect extends Fragment {
                 watchlist = ((MainActivity)getActivity()).getWatchlist();
                 if (watchlist.contains(series)) {
                     watchlist.remove(series); //no need to update instance in MainActivity, auto updates
-                    saveButton.setImageDrawable(Drawable.createFromPath("@drawable/ic_done"));
+//                    saveButton.setImageDrawable(Drawable.createFromPath("@drawable/ic_done"));
+                    saveButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_add));
                 } else {
                     watchlist.add(series);
-                    saveButton.setImageDrawable(Drawable.createFromPath("@drawable/ic_done"));
+//                    saveButton.setImageDrawable(Drawable.createFromPath("@drawable/ic_done"));
+                    saveButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_done));
                 }
                 watchlist.updateWatchlistJson();
             }
@@ -203,9 +209,11 @@ public class EpisodeSelect extends Fragment {
                 watchData.updateWatchDataJson();
             }
 
-//            binding.buttonPlay.setText("Play " + ((series.getCurEp().getAbrTitle()==null)
-//                    ?"Ep. " + ((Integer) (series.getCurEp().getIdx() + 1)).toString()
-//                    : series.getCurEp().getAbrTitle()));
+            binding.curEpText.setText("Current Ep: " + ((series.getCurEp().getAbrTitle()==null)
+                    ?"Ep. " + ((Integer) (series.getCurEp().getIdx() + 1)).toString()
+                    : series.getCurEp().getAbrTitle()));
+        } else {
+            binding.curEpText.setText("Current Ep: none");
         }
         binding.buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,10 +242,12 @@ public class EpisodeSelect extends Fragment {
         });
 //
         if (series.hasMoreEps()){
+            binding.buttonNext.setColorFilter(getContext().getColor(R.color.yellow_200));
+            binding.buttonNext.setEnabled(true);
 //            queueButtonUpdate(binding.buttonContinue, View.VISIBLE);
-//            binding.buttonContinue.setText("Play Next " + ((series.getNextEp().getAbrTitle()==null)
-//                    ? "Ep. " + ((Integer) (series.getNextEp().getIdx() + 2)).toString()
-//                    : series.getNextEp().getAbrTitle()));
+            binding.nextEpText.setText("Next Ep: " + ((series.getNextEp().getAbrTitle()==null)
+                    ? "Ep. " + ((Integer) (series.getNextEp().getIdx() + 2)).toString()
+                    : series.getNextEp().getAbrTitle()));
             binding.buttonNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -261,6 +271,9 @@ public class EpisodeSelect extends Fragment {
             });
         } else {
 //            queueButtonUpdate(binding.buttonContinue, View.GONE);
+            binding.buttonNext.setColorFilter(getContext().getColor(R.color.dark_grey));
+            binding.buttonNext.setEnabled(false);
+            binding.nextEpText.setText("Next Ep: none");
         }
     }
 

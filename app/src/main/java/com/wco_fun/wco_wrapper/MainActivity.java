@@ -41,18 +41,14 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
     private Menu menu;
-    private File watchlistFile;
-
 
     private String parentDir;
     private Watchlist watchlist;
     private WatchData watchData;
     private SearchCache searchCache = new SearchCache();
-
 
     //globalized GETTER for globally accessible data classes
     public Watchlist getWatchlist() {
@@ -107,21 +103,13 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             } if (watchData == null) {watchData = new WatchData(new ArrayList<SeriesControllable>(), parentDir);}
         }
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-
-        hideSystemUI();
-        hideSystemBars();
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(binding.getRoot());
-
-
-//        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
@@ -172,32 +160,5 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
-    }
-
-    private void hideSystemBars() {
-        WindowInsetsControllerCompat windowInsetsController =
-                ViewCompat.getWindowInsetsController(getWindow().getDecorView());
-        if (windowInsetsController == null) {
-            return;
-        }
-        // Configure the behavior of the hidden system bars
-        windowInsetsController.setSystemBarsBehavior(
-                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        );
-        // Hide both the status bar and the navigation bar
-        windowInsetsController.hide(WindowInsetsCompat.Type.statusBars());
-    }
-
-    private void hideSystemUI() {
-        // Set the IMMERSIVE flag.
-        // Set the content to appear under the system bars so that the content
-        // doesn't resize when the system bars hide and show.
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_IMMERSIVE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
     }
 }
