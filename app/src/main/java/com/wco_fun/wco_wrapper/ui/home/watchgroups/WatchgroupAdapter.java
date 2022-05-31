@@ -121,7 +121,7 @@ public class WatchgroupAdapter extends RecyclerView.Adapter<WatchgroupAdapter.Wa
         }
         seriesData = sCards;
         if (seriesData.isEmpty()) {
-            host.removeGroup(seriesGroup);
+//            host.removeGroup(seriesGroup);
             return;
         }
         this.seriesGroup.setContents(seriesData);

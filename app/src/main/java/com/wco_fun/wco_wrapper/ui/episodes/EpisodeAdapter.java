@@ -161,7 +161,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
 
     public void onThreadMilestone(int numEps, String imgUrl){
         hostSeries.setImgUrl(imgUrl);
-        hostSeries.setNumEps(numEps - 1);
+        hostSeries.setNumEps(numEps);
         hostSeries.fitSeriesImage2Width(seriesImg);
     }
 
