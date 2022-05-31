@@ -21,6 +21,11 @@ import com.wco_fun.wco_wrapper.classes.user_data.Watchlist;
 import com.wco_fun.wco_wrapper.databinding.FragmentHomeBinding;
 import com.wco_fun.wco_wrapper.ui.home.watch_adapters.ReactiveWatchAdapter;
 import com.wco_fun.wco_wrapper.ui.home.watch_adapters.WatchAdapter;
+import com.wco_fun.wco_wrapper.ui.home.watchgroups.MultigroupAdapter;
+import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.GenericGroup;
+import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.NewEpGroup;
+import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.ReflectiveGroup;
+import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.SeriesGroup;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +43,10 @@ public class Home extends Fragment {
     private WatchAdapter watchAdapter;
     private ReactiveWatchAdapter reactiveWatchAdapter;
 
+    private MultigroupAdapter multiAdapter;
+    private RecyclerView homeRecycler;
+    ArrayList<SeriesGroup> watchgroups;
+
 
     //TODO modify UI of continue watching to allow user to play episode directly from the home screen
     //TODO create a new episode detector for watched series that checks for new episodes online
@@ -48,21 +57,27 @@ public class Home extends Fragment {
             Bundle savedInstanceState
     ) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-
+        watchgroups = new ArrayList<>();
+        wd = ((MainActivity)getActivity()).getWatchData();
         wl = ((MainActivity)getActivity()).getWatchlist();
+
+        NewEpGroup newEpGroup = new NewEpGroup(wl.getWatchgroup(), (MainActivity)getActivity());
+        watchgroups.add(newEpGroup);
+
         watchlist = new ArrayList<Series>(wl.getWatchgroup());
         Collections.reverse(watchlist);
-        watchlistRecycler = binding.wlRecycler;
-        watchlistRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        watchAdapter = new WatchAdapter(watchlist);
-        watchlistRecycler.setAdapter(watchAdapter);
+        watchgroups.add(new GenericGroup("Watchlist", watchlist));
 
-        wd = ((MainActivity)getActivity()).getWatchData();
-        watchData = wd.getWatching();
-        watchDataRecycler = binding.wdRecycler;
-        watchDataRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        reactiveWatchAdapter = new ReactiveWatchAdapter(wd);
-        watchDataRecycler.setAdapter(reactiveWatchAdapter);
+        watchgroups.add(new ReflectiveGroup(wd));
+
+        homeRecycler = binding.homeRecycler;
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        homeRecycler.setLayoutManager(layoutManager);
+
+        multiAdapter = new MultigroupAdapter(watchgroups, (MainActivity)getActivity());
+        homeRecycler.setAdapter(multiAdapter);
+
+
 
         return binding.getRoot();
     }
@@ -70,56 +85,13 @@ public class Home extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.wlAccess.setOnClickListener((new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (wl.isEmpty()) return;
-                //if true watchlist contains anything then see all is enabled
-                Bundle bundle = new Bundle();
-                bundle.putString("variant","Watchlist");
-                NavHostFragment.findNavController(Home.this)
-                        .navigate(R.id.action_homeScreen_to_seeAllSeries, bundle);
-            }
-        }));
-
-        binding.wdAccess.setOnClickListener((new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (wd.isEmpty()) return;
-                //if true watchlist contains anything then see all is enabled
-                Bundle bundle = new Bundle();
-                bundle.putString("variant","Continue");
-                NavHostFragment.findNavController(Home.this)
-                        .navigate(R.id.action_homeScreen_to_seeAllSeries, bundle);
-            }
-        }));
 
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (watchlist.isEmpty()) {
-            binding.wlEmptyInd.setVisibility(View.VISIBLE);
-        } else {
-            binding.wlEmptyInd.setVisibility(View.GONE);
-        }
-        if (watchData.isEmpty()) {
-            binding.wdEmptyInd.setVisibility(View.VISIBLE);
-        } else {
-            binding.wdEmptyInd.setVisibility(View.GONE);
-        }
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        binding.getRoot().post(new Runnable() {
-            @Override
-            public void run() {
-                ((MainActivity) getActivity()).restoreMenu();
-            }
-        });
     }
 
     @Override

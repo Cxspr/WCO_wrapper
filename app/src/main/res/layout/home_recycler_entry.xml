@@ -39,7 +39,7 @@
 
 
                     <ImageView
-                        android:id="@+id/wl_series_Img"
+                        android:id="@+id/series_card_img"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,7 @@
                         app:srcCompat="@android:drawable/edit_text" />
 
                     <ImageButton
-                        android:id="@+id/continue_remove"
+                        android:id="@+id/series_card_remove"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:background="#00FFFFFF"
@@ -62,9 +62,11 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:weightSum="2"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +82,7 @@
                     app:layout_constraintStart_toStartOf="parent">
 
                     <ImageButton
-                        android:id="@+id/continue_play"
+                        android:id="@+id/series_card_play"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_weight=".99"
@@ -99,7 +101,7 @@
                         android:background="?android:attr/listDivider" />
 
                     <ImageButton
-                        android:id="@+id/continue_next"
+                        android:id="@+id/series_card_next"
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_weight=".99"
@@ -112,7 +114,7 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/wl_series_title"
+                    android:id="@+id/series_card_title"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
                     android:layout_marginStart="4dp"

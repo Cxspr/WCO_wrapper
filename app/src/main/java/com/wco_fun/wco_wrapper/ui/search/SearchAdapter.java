@@ -68,7 +68,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                 }
             });
 
-            textView = (TextView) view.findViewById(R.id.wl_series_title);
+            textView = (TextView) view.findViewById(R.id.series_card_title);
         }
 
         public TextView getTextView() {

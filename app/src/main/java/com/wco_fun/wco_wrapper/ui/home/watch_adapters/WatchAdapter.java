@@ -52,8 +52,8 @@ public class WatchAdapter extends  RecyclerView.Adapter<WatchAdapter.ViewHolder>
                 }
             });
 
-            textView = (TextView) view.findViewById(R.id.wl_series_title);
-            imageView = (ImageView) view.findViewById(R.id.wl_series_Img);
+            textView = (TextView) view.findViewById(R.id.series_card_title);
+            imageView = (ImageView) view.findViewById(R.id.series_card_img);
         }
 
         public TextView getTextView() {
@@ -88,7 +88,5 @@ public class WatchAdapter extends  RecyclerView.Adapter<WatchAdapter.ViewHolder>
         this.watchgroup = watchgroup;
         this.notifyDataSetChanged();
     }
-
-
 
 }
