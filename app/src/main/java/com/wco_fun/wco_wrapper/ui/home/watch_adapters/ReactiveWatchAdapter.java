@@ -82,9 +82,9 @@ public class ReactiveWatchAdapter extends  RecyclerView.Adapter<ReactiveWatchAda
                 }
             });
 
-            view.findViewById(R.id.wl_series_title).setVisibility(View.GONE);;
-            imageView = (ImageView) view.findViewById(R.id.wl_series_Img);
-            delete = (ImageButton) view.findViewById(R.id.continue_remove);
+            view.findViewById(R.id.series_card_title).setVisibility(View.GONE);;
+            imageView = (ImageView) view.findViewById(R.id.series_card_img);
+            delete = (ImageButton) view.findViewById(R.id.series_card_remove);
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -93,7 +93,7 @@ public class ReactiveWatchAdapter extends  RecyclerView.Adapter<ReactiveWatchAda
                     host.refreshRecycler();
                 }
             });
-            resume = (ImageButton) view.findViewById(R.id.continue_play);
+            resume = (ImageButton) view.findViewById(R.id.series_card_play);
             resume.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -106,7 +106,7 @@ public class ReactiveWatchAdapter extends  RecyclerView.Adapter<ReactiveWatchAda
                     host.refreshRecycler();
                 }
             });
-            next = (ImageButton) view.findViewById(R.id.continue_next);
+            next = (ImageButton) view.findViewById(R.id.series_card_next);
 
             //visibility setters
             delete.setVisibility(View.VISIBLE);

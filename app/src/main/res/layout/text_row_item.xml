@@ -8,7 +8,7 @@
     android:paddingBottom="8dp">
 
     <TextView
-        android:id="@+id/wl_series_title"
+        android:id="@+id/series_card_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/element_text"

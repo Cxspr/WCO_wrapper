@@ -28,6 +28,7 @@ import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
 import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 import com.wco_fun.wco_wrapper.classes.user_data.Watchlist;
 import com.wco_fun.wco_wrapper.databinding.ActivityMainBinding;
+import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesCard.SeriesCard;
 
 import android.util.Log;
 import android.view.Menu;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private Watchlist watchlist;
     private WatchData watchData;
     private SearchCache searchCache = new SearchCache();
+    private ArrayList<SeriesCard> seeAllCache = new ArrayList();
 
     //globalized GETTER for globally accessible data classes
     public Watchlist getWatchlist() {
@@ -60,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
     }
     public WatchData getWatchData() { return watchData; }
     public SearchCache getSearchCache() { return searchCache; }
+
+    public void setSeeAllCache(ArrayList<SeriesCard> seeAllCache) { this.seeAllCache = seeAllCache; }
+    public ArrayList<SeriesCard> getSeeAllCache() { return seeAllCache; }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,11 +123,16 @@ public class MainActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
 //        NavigationUI.setupWithNavController(binding.toolbar, navController, appBarConfiguration);
 //        NavigationUI.setu(this, navController, appBarConfiguration);
-    }
-
-    public void restoreMenu() {
-        menu.findItem(R.id.menu_search).setVisible(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+            @Override
+            public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
+                if (destination.getId() != R.id.homeScreen){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                } else {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                }
+            }
+        });
     }
 
     @Override
@@ -143,11 +153,13 @@ public class MainActivity extends AppCompatActivity {
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.media_search, bundle);
             menu.findItem(R.id.menu_search).setVisible(false);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
 
     @Override
     protected void onPause() {

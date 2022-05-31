@@ -1,9 +1,5 @@
 package com.wco_fun.wco_wrapper.ui.episodes;
 
-import static com.wco_fun.wco_wrapper.ui.search.ConnectedSearchThread.ERR_CODES.INTERRUPT;
-import static com.wco_fun.wco_wrapper.ui.search.ConnectedSearchThread.ERR_CODES.IOEXCEPTION;
-import static com.wco_fun.wco_wrapper.ui.search.ConnectedSearchThread.ERR_CODES.TIMEOUT;
-
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.wco_fun.wco_wrapper.MainActivity;
 import com.wco_fun.wco_wrapper.R;
 import com.wco_fun.wco_wrapper.classes.episode.Episode;
-import com.wco_fun.wco_wrapper.classes.series.Series;
 import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
 import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 
@@ -93,7 +87,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
                 }
             });
 
-            textView = (TextView) view.findViewById(R.id.wl_series_title);
+            textView = (TextView) view.findViewById(R.id.series_card_title);
         }
 
         public TextView getTextView() {
@@ -167,7 +161,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
 
     public void onThreadMilestone(int numEps, String imgUrl){
         hostSeries.setImgUrl(imgUrl);
-        hostSeries.setNumEps(numEps);
+        hostSeries.setNumEps(numEps - 1);
         hostSeries.fitSeriesImage2Width(seriesImg);
     }
 

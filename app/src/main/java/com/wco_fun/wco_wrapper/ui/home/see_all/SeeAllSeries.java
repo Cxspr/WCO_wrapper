@@ -15,6 +15,7 @@ import com.wco_fun.wco_wrapper.databinding.FragmentSeriesSeeAllBinding;
 import com.wco_fun.wco_wrapper.MainActivity;
 import com.wco_fun.wco_wrapper.ui.home.watch_adapters.ReactiveWatchAdapter;
 import com.wco_fun.wco_wrapper.ui.home.watch_adapters.WatchAdapter;
+import com.wco_fun.wco_wrapper.ui.home.watchgroups.WatchgroupAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,21 +45,18 @@ public class SeeAllSeries extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentSeriesSeeAllBinding.inflate(inflater,container,false);
+
+        String title = getArguments().getString("title");
+        binding.textView.setText(title);
+        int variant = getArguments().getInt("variant");
+
         recycler = binding.seeAllRecycler;
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
         recycler.setLayoutManager(layoutManager);
-        ArrayList<Series> dispSeriesLEList = new ArrayList<Series>();
-        String passedArg = getArguments().getString("variant");
-        if (passedArg.equals("Watchlist")){
-            ArrayList<Series> ref = new ArrayList<Series>(((MainActivity)getActivity()).getWatchlist().getWatchgroup());
-            Collections.reverse(ref);
-            recycler.setAdapter(new WatchAdapter(ref));
-            binding.textView.setText("Watchlist");
-        } else if (passedArg.equals("Continue")) {
-            recycler.setAdapter(new ReactiveWatchAdapter(((MainActivity)getActivity()).getWatchData()));
-            binding.textView.setText("Continue");
-        } else { recycler.setAdapter(null); }
-
+        if (variant <= 3){
+            WatchgroupAdapter adapter = new WatchgroupAdapter(((MainActivity)getActivity()).getSeeAllCache());
+            recycler.setAdapter(adapter);
+        }
 
         return binding.getRoot();
     }
