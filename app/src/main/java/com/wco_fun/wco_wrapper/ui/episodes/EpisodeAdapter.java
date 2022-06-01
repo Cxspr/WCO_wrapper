@@ -15,8 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.wco_fun.wco_wrapper.R;
 import com.wco_fun.wco_wrapper.classes.episode.Episode;
+import com.wco_fun.wco_wrapper.classes.series.Series;
 import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
 import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
+import com.wco_fun.wco_wrapper.classes.user_data.Watchlist;
 
 import java.util.ArrayList;
 
@@ -27,6 +29,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
     private ImageButton retryBtn;
     private ImageView seriesImg;
     private WatchData watchData;
+    private Watchlist watchlist;
 
     public EpisodeAdapter(){}
     public EpisodeAdapter(SeriesControllable hostSeries, WatchData watchData){
@@ -49,6 +52,9 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
         public void setWatchData(WatchData wd) { watchData = wd; }
         public void setHostSeries(SeriesControllable s){
             hostSeries = s;
+        }
+        public void setEpQueue(ArrayList<Episode> epQueue){
+            this.epQueue = epQueue;
         }
         public void verifyArrayList() {
             for (int i = 0; i < epQueue.size(); i++){
@@ -107,10 +113,14 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
         if (!episodes.isEmpty()) holder.getTextView().setText(episodes.get(position).getTitle().substring(6));
         holder.setHostSeries(hostSeries);
         holder.setWatchData(watchData);
+        ArrayList<Episode> epQueue = new ArrayList<>();
         for (int i = position; (i< position + 3); i++) {
             if (i >= episodes.size()) break;
-            holder.epQueue.add(episodes.get(i));//preload with up to 3 episodes
-        } holder.verifyArrayList();
+//            holder.epQueue.add(episodes.get(i));//preload with up to 3 episodes
+            epQueue.add(episodes.get(i));
+        }
+        holder.setEpQueue(epQueue);
+//        holder.verifyArrayList();
     }
 
     @Override
@@ -118,6 +128,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
         return episodes.size();
     }
 
+    public void attachWatchlist(Watchlist watchlist) { this.watchlist = watchlist; }
     public void attachSeriesImg(ImageView s) {this.seriesImg = s;}
     public void attachProgBar(ProgressBar progressBar){ this.progressBar = progressBar;}
     public void attachRetryBtn(ImageButton imageButton) {this.retryBtn = imageButton;}
@@ -162,6 +173,14 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
     public void onThreadMilestone(int numEps, String imgUrl){
         hostSeries.setImgUrl(imgUrl);
         hostSeries.setNumEps(numEps);
+        Series refSeries = watchlist.get(hostSeries);
+        if (refSeries != null) {
+            if (hostSeries.getNumEps() > refSeries.getNumEps()){
+                refSeries.setNumEps(hostSeries.getNumEps());
+                watchlist.pushChanges();
+            }
+        }
+
         hostSeries.fitSeriesImage2Width(seriesImg);
     }
 
@@ -213,6 +232,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
             });
             nextRqst = false;
         }
+        postBtn = true;
     }
 
     public void makePlayRqst(ImageButton playBtn) {
@@ -222,7 +242,11 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
     public void makeNextRqst(ImageButton nextBtn) {
         this.nextBtn = nextBtn;
         nextRqst = true;
+        if (postBtn) fulfillBtnRqsts();
     }
+
+    private boolean postBtn = false;
+    public boolean getPostBtn() {return postBtn;}
 
 }
 

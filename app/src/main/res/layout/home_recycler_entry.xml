@@ -12,14 +12,86 @@
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="#1E1E1E"
+        app:cardBackgroundColor="@color/darkest_grey"
         app:cardCornerRadius="5dp"
         app:cardElevation="3dp"
         app:cardUseCompatPadding="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/series_card_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView">
+
+                <LinearLayout
+                    android:id="@+id/wg_button_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:visibility="visible">
+
+                    <ImageButton
+                        android:id="@+id/series_card_play"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_weight=".99"
+                        android:background="#00FFFFFF"
+                        android:scaleType="centerInside"
+                        android:tint="?attr/colorAccent"
+                        app:srcCompat="@drawable/ic_play_arrow" />
+
+                    <View
+                        android:id="@+id/divider4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".02"
+                        android:background="?android:attr/listDivider" />
+
+                    <ImageButton
+                        android:id="@+id/series_card_next"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_weight=".99"
+                        android:background="#00FFFFFF"
+                        android:scaleType="centerInside"
+                        android:tint="?attr/colorAccent"
+                        app:srcCompat="@drawable/ic_skip_next" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/series_card_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:fontFamily="sans-serif-black"
+                    android:gravity="center"
+                    android:text="TextView"
+                    android:textAlignment="gravity"
+                    android:textSize="12sp"
+                    app:autoSizeMaxTextSize="12sp"
+                    app:autoSizeMinTextSize="8sp"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
@@ -37,6 +109,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
+
+                    <androidx.constraintlayout.utils.widget.MockView
+                        android:id="@+id/mockView"
+                        android:layout_width="91dp"
+                        android:layout_height="126dp"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
 
                     <ImageView
                         android:id="@+id/series_card_img"
@@ -60,79 +139,6 @@
                         tools:visibility="visible" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:weightSum="2"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView">
-
-                <LinearLayout
-                    android:id="@+id/wg_button_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent">
-
-                    <ImageButton
-                        android:id="@+id/series_card_play"
-                        android:layout_width="0dp"
-                        android:layout_height="35dp"
-                        android:layout_weight=".99"
-                        android:background="#00FFFFFF"
-                        android:scaleType="centerInside"
-                        android:tint="?attr/colorAccent"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_play_arrow"
-                        tools:visibility="visible" />
-
-                    <View
-                        android:id="@+id/divider4"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight=".02"
-                        android:background="?android:attr/listDivider" />
-
-                    <ImageButton
-                        android:id="@+id/series_card_next"
-                        android:layout_width="0dp"
-                        android:layout_height="35dp"
-                        android:layout_weight=".99"
-                        android:background="#00FFFFFF"
-                        android:scaleType="centerInside"
-                        android:tint="?attr/colorAccent"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_skip_next"
-                        tools:visibility="visible" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/series_card_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="4dp"
-                    android:fontFamily="sans-serif-black"
-                    android:gravity="center"
-                    android:text="TextView"
-                    android:textAlignment="gravity"
-                    android:textSize="12sp"
-                    app:autoSizeMaxTextSize="12sp"
-                    app:autoSizeMinTextSize="8sp"
-                    app:autoSizeTextType="uniform"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

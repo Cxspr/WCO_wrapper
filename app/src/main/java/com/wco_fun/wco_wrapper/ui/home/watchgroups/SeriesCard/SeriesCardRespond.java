@@ -13,9 +13,7 @@ import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 
 public class SeriesCardRespond extends SeriesCard{
     private SeriesControllable series;
-//    private RecyclerView.Adapter host; //TODO change later once adapter object is created
     private WatchData watchData;
-
 
     public SeriesCardRespond(WatchData watchData, SeriesControllable series){
         this.watchData = watchData;

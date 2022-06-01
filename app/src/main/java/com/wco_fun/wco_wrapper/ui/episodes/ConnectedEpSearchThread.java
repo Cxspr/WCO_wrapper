@@ -62,7 +62,6 @@ public class ConnectedEpSearchThread extends Thread {
                 throw new InterruptedException();
             } //escape clause
 
-            //TODO get series image url
             String imgUrl = "https:" + doc.getElementsByClass("img5").get(0).attr("src");
 
             Elements eps = doc.getElementsByClass("cat-eps");

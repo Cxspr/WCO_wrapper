@@ -16,7 +16,6 @@ import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 
 public class SeriesCardReflective extends SeriesCard{
     private SeriesControllable series;
-//    private RecyclerView.Adapter host; //TODO change later once adapter object is created
     private WatchData watchData;
 
 
@@ -39,8 +38,7 @@ public class SeriesCardReflective extends SeriesCard{
     public void configureVariant() {
         //visibility config
         this.title.setVisibility(View.GONE);
-        this.play.setVisibility(View.VISIBLE);
-        this.next.setVisibility(View.VISIBLE);
+        this.btnContainer.setVisibility(View.VISIBLE);
         this.remove.setVisibility(View.VISIBLE);
         SeriesCard c = this;
         //button event configs
@@ -54,7 +52,7 @@ public class SeriesCardReflective extends SeriesCard{
                 CustomTabsIntent customTabsIntent = builder.build();
                 customTabsIntent.launchUrl(view.getContext(), Uri.parse(series.getCurEp().getSrc()));
 
-                host.refreshRecycler(c);//TODO implement at some point
+                host.refreshRecycler(watchData);
             }
         });
 

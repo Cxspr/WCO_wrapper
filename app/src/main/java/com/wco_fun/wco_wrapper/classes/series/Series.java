@@ -96,7 +96,7 @@ public class Series {
         );
     }
 
-    public boolean hasSeriesImage(){ //TODO maybe convert to a runnable future?
+    public boolean hasSeriesImage(){
         if (imgUrl == null || imgUrl.isEmpty()) {
             try {
                 Thread runThread = new Thread(new Runnable() {

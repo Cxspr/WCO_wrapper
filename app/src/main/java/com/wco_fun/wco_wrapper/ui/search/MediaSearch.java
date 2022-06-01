@@ -104,7 +104,6 @@ public class MediaSearch extends Fragment {
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) { //run thread with corresponding urls for catagories
-                //todo maybe verify a better workflow of the tread
                 searchThread.cancel();
                 try {
                     searchThread.join(); //ensure old thread is dead before opening a new one

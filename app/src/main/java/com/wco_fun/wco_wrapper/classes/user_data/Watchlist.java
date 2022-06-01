@@ -35,10 +35,24 @@ public class Watchlist extends WatchGroup {
         pendingChanges = true;
     }
 
+    public void overrideNumEp(Series series){
+        for (Series s: watchgroup) {
+            if (s.equals(series)) {
+                s.setNumEps(series.getNumEps());
+                return;
+            }
+        }
+    }
+
     @Override
     public void remove(Series s) {
         super.remove(s);
         pendingChanges = true;
+    }
+
+    public void pushChanges(){
+        pendingChanges = true;
+        updateWatchlistJson();
     }
 
     //convert this class instance to a JSON formatted string
