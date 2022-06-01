@@ -69,9 +69,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO get rid of this and ensure no parallel procs run on main thread
-//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//        StrictMode.setThreadPolicy(policy);
 
         new Thread(new Runnable() {
             @Override
@@ -121,15 +118,17 @@ public class MainActivity extends AppCompatActivity {
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-//        NavigationUI.setupWithNavController(binding.toolbar, navController, appBarConfiguration);
-//        NavigationUI.setu(this, navController, appBarConfiguration);
+
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
             public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
                 if (destination.getId() != R.id.homeScreen){
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    menu.findItem(R.id.menu_search).setVisible(false);
+                    menu.findItem(R.id.menu_settings).setVisible(false);
                 } else {
                     getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                    invalidateOptionsMenu();
                 }
             }
         });
@@ -139,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         this.menu = menu;
-        menu.findItem(R.id.menu_search).setVisible(true);
         return true;
     }
 
@@ -152,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
             bundle.putString("link","https://www.wcofun.com/dubbed-anime-list");
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.media_search, bundle);
-            menu.findItem(R.id.menu_search).setVisible(false);
         }
 
         return super.onOptionsItemSelected(item);

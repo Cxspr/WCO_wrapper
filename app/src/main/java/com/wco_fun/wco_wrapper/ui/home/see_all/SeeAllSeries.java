@@ -10,16 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.wco_fun.wco_wrapper.classes.series.Series;
 import com.wco_fun.wco_wrapper.databinding.FragmentSeriesSeeAllBinding;
 import com.wco_fun.wco_wrapper.MainActivity;
-import com.wco_fun.wco_wrapper.ui.home.watch_adapters.ReactiveWatchAdapter;
-import com.wco_fun.wco_wrapper.ui.home.watch_adapters.WatchAdapter;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.WatchgroupAdapter;
-
-import java.util.ArrayList;
-import java.util.Collections;
-
 
 public class SeeAllSeries extends Fragment {
 
@@ -30,8 +23,6 @@ public class SeeAllSeries extends Fragment {
 
     private FragmentSeriesSeeAllBinding binding;
     private RecyclerView recycler;
-//    private SeeAllAdapter adapter;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

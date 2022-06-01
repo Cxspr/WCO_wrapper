@@ -36,6 +36,15 @@ public class WatchGroup {
         }
     }
 
+    public Series get(Series series){
+        for (Series s: watchgroup){
+            if (s.equals(series)){
+                return s;
+            }
+        }
+        return null;
+    }
+
     public void add(Series series){
         for (Series s: watchgroup){
             if (s.equals(series)) {

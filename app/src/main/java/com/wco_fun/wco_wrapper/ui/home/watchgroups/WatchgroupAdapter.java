@@ -9,14 +9,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wco_fun.wco_wrapper.R;
 import com.wco_fun.wco_wrapper.classes.series.Series;
 import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
+import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesCard.SeriesCard;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesCard.SeriesCardGeneric;
+import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.ReflectiveGroup;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.SeriesGroup;
 
 import java.util.ArrayList;
@@ -78,29 +81,23 @@ public class WatchgroupAdapter extends RecyclerView.Adapter<WatchgroupAdapter.Wa
 
     public class WatchgroupViewHolder extends RecyclerView.ViewHolder{
         private SeriesCard seriesCard;
-        private ImageView seriesImg;
-        private TextView title;
-        private ImageButton play, next, remove;
+        private ViewGroup viewParent;
 
         public WatchgroupViewHolder(@NonNull View view) {
             super(view);
-            seriesImg = view.findViewById(R.id.series_card_img);
-            title = view.findViewById(R.id.series_card_title);
-            play = view.findViewById(R.id.series_card_play);
-            next = view.findViewById(R.id.series_card_next);
-            remove = view.findViewById(R.id.series_card_remove);
+            viewParent = view.findViewById(R.id.series_card_container);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Navigation.findNavController(view)
-                            .navigate(R.id.action_homeScreen_to_episode_select, seriesCard.configureClickEvent());
+                            .navigate(R.id.episode_select, seriesCard.configureClickEvent());
                 }
             });
         }
 
         public void bindViews(SeriesCard s) {
-            s.attachViews(title, seriesImg, play, next, remove);
+            s.attachViews(viewParent);
         }
 
         public void setSeriesCard(SeriesCard s){
@@ -110,6 +107,17 @@ public class WatchgroupAdapter extends RecyclerView.Adapter<WatchgroupAdapter.Wa
 
     public void refreshRecycler(SeriesCard c) {
         seriesData.remove(c);
+        if (seriesData.isEmpty()) { //recycler is empty, remove from home screen
+            host.removeGroup(seriesGroup.getTitle());
+            return;
+        }
+        this.notifyDataSetChanged();
+    }
+
+    public void refreshRecycler(WatchData watchData){
+        SeriesGroup override = new ReflectiveGroup(watchData);
+        this.seriesGroup = override;
+        this.seriesData = seriesGroup.getContents();
         this.notifyDataSetChanged();
     }
 

@@ -52,7 +52,6 @@ public class EpisodeSelect extends Fragment {
     private EpisodeAdapter epAdapter;
 
     private SeriesControllable series;
-    private ArrayList<Episode> episodes = new ArrayList<Episode>();
 
     private Watchlist watchlist;
     private WatchData watchData;
@@ -74,15 +73,12 @@ public class EpisodeSelect extends Fragment {
             series = (watchData.contains(refSeries.getTitle()))
                     ? watchData.get(refSeries.getTitle())
                     : new SeriesControllable(refSeries);
-            series.setNumEps(episodes.size());
 
-//            series.fitSeriesImage(seriesImage); //queue the series image addition
-
-//        epAdapter = new EpisodeAdapter(episodes, series, watchData);
         epAdapter = new EpisodeAdapter(series, watchData);
         epAdapter.attachProgBar(binding.epSearchProg);
         epAdapter.attachRetryBtn(binding.epSearchRetry);
         epAdapter.attachSeriesImg(binding.seriesImage);
+        epAdapter.attachWatchlist(watchlist);
 
         searchThread = new ConnectedEpSearchThread(getActivity(), epAdapter, src);
         searchThread.start();
@@ -96,7 +92,6 @@ public class EpisodeSelect extends Fragment {
         } else {
             saveButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_add));
         }
-
 
         recyclerView = binding.resultContainer;
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -152,7 +147,7 @@ public class EpisodeSelect extends Fragment {
 
     @Override
     public void onResume() {
-        super.onResume(); //TODO clean up write to watchdata logic
+        super.onResume();
         if (series.hasEp()) { //nested if statements assure if series is timestamped that it will
             if (watchData.contains(series.getTitle())){ //series on watch data, attempt to bring up to date
                 watchData.update(series);
@@ -169,11 +164,10 @@ public class EpisodeSelect extends Fragment {
             binding.curEpText.setText("Current Ep: none");
         }
         epAdapter.makePlayRqst(binding.buttonPlay);
-//
+
         if (series.hasMoreEps()){
             binding.buttonNext.setColorFilter(getContext().getColor(R.color.yellow_200));
             binding.buttonNext.setEnabled(true);
-//            queueButtonUpdate(binding.buttonContinue, View.VISIBLE);
             binding.nextEpText.setText("Next Ep: " + ((series.getNextEp().getAbrTitle()==null)
                     ? "Ep. " + ((Integer) (series.getNextEp().getIdx() + 2)).toString()
                     : series.getNextEp().getAbrTitle()));

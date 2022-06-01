@@ -15,13 +15,11 @@ public class SeriesCardGeneric extends SeriesCard{
         this.series = series;
     }
 
-    //TODO maybe deprecated
     @Override
     public void setSeriesImage() {
         series.getSeriesImage(seriesImg);
     }
 
-    //TODO maybe deprecated
     @Override
     public void setSeries(SeriesControllable series) {
         this.series = series;
@@ -33,8 +31,7 @@ public class SeriesCardGeneric extends SeriesCard{
         //visibility config
         this.title.setVisibility(View.VISIBLE);
         title.setText(series.getTitle());
-        this.play.setVisibility(View.GONE);
-        this.next.setVisibility(View.GONE);
+        this.btnContainer.setVisibility(View.GONE);
         this.remove.setVisibility(View.GONE);
     }
 

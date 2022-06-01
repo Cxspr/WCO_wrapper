@@ -46,11 +46,10 @@ public class ConnectedSearchThread extends Thread {
     public void run() {
         Log.i("Search Thread: ", "STARTED");
         try {
-            //TODO add progress reflection
             long startTime = new Date().getTime();
             ArrayList<SeriesSearchable> retList = new ArrayList<SeriesSearchable>(1000);
             try {
-                Document doc = Jsoup.connect(url) //TODO look into more efficient means of this
+                Document doc = Jsoup.connect(url)
                         .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
                         .maxBodySize(0)
                         .timeout(10000)
