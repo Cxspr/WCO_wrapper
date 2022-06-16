@@ -126,7 +126,7 @@ public class MultigroupAdapter extends RecyclerView.Adapter<MultigroupAdapter.Mu
     }
 
     public void removeGroup(SeriesGroup seriesGroup){
-
+        this.removeGroup(seriesGroup.getTitle());
     }
 
     public void removeGroup(String title){
