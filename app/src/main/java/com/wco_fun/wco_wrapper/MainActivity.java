@@ -70,21 +70,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Jsoup.connect("https://www.wcofun.com") //Warm up Jsoup || first usage always seems significantly slower than rest
-                            .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                            .timeout(2000)
-                            .maxBodySize(0)
-                            .get();
-                    Log.i("JSOUP: ", "WARMED UP");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Jsoup.connect("https://www.wcofun.com") //Warm up Jsoup || first usage always seems significantly slower than rest
+//                            .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+//                            .timeout(2000)
+//                            .maxBodySize(0)
+//                            .get();
+//                    Log.i("JSOUP: ", "WARMED UP");
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
 
         parentDir = String.valueOf(this.getFilesDir());
 

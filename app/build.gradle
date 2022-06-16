@@ -14,7 +14,7 @@ android {
         minSdk 26
         targetSdk 32
         versionCode 1
-        versionName '0.8.1'
+        versionName '0.8.2'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -41,7 +41,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.navigation:navigation-fragment:2.3.5'
     implementation 'androidx.navigation:navigation-ui:2.3.5'
-    implementation 'org.jsoup:jsoup:1.14.3'
+    implementation 'org.jsoup:jsoup:1.15.1'
     implementation 'androidx.browser:browser:1.4.0'
     implementation 'com.squareup.picasso:picasso:2.8'
     implementation 'com.squareup.moshi:moshi:1.13.0'

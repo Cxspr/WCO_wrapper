@@ -40,7 +40,9 @@ public class ConnectedSearchThread extends Thread {
         this.url = url;
     }
 
-    public void cancel() { this.interrupt(); }
+    public void cancel() {
+        this.interrupt();
+    }
 
     @Override
     public void run() {
@@ -68,14 +70,14 @@ public class ConnectedSearchThread extends Thread {
                 int numEntries = seriesNodes.size();
                 int i = 0;
                 for (Element el : seriesNodes) {
+                    if (Thread.currentThread().isInterrupted()) { //check for external interrupt call
+                        Log.i("Search Thread: ", "INTERRUPTION");
+                        notifyError(INTERRUPT);
+                        throw new InterruptedException();
+                    }
                     SeriesSearchable s = new SeriesSearchable((el.child(0)));
                     if (s.isValid()){
                         retList.add(s);
-                    }
-                    if (Thread.currentThread().isInterrupted()) { //check for external interrupt call
-                            Log.i("Search Thread: ", "INTERRUPTION");
-                            notifyError(INTERRUPT);
-                            throw new InterruptedException();
                     }
 //                    Log.d("Search Thread: ", "PROG: " + (++i) + "/" + numEntries );
                 }
@@ -86,7 +88,7 @@ public class ConnectedSearchThread extends Thread {
                 Log.i("Search Thread: ", "TIMED_OUT");
                 notifyError(TIMEOUT);
 //                e.printStackTrace();
-            } catch (IOException | NullPointerException e) {
+            } catch (IOException | NullPointerException | IndexOutOfBoundsException e) {
                 Log.i("Search Thread: ", "IO_EXCEPTION//NULL_PTR");
                 notifyError(IOEXCEPTION);
 //                e.printStackTrace();

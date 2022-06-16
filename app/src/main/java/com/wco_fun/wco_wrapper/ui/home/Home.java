@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +23,13 @@ import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.NewEpGroup;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.ReflectiveGroup;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.SeriesGroup;
 
+import org.jsoup.Jsoup;
+
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 public class Home extends Fragment {
 
@@ -62,31 +68,19 @@ public class Home extends Fragment {
         multiAdapter = new MultigroupAdapter(watchgroups, (MainActivity)getActivity());
         homeRecycler.setAdapter(multiAdapter);
 
-
-
         return binding.getRoot();
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        binding.getRoot().post(new Runnable() {
-//            @Override
-//            public void run() {
-//                ((MainActivity) getActivity()).restoreMenu();
-//            }
-//        });
-//    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
+
+
 }

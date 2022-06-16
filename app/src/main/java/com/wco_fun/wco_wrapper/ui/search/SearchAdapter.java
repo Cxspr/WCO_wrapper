@@ -155,6 +155,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             case 0:
                 showProgressSpinner(true);
                 showSearchError(false);
+                this.legacyData.clear();
+                this.results.clear();
                 this.threadActive = true;
                 return;
             case 1:
@@ -178,7 +180,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     public void onThreadErr(int errCode) {
         switch (errCode) {
             case INTERRUPT: //TODO: interrupt would be user-triggered. Is it really an error?
-                errorText.setText("Error while running search...");
+//                errorText.setText("Error while running search...");
                 break;
             case TIMEOUT:
                 errorText.setText("Search request timed out...");

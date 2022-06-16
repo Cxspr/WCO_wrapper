@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,6 +22,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.wco_fun.wco_wrapper.MainActivity;
+import com.wco_fun.wco_wrapper.R;
 import com.wco_fun.wco_wrapper.classes.CachedContent.SearchCache;
 import com.wco_fun.wco_wrapper.classes.series.SeriesSearchable;
 import com.wco_fun.wco_wrapper.databinding.FragmentMediaSearchBinding;
@@ -104,29 +107,31 @@ public class MediaSearch extends Fragment {
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) { //run thread with corresponding urls for catagories
-                searchThread.cancel();
-                try {
-                    searchThread.join(); //ensure old thread is dead before opening a new one
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (searchThread != null && searchThread.isAlive()) {
+                    searchThread.cancel();
+                    try {
+                        searchThread.join(); //ensure old thread is dead before opening a new one
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
                 boolean toRun = true;
                 if (tab.getPosition() == 0 ) { //dubbed
-                    if (dubbed == null) {
+                    if (dubbed == null || dubbed.isEmpty()) {
                         url = "https://www.wcofun.com/dubbed-anime-list";
                     } else {
                         searchAdapter.rebaseLegacyData(dubbed);
                         toRun = false;
                     }
                 } else if (tab.getPosition() == 1) { //cartoons
-                    if (cartoon == null) {
+                    if (cartoon == null || cartoon.isEmpty()) {
                         url = "https://www.wcofun.com/cartoon-list";
                     } else {
                         searchAdapter.rebaseLegacyData(cartoon);
                         toRun = false;
                     }
                 } else { //subbed
-                    if (subbed == null) {
+                    if (subbed == null || subbed.isEmpty()) {
                         url = "https://www.wcofun.com/subbed-anime-list";
                     } else {
                         searchAdapter.rebaseLegacyData(subbed);
@@ -146,16 +151,16 @@ public class MediaSearch extends Fragment {
                 ArrayList<SeriesSearchable> dataImport = searchAdapter.getLegacyData();
                 if (dataImport.isEmpty()) return; //don't save if contents don't exist
                 if (tab.getPosition() == 0 ) { //dubbed
-                    if (dubbed == null && !searchAdapter.getThreadActive()) {
-                        dubbed = searchAdapter.getLegacyData();
+                    if ((dubbed == null || dubbed.isEmpty()) && !searchAdapter.getThreadActive()) {
+                        dubbed = new ArrayList<SeriesSearchable>(searchAdapter.getLegacyData());
                     }
                 } else if (tab.getPosition() == 1) { //cartoons
-                    if (cartoon == null && !searchAdapter.getThreadActive()) {
-                        cartoon = searchAdapter.getLegacyData();
+                    if ((cartoon == null || cartoon.isEmpty()) && !searchAdapter.getThreadActive()) {
+                        cartoon = new ArrayList<SeriesSearchable>(searchAdapter.getLegacyData());
                     }
                 } else { //subbed
-                    if (subbed == null && !searchAdapter.getThreadActive()) {
-                        subbed = searchAdapter.getLegacyData();
+                    if ((subbed == null || subbed.isEmpty()) && !searchAdapter.getThreadActive()) {
+                        subbed = new ArrayList<SeriesSearchable>(searchAdapter.getLegacyData());
                     }
                 }
             }
@@ -199,7 +204,8 @@ public class MediaSearch extends Fragment {
     @Override
     public void onDestroyView() {
         SearchCache cache = ((MainActivity)getActivity()).getSearchCache();
-        if (backNav){
+        NavController navController = Navigation.findNavController(this.getActivity(), R.id.nav_host_fragment_content_main);
+        if (navController.getCurrentDestination().getId() == R.id.homeScreen) {
             cache.clear();
         } else {
             cache.updateCache(searchAdapter.getLegacyData(), retTab);
