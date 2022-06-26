@@ -65,14 +65,29 @@ public class EpisodeSelect extends Fragment {
         binding = FragmentEpisodeSelectBinding.inflate(inflater, container, false);
 
         Series refSeries;
-            String src = getArguments().getString("link");
-            refSeries = new Series(src,getArguments().getString("title"));
+        String src = getArguments().getString("link");
+        refSeries = new Series(src,getArguments().getString("title"));
 
-            watchlist = ((MainActivity)getActivity()).getWatchlist();
-            watchData = ((MainActivity)getActivity()).getWatchData();
-            series = (watchData.contains(refSeries.getTitle()))
-                    ? watchData.get(refSeries.getTitle())
-                    : new SeriesControllable(refSeries);
+        watchlist = ((MainActivity)getActivity()).getWatchlist();
+        watchData = ((MainActivity)getActivity()).getWatchData();
+        series = (watchData.contains(refSeries.getTitle()))
+                ? watchData.get(refSeries.getTitle())
+                : new SeriesControllable(refSeries);
+
+//        watchlist = ((MainActivity)getActivity()).getWatchlist();
+//        watchData = ((MainActivity)getActivity()).getWatchData();
+//        series = (watchData.contains(refSeries.getTitle()))
+//                ? watchData.get(refSeries.getTitle())
+//                : new SeriesControllable(refSeries);
+//        if (watchData.contains(refSeries.getTitle())) {
+//            SeriesControllable storedSeries = watchData.get(refSeries.getTitle());
+//            if (!storedSeries.getSrc().equals(src)) {
+//                storedSeries.setSrc(src); //override due to change in preferred domain
+//            }
+//            series = storedSeries;
+//        } else {
+//            series = new SeriesControllable(refSeries);
+//        }
 
         epAdapter = new EpisodeAdapter(series, watchData);
         epAdapter.attachProgBar(binding.epSearchProg);
@@ -137,12 +152,6 @@ public class EpisodeSelect extends Fragment {
 
         super.onDestroyView();
         binding = null;
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
     }
 
     @Override

@@ -14,6 +14,10 @@ import com.wco_fun.wco_wrapper.classes.episode.Episode;
 import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
 import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 
+/**
+ * Reflective SeriesCard is associated with the series card variant on the home screen
+ * that allows the user to play episodes directly from said screen
+ */
 public class SeriesCardReflective extends SeriesCard{
     private SeriesControllable series;
     private WatchData watchData;
@@ -47,6 +51,7 @@ public class SeriesCardReflective extends SeriesCard{
             @Override
             public void onClick(View view) {
                 series.updateLastWatched();
+                series.epUpdater();
 
                 CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
                 CustomTabsIntent customTabsIntent = builder.build();

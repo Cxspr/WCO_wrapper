@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
+import com.wco_fun.wco_wrapper.classes.episode.Episode;
 import com.wco_fun.wco_wrapper.classes.series.Series;
 import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
 
@@ -55,6 +56,35 @@ public class WatchData {
     public void update(SeriesControllable s){
         seriesMap.put(s.getTitle(), s);
         pendingChanges = true;
+    }
+
+    public void updateDomain(String oldDomain, String newDomain) {
+        for (SeriesControllable s: seriesMap.values()) {
+            if (s.getSrc().indexOf(newDomain) == -1) {
+                int index = s.getSrc().indexOf(oldDomain);
+                int padding = oldDomain.length();
+                s.setSrc(newDomain + s.getSrc().substring(index + padding));
+                for (Episode e : s.getEpQueue()) {
+                    if (e.getSrc().indexOf(newDomain) == -1) {
+                        int epIndex = e.getSrc().indexOf(oldDomain);
+                        int epPadding = oldDomain.length();
+                        e.setSrc(newDomain + e.getSrc().substring(epIndex + epPadding));
+                    }
+                }
+                pendingChanges = true;
+            }
+        }
+        updateWatchDataJson();
+    }
+
+    public void updatePreloadLimit(int preloadLimit) {
+        for (SeriesControllable s : seriesMap.values()) {
+            if (s.getPreloadLimit() != preloadLimit) {
+                s.setPreloadLimit(preloadLimit);
+                pendingChanges = true;
+            }
+        }
+        updateWatchDataJson();
     }
 
 

@@ -23,10 +23,12 @@
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/fragment_media_search.xml" value="0.33" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/fragment_media_select.xml" value="0.1956521739130435" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/fragment_series_see_all.xml" value="0.43697916666666664" />
+        <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/fragment_settings.xml" value="0.39427083333333335" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/home_display_catagory.xml" value="0.553125" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/home_recycler_entry.xml" value="0.9" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/list_item_photo.xml" value="0.553125" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/media_search.xml" value="0.5541666666666667" />
+        <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/settings_blank_background.xml" value="0.3582427536231884" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/test.xml" value="0.3374094202898551" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/test1.xml" value="0.45384615384615384" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/layout/text_row_item.xml" value="0.33" />
@@ -35,6 +37,9 @@
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/menu/bottom_nav_menu.xml" value="0.36203703703703705" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/menu/menu_main.xml" value="0.5541666666666667" />
         <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/menu/toolbar_nav_menu.xml" value="0.434375" />
+        <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/mipmap-anydpi-v26/app_icon_round.xml" value="0.316" />
+        <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/xml/preferences.xml" value="0.3984375" />
+        <entry key="..\:/Users/elite/Desktop/Code/Android/wco_wrapper/app/src/main/res/xml/root_preferences.xml" value="0.3984375" />
       </map>
     </option>
   </component>

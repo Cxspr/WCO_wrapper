@@ -5,7 +5,9 @@ import android.util.Log;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.wco_fun.wco_wrapper.classes.WatchGroup;
+import com.wco_fun.wco_wrapper.classes.episode.Episode;
 import com.wco_fun.wco_wrapper.classes.series.Series;
+import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,6 +44,18 @@ public class Watchlist extends WatchGroup {
                 return;
             }
         }
+    }
+
+    public void updateDomain(String oldDomain, String newDomain) {
+        for (Series s: watchgroup) {
+            if (s.getSrc().indexOf(newDomain) == -1) {
+                int index = s.getSrc().indexOf(oldDomain);
+                int padding = oldDomain.length();
+                s.setSrc(newDomain + s.getSrc().substring(index + padding));
+                pendingChanges = true;
+            }
+        }
+        updateWatchlistJson();
     }
 
     @Override

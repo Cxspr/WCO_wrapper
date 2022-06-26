@@ -1,0 +1,6 @@
+<resources>
+    <string-array name="wco_domain_entries">
+        <item>https://www.wcofun.com</item>
+        <item>https://www.wcoforever.net</item>
+    </string-array>
+</resources>
