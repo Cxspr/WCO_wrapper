@@ -1,5 +1,6 @@
 package com.wco_fun.wco_wrapper.ui.search;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +41,7 @@ public class MediaSearch extends Fragment {
     private ConnectedSearchThread searchThread;
     private SearchAdapter searchAdapter;
 
+    private SharedPreferences sharedPrefs;
     private ArrayList<SeriesSearchable> dubbed, subbed, cartoon;
     int cachedTab, retTab;
     boolean backNav = false;
@@ -51,7 +54,7 @@ public class MediaSearch extends Fragment {
             Bundle savedInstanceState
     ) {
         binding = FragmentMediaSearchBinding.inflate(inflater, container, false);
-
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         url = getArguments().getString("link");
 
         searchAdapter = new SearchAdapter(binding.searchStateContainer);
@@ -115,24 +118,25 @@ public class MediaSearch extends Fragment {
                         e.printStackTrace();
                     }
                 }
+                String prefDomain = sharedPrefs.getString("domain_pref", "https://www.wcofun.com");
                 boolean toRun = true;
                 if (tab.getPosition() == 0 ) { //dubbed
                     if (dubbed == null || dubbed.isEmpty()) {
-                        url = "https://www.wcofun.com/dubbed-anime-list";
+                        url = prefDomain + "/dubbed-anime-list";
                     } else {
                         searchAdapter.rebaseLegacyData(dubbed);
                         toRun = false;
                     }
                 } else if (tab.getPosition() == 1) { //cartoons
                     if (cartoon == null || cartoon.isEmpty()) {
-                        url = "https://www.wcofun.com/cartoon-list";
+                        url = prefDomain + "/cartoon-list";
                     } else {
                         searchAdapter.rebaseLegacyData(cartoon);
                         toRun = false;
                     }
                 } else { //subbed
                     if (subbed == null || subbed.isEmpty()) {
-                        url = "https://www.wcofun.com/subbed-anime-list";
+                        url = prefDomain + "/subbed-anime-list";
                     } else {
                         searchAdapter.rebaseLegacyData(subbed);
                         toRun = false;

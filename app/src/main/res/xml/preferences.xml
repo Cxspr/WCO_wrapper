@@ -1,0 +1,27 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="HTML Scraper">
+        <EditTextPreference
+            app:key="preload_limit_pref"
+            app:defaultValue="2"
+            app:title="@string/preload_limit"
+            app:dialogMessage="@string/preload_limit_desc"
+            app:useSimpleSummaryProvider="true"/>
+
+        <ListPreference
+            app:key="domain_pref"
+            app:defaultValue="https://www.wcofun.com"
+            app:entries="@array/wco_domain_entries"
+            app:entryValues="@array/wco_domain_entries"
+            app:title="@string/preferred_domain"
+            app:useSimpleSummaryProvider="true"/>
+    </PreferenceCategory>
+
+<!--    <PreferenceCategory app:title="File Management">-->
+<!--        <Preference-->
+<!--            app:key="filepath"-->
+<!--            app:title="File Path"/>-->
+
+<!--    </PreferenceCategory>-->
+
+</PreferenceScreen>

@@ -40,7 +40,7 @@ public class Home extends Fragment {
 
     private MultigroupAdapter multiAdapter;
     private RecyclerView homeRecycler;
-    ArrayList<SeriesGroup> watchgroups;
+    private ArrayList<SeriesGroup> watchgroups;
 
     @Override
     public View onCreateView(

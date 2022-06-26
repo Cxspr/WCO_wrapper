@@ -35,6 +35,7 @@ public class Episode {
 
     public String getTitle() {return title;}
     public String getSrc() {return src;}
+    public void setSrc(String src) {this.src = src;}
     public String getAbrTitle() {return genAbrTitle();}
     public int getIdx() {return idx;}
     public void setIdx(int idx) {this.idx = idx;}

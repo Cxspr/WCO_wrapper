@@ -56,13 +56,6 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
         public void setEpQueue(ArrayList<Episode> epQueue){
             this.epQueue = epQueue;
         }
-        public void verifyArrayList() {
-            for (int i = 0; i < epQueue.size(); i++){
-                if (epQueue.get(i) == null) {
-                    epQueue.remove(i);
-                }
-            }
-        }
 
         private void epQueueApplicator(){
             hostSeries.overrideEpQueue(epQueue);
@@ -116,11 +109,9 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
         ArrayList<Episode> epQueue = new ArrayList<>();
         for (int i = position; (i< position + 3); i++) {
             if (i >= episodes.size()) break;
-//            holder.epQueue.add(episodes.get(i));//preload with up to 3 episodes
-            epQueue.add(episodes.get(i));
+            epQueue.add(episodes.get(i));//preload with up to 3 episodes
         }
         holder.setEpQueue(epQueue);
-//        holder.verifyArrayList();
     }
 
     @Override

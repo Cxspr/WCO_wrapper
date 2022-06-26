@@ -34,8 +34,11 @@
             android:id="@+id/action_homeScreen_to_seeAllSeries"
             app:destination="@id/seeAllSeries" />
         <action
-            android:id="@+id/action_homeScreen_to_menu_search"
+            android:id="@+id/action_homeScreen_to_mediaSearch"
             app:destination="@id/media_search" />
+        <action
+            android:id="@+id/action_homeScreen_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/seeAllSeries"
@@ -46,4 +49,8 @@
             android:id="@+id/action_seeAllSeries_to_episode_select"
             app:destination="@id/episode_select" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.wco_fun.wco_wrapper.SettingsFragment"
+        android:label="SettingsFragment" />
 </navigation>
