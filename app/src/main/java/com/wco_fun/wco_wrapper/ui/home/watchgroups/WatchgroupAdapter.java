@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.wco_fun.wco_wrapper.MainActivity;
 import com.wco_fun.wco_wrapper.R;
 import com.wco_fun.wco_wrapper.classes.series.Series;
 import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
@@ -134,6 +135,10 @@ public class WatchgroupAdapter extends RecyclerView.Adapter<WatchgroupAdapter.Wa
         }
         this.seriesGroup.setContents(seriesData);
         this.notifyDataSetChanged();
+
+        if (this.seriesGroup.getVariant() == 3) {
+            ((MainActivity) this.seriesGroup.getActivity()).updateNewEpGroup(retList);
+        }
     }
 
     public void onThreadErr(){

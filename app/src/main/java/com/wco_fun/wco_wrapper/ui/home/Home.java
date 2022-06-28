@@ -9,10 +9,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.wco_fun.wco_wrapper.MainActivity;
+import com.wco_fun.wco_wrapper.R;
 import com.wco_fun.wco_wrapper.classes.series.Series;
 import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 import com.wco_fun.wco_wrapper.classes.user_data.Watchlist;
@@ -37,6 +40,7 @@ public class Home extends Fragment {
     private Watchlist wl;
     private WatchData wd;
     private ArrayList<Series> watchlist;
+    private ArrayList<Series> newEpArchive;
 
     private MultigroupAdapter multiAdapter;
     private RecyclerView homeRecycler;
@@ -51,9 +55,16 @@ public class Home extends Fragment {
         watchgroups = new ArrayList<>();
         wd = ((MainActivity)getActivity()).getWatchData();
         wl = ((MainActivity)getActivity()).getWatchlist();
+        newEpArchive = ((MainActivity)getActivity()).getNewEpGroup();
 
-        NewEpGroup newEpGroup = new NewEpGroup(wl.getWatchgroup(), (MainActivity)getActivity());
-        watchgroups.add(newEpGroup);
+        if (newEpArchive.isEmpty()) {
+            NewEpGroup newEpGroup = new NewEpGroup(wl.getWatchgroup(), (MainActivity)getActivity());
+            watchgroups.add(newEpGroup);
+        } else {
+            watchgroups.add(new GenericGroup("New Episodes", newEpArchive));
+        }
+
+
 
         watchlist = new ArrayList<Series>(wl.getWatchgroup());
         Collections.reverse(watchlist);
@@ -82,5 +93,11 @@ public class Home extends Fragment {
         binding = null;
     }
 
-
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+//        menu.findItem(R.id.menu_search).setVisible(false);
+//        menu.findItem(R.id.menu_settings).setVisible(false);
+//        menu.findItem(R.id.menu_genres).setVisible(false);
+    }
 }

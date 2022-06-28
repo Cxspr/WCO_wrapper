@@ -1,5 +1,6 @@
 package com.wco_fun.wco_wrapper;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -20,6 +21,7 @@ import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
 import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 import com.wco_fun.wco_wrapper.classes.user_data.Watchlist;
 import com.wco_fun.wco_wrapper.databinding.ActivityMainBinding;
+import com.wco_fun.wco_wrapper.initialization.GenreList;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesCard.SeriesCard;
 
 import android.util.Log;
@@ -28,6 +30,7 @@ import android.view.MenuItem;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,19 +40,30 @@ public class MainActivity extends AppCompatActivity {
     private Menu menu;
 
     private String parentDir;
+    private GenreList genreList;
     private Watchlist watchlist;
     private WatchData watchData;
+    private ArrayList<Series> newEpGroup = new ArrayList<>();
     private SearchCache searchCache = new SearchCache();
     private ArrayList<SeriesCard> seeAllCache = new ArrayList();
     private SharedPreferences sharedPrefs;
 
 
     //globalized GETTER for globally accessible data classes
+    public ArrayList<Series> getNewEpGroup() { return this.newEpGroup; }
+    public void updateNewEpGroup(ArrayList<Series> newGroup) { this.newEpGroup = newGroup; }
     public Watchlist getWatchlist() {
         return watchlist;
     }
     public WatchData getWatchData() { return watchData; }
     public SearchCache getSearchCache() { return searchCache; }
+    public GenreList getGenreList() { return genreList;  }
+    public void genGenreList(Activity activity) {
+        genreList = new GenreList(
+                sharedPrefs.getString("domain_pref", "https://www.wcofun.com"),
+                activity,
+                this.parentDir);
+    }
 
     public void setSeeAllCache(ArrayList<SeriesCard> seeAllCache) { this.seeAllCache = seeAllCache; }
     public ArrayList<SeriesCard> getSeeAllCache() { return seeAllCache; }
@@ -87,11 +101,30 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             } if (watchData == null) {watchData = new WatchData(new ArrayList<SeriesControllable>(), parentDir);}
         }
+        //import GenreList from files
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (sharedPrefs.getBoolean("use_genre_list", false)) {
+            if (!(new File(parentDir + "/genre_list.json")).exists()){
+                genreList = new GenreList(
+                        sharedPrefs.getString("domain_pref", "https://www.wcofun.com"),
+                        this,
+                        parentDir);
+            } else {
+                try {
+                    genreList = GenreList.genGenreList(parentDir);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } if (genreList == null) {genreList = new GenreList(
+                        sharedPrefs.getString("domain_pref", "https://www.wcofun.com"),
+                        this,
+                        parentDir);}
+            }
+        } else {
+            this.genreList = new GenreList();
+        }
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -105,11 +138,29 @@ public class MainActivity extends AppCompatActivity {
             public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
                 if (destination.getId() != R.id.homeScreen){
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    menu.findItem(R.id.menu_search).setVisible(false);
-                    menu.findItem(R.id.menu_settings).setVisible(false);
+                    binding.getRoot().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            menu.findItem(R.id.menu_search).setVisible(false);
+                            menu.findItem(R.id.menu_settings).setVisible(false);
+                            menu.findItem(R.id.menu_genres).setVisible(false);
+                        }
+                    });
                 } else {
                     getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                    invalidateOptionsMenu();
+                    binding.getRoot().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            invalidateOptionsMenu();
+                        }
+                    });
+//                    invalidateOptionsMenu();
+//                    if (PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean("use_genre_list", false)) {
+//                        menu.findItem(R.id.menu_genres).setVisible(true);
+//                    } else {
+//                        menu.findItem(R.id.menu_genres).setVisible(false);
+//                    }
+
                 }
             }
         });
@@ -118,6 +169,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        if (PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean("use_genre_list", false)) {
+            menu.findItem(R.id.menu_genres).setVisible(true);
+        } else {
+            menu.findItem(R.id.menu_genres).setVisible(false);
+        }
         this.menu = menu;
         return true;
     }
@@ -135,6 +191,8 @@ public class MainActivity extends AppCompatActivity {
                     .navigate(R.id.action_homeScreen_to_mediaSearch, bundle);
         } else if (id == R.id.menu_settings) {
             Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.action_homeScreen_to_settingsFragment);
+        } else if (id == R.id.menu_genres) {
+            Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.action_homeScreen_to_genreSelection);
         }
 
         return super.onOptionsItemSelected(item);

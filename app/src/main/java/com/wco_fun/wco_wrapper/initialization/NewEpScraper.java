@@ -102,6 +102,7 @@ public class NewEpScraper extends Thread {
         resHandler.post(new Runnable() {
             @Override
             public void run() {
+                ((MainActivity) retActivity).updateNewEpGroup(retList);
                 retLoc.onThreadConcluded(retList);
             }
         });
