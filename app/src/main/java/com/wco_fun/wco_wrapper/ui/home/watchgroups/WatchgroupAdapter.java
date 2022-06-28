@@ -22,6 +22,9 @@ import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesCard.SeriesCardGeneric;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.ReflectiveGroup;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.SeriesGroup;
 
+import org.jsoup.Jsoup;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class WatchgroupAdapter extends RecyclerView.Adapter<WatchgroupAdapter.WatchgroupViewHolder>{
@@ -31,6 +34,7 @@ public class WatchgroupAdapter extends RecyclerView.Adapter<WatchgroupAdapter.Wa
     private ImageButton refresh;
     private SeriesGroup seriesGroup;
     private MultigroupAdapter host;
+    private int lastChildIndex = 0;
 
     public WatchgroupAdapter () { this.seriesData = new ArrayList<>(); }
     public WatchgroupAdapter (ArrayList<SeriesCard> seriesData){
@@ -139,5 +143,37 @@ public class WatchgroupAdapter extends RecyclerView.Adapter<WatchgroupAdapter.Wa
     public void onThreadErr(){
         progBar.setVisibility(View.GONE);
         refresh.setVisibility(View.VISIBLE);
+    }
+
+    public void setLastChildIndex(int index) {
+        if (index > lastChildIndex) {
+            if (seriesData.size() > 12) { //some card images not grabbed
+                ArrayList<Thread> threads = new ArrayList<>();
+                int threadIdx = 0;
+                for (int i = 12 + lastChildIndex; i < seriesData.size() && i < 12 + lastChildIndex + index; i++) {
+                    int finalI = i;
+                    Thread runThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            int index = finalI;
+                            try {
+                                String imgUrl = Jsoup.connect(seriesData.get(finalI).getSeriesSrc())
+                                        .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                                        .timeout(2000) //10 second timeout
+                                        .get()
+                                        .getElementsByClass("img5")
+                                        .get(0)
+                                        .attr("src");
+                                seriesData.get(finalI).updateSeriesImageURL(imgUrl);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }});
+                    threads.add(new Thread(runThread));
+                    threads.get(threadIdx++).start();
+                }
+                lastChildIndex = index;
+            }
+        }
     }
 }

@@ -83,7 +83,7 @@ public class Watchlist extends WatchGroup {
         try {
             pendingChanges = false;
             FileOutputStream stream = new FileOutputStream(parentDir + "/watchlist.json");
-            Log.i("File Written at: ", parentDir + "/watch_data.json");
+            Log.i("File Written at: ", parentDir + "/watchlist.json");
             stream.write(this.watchlistToJson().getBytes());
             stream.close();
         } catch (IOException e) {

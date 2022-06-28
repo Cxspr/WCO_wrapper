@@ -1,5 +1,6 @@
 package com.wco_fun.wco_wrapper;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -20,6 +21,7 @@ import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
 import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 import com.wco_fun.wco_wrapper.classes.user_data.Watchlist;
 import com.wco_fun.wco_wrapper.databinding.ActivityMainBinding;
+import com.wco_fun.wco_wrapper.initialization.GenreList;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesCard.SeriesCard;
 
 import android.util.Log;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private Menu menu;
 
     private String parentDir;
+    private GenreList genreList;
     private Watchlist watchlist;
     private WatchData watchData;
     private SearchCache searchCache = new SearchCache();
@@ -50,6 +53,13 @@ public class MainActivity extends AppCompatActivity {
     }
     public WatchData getWatchData() { return watchData; }
     public SearchCache getSearchCache() { return searchCache; }
+    public GenreList getGenreList() { return genreList;  }
+    public void genGenreList(Activity activity) {
+        genreList = new GenreList(
+                sharedPrefs.getString("domain_pref", "https://www.wcofun.com"),
+                activity,
+                this.parentDir);
+    }
 
     public void setSeeAllCache(ArrayList<SeriesCard> seeAllCache) { this.seeAllCache = seeAllCache; }
     public ArrayList<SeriesCard> getSeeAllCache() { return seeAllCache; }
@@ -87,11 +97,33 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             } if (watchData == null) {watchData = new WatchData(new ArrayList<SeriesControllable>(), parentDir);}
         }
+        //import GenreList from files
+
+
+
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (sharedPrefs.getBoolean("use_genre_list", false)) {
+            if (!(new File(parentDir + "/genre_list.json")).exists()){
+                genreList = new GenreList(
+                        sharedPrefs.getString("domain_pref", "https://www.wcofun.com"),
+                        this,
+                        parentDir);
+            } else {
+                try {
+                    genreList = GenreList.genGenreList(parentDir);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } if (genreList == null) {genreList = new GenreList(
+                        sharedPrefs.getString("domain_pref", "https://www.wcofun.com"),
+                        this,
+                        parentDir);}
+            }
+        } else {
+            this.genreList = new GenreList();
+        }
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);

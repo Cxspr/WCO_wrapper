@@ -12,6 +12,10 @@ public abstract class SeriesGroup {
     protected String title;
     protected ArrayList<SeriesCard> contents = new ArrayList<>();
     protected int variant;
+    protected int childIndex = 0;
+
+    public void updateLastChildIndex(int newIndex) { this.childIndex = newIndex; }
+    public int getChildIndex() { return this.childIndex; }
 
     public void setTitle(String title) {this.title = title;}
     public String getTitle() {return this.title;}

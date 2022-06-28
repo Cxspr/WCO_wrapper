@@ -21,6 +21,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.preferences, rootKey);
 
         Preference domain_pref = findPreference("domain_pref");
+        Preference preload_limit_pref = findPreference("preload_limit_pref");
+        Preference use_genre_list = findPreference("use_genre_list");
+        Preference regen_genre_list = findPreference("regen_genre_list");
         domain_pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newDomain) {
@@ -28,13 +31,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 //                    Log.i("SETTINGS OLD: ", preference.getSummary().toString());
 //                    Log.i("SETTINGS: ", (String) newDomain);
                     ((MainActivity) getActivity()).updateDomainPreference(preference.getSummary().toString(), (String) newDomain);
+                    if (Boolean.parseBoolean((String) use_genre_list.getSummary())) {
+                        ((MainActivity) getActivity()).genGenreList(getActivity());
+                    }
                     return true;
                 }
                 return false;
             }
         });
 
-        Preference preload_limit_pref = findPreference("preload_limit_pref");
         preload_limit_pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -50,6 +55,28 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return false;
             }
         });
+
+        use_genre_list.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                boolean newState = (boolean) newValue;
+                if (newState) {
+                    ((MainActivity) getActivity()).genGenreList(getActivity());
+                }
+                return true;
+            }
+        });
+
+        regen_genre_list.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                ((MainActivity) getActivity()).genGenreList(getActivity());
+                return false;
+            }
+        });
+
+
+
 
     }
 }

@@ -16,6 +16,15 @@ public class SeriesCardGeneric extends SeriesCard{
     }
 
     @Override
+    public void updateSeriesImageURL(String url) {
+        this.series.setImgUrl("https:" + url);
+        this.setSeriesImage();
+    }
+
+    @Override
+    public String getSeriesSrc() { return this.series.getSrc(); }
+
+    @Override
     public void setSeriesImage() {
         series.getSeriesImage(seriesImg);
     }

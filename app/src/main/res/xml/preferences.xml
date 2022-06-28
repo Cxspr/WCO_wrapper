@@ -17,11 +17,15 @@
             app:useSimpleSummaryProvider="true"/>
     </PreferenceCategory>
 
-<!--    <PreferenceCategory app:title="File Management">-->
-<!--        <Preference-->
-<!--            app:key="filepath"-->
-<!--            app:title="File Path"/>-->
+    <PreferenceCategory app:title="Genre Display">
+        <SwitchPreference
+            app:defaultValue="false"
+            app:key="use_genre_list"
+            app:title="Enable Genre Display"/>
+        <Preference
+            app:key="regen_genre_list"
+            app:title="Regenerate Genre List"/>
 
-<!--    </PreferenceCategory>-->
+    </PreferenceCategory>
 
 </PreferenceScreen>

@@ -48,6 +48,8 @@ public abstract class SeriesCard{
     //should attach local series object
     public abstract void setSeries(SeriesControllable series);
     public abstract void setSeriesImage();
+    public void updateSeriesImageURL(String url) {}
+    public String getSeriesSrc() { return ""; }
 
     public void bindAdapter(WatchgroupAdapter host) {this.host = host;}
 

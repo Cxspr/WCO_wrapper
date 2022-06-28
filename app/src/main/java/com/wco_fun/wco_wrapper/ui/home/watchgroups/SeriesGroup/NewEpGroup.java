@@ -41,6 +41,14 @@ public class NewEpGroup extends SeriesGroup{
         super.attachAdapter(adapter);
         this.adapter = adapter;
         runThread.attachRetLoc(adapter);
+        if (runThread.isAlive()) {
+            runThread.interrupt();
+            try {
+                runThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         runThread.start();
     }
 }

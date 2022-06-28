@@ -17,8 +17,10 @@ import com.wco_fun.wco_wrapper.classes.series.Series;
 import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 import com.wco_fun.wco_wrapper.classes.user_data.Watchlist;
 import com.wco_fun.wco_wrapper.databinding.FragmentHomeBinding;
+import com.wco_fun.wco_wrapper.initialization.GenreList;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.MultigroupAdapter;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.GenericGroup;
+import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.LoadableGroup;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.NewEpGroup;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.ReflectiveGroup;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.SeriesGroup;
@@ -36,6 +38,7 @@ public class Home extends Fragment {
     private FragmentHomeBinding binding;
     private Watchlist wl;
     private WatchData wd;
+    private GenreList gl;
     private ArrayList<Series> watchlist;
 
     private MultigroupAdapter multiAdapter;
@@ -51,6 +54,9 @@ public class Home extends Fragment {
         watchgroups = new ArrayList<>();
         wd = ((MainActivity)getActivity()).getWatchData();
         wl = ((MainActivity)getActivity()).getWatchlist();
+        gl = ((MainActivity)getActivity()).getGenreList();
+
+
 
         NewEpGroup newEpGroup = new NewEpGroup(wl.getWatchgroup(), (MainActivity)getActivity());
         watchgroups.add(newEpGroup);
@@ -61,6 +67,15 @@ public class Home extends Fragment {
 
         watchgroups.add(new ReflectiveGroup(wd));
 
+        //TODO attach to home UI response/notify function
+        GenreList.Genre genre = new GenreList.Genre();
+        if (!gl.isEmpty()) {
+            genre = gl.getRandomGenre();
+            String TAG = "RANDOM GENRE: ";
+            Log.i(TAG, genre.getSrc());
+            Log.i(TAG, genre.getTitle());
+            watchgroups.add(new LoadableGroup(genre, (MainActivity) getActivity()));
+        }
         homeRecycler = binding.homeRecycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         homeRecycler.setLayoutManager(layoutManager);

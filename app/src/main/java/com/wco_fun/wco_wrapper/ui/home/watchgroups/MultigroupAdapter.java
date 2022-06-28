@@ -1,6 +1,7 @@
 package com.wco_fun.wco_wrapper.ui.home.watchgroups;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +82,8 @@ public class MultigroupAdapter extends RecyclerView.Adapter<MultigroupAdapter.Mu
             emptyInd = view.findViewById(R.id.watchgroup_empty_ind);
             refresh = view.findViewById(R.id.watchgroup_refresh);
             progBar = view.findViewById(R.id.watchgroup_prog);
+            int firstChildIdx = 0;
+            int childViewCount;
 
             seeAll = view.findViewById(R.id.watchgroup_see_all);
             seeAll.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +118,25 @@ public class MultigroupAdapter extends RecyclerView.Adapter<MultigroupAdapter.Mu
             if (seriesGroup.getVariant() >= 2){
                 progBar.setVisibility(View.VISIBLE);
                 adapter.attachEls(progBar, refresh, seriesGroup, host);
+            }
+            if (seriesGroup.getVariant() == 2) {
+                seriesRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        if (dx > 0) {
+                            String TAG = "ON SCROLL DETAILS: ";
+                            int visibleItemCount = layoutManager.getChildCount();
+                            Log.i(TAG, "child count " + visibleItemCount);
+                            int totalItemCount = layoutManager.getItemCount();
+                            Log.i(TAG, "item count " + totalItemCount);
+                            int last = layoutManager.findLastVisibleItemPosition();
+                            Log.i(TAG, "first visible child index " + last);
+                            adapter.setLastChildIndex(last);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
             }
             seriesRecycler.setAdapter(adapter);
         }
