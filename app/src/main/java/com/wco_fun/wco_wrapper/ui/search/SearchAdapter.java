@@ -86,7 +86,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull SearchAdapter.ViewHolder holder, int position) {
         holder.getTextView().setText(results.get(position).getTitle());
-//        holder.setHost(parent);
         holder.setSeries(results.get(position));
     }
 
@@ -117,7 +116,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     public void revertToLegacy() {
         results.clear();
-//        results.addAll(legacyRes);
+        results.addAll(legacyData);
     }
 
     public void searchData(String str) {

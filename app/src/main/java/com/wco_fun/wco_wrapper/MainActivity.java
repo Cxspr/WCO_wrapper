@@ -47,11 +47,15 @@ public class MainActivity extends AppCompatActivity {
     private SearchCache searchCache = new SearchCache();
     private ArrayList<SeriesCard> seeAllCache = new ArrayList();
     private SharedPreferences sharedPrefs;
+    public boolean newEpGroupSet = false;
 
 
     //globalized GETTER for globally accessible data classes
     public ArrayList<Series> getNewEpGroup() { return this.newEpGroup; }
-    public void updateNewEpGroup(ArrayList<Series> newGroup) { this.newEpGroup = newGroup; }
+    public void updateNewEpGroup(ArrayList<Series> newGroup) {
+        this.newEpGroup = newGroup;
+        this.newEpGroupSet = true;
+    }
     public Watchlist getWatchlist() {
         return watchlist;
     }
@@ -138,28 +142,10 @@ public class MainActivity extends AppCompatActivity {
             public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
                 if (destination.getId() != R.id.homeScreen){
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    binding.getRoot().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            menu.findItem(R.id.menu_search).setVisible(false);
-                            menu.findItem(R.id.menu_settings).setVisible(false);
-                            menu.findItem(R.id.menu_genres).setVisible(false);
-                        }
-                    });
+                    invalidateOptionsMenu();
                 } else {
                     getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                    binding.getRoot().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            invalidateOptionsMenu();
-                        }
-                    });
-//                    invalidateOptionsMenu();
-//                    if (PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean("use_genre_list", false)) {
-//                        menu.findItem(R.id.menu_genres).setVisible(true);
-//                    } else {
-//                        menu.findItem(R.id.menu_genres).setVisible(false);
-//                    }
+                    invalidateOptionsMenu();
 
                 }
             }
@@ -169,13 +155,38 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        if (PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean("use_genre_list", false)) {
-            menu.findItem(R.id.menu_genres).setVisible(true);
-        } else {
-            menu.findItem(R.id.menu_genres).setVisible(false);
-        }
         this.menu = menu;
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (Navigation.findNavController(this, R.id.nav_host_fragment_content_main).getCurrentDestination().getId() != R.id.homeScreen){
+            binding.getRoot().post(new Runnable() {
+                @Override
+                public void run() {
+                    menu.findItem(R.id.menu_search).setVisible(false);
+                    menu.findItem(R.id.menu_settings).setVisible(false);
+                    menu.findItem(R.id.menu_genres).setVisible(false);
+                }
+            });
+        } else {
+            binding.getRoot().post(new Runnable() {
+                @Override
+                public void run() {
+                    menu.findItem(R.id.menu_search).setVisible(true);
+                    menu.findItem(R.id.menu_settings).setVisible(true);
+                    if (PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean("use_genre_list", false)) {
+                        menu.findItem(R.id.menu_genres).setVisible(true);
+                    } else {
+                        menu.findItem(R.id.menu_genres).setVisible(false);
+                    }
+                }
+            });
+        }
+
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override

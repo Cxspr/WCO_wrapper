@@ -88,6 +88,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:autoSizeMaxTextSize="50sp"
+                    android:autoSizeMinTextSize="20sp"
+                    android:autoSizeTextType="none"
                     android:text="Title goes here"
                     android:textAlignment="center"
                     android:textSize="20sp"
@@ -136,6 +139,7 @@
                             android:layout_height="wrap_content"
                             android:text="Watchlist"
                             android:textAlignment="center"
+                            android:textSize="16sp"
                             app:layout_constraintEnd_toEndOf="@+id/button_save"
                             app:layout_constraintStart_toStartOf="@+id/button_save"
                             app:layout_constraintTop_toBottomOf="@+id/button_save" />
@@ -167,6 +171,7 @@
                             android:layout_height="wrap_content"
                             android:text="Play"
                             android:textAlignment="center"
+                            android:textSize="16sp"
                             app:layout_constraintEnd_toEndOf="@+id/button_play"
                             app:layout_constraintStart_toStartOf="@+id/button_play"
                             app:layout_constraintTop_toBottomOf="@+id/button_play" />
@@ -198,6 +203,7 @@
                             android:layout_height="wrap_content"
                             android:text="Play Next"
                             android:textAlignment="center"
+                            android:textSize="16sp"
                             app:layout_constraintEnd_toEndOf="@+id/button_next"
                             app:layout_constraintStart_toStartOf="@+id/button_next"
                             app:layout_constraintTop_toBottomOf="@+id/button_next" />
@@ -213,6 +219,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
@@ -222,6 +229,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="TextView"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="@+id/curEpText"
             app:layout_constraintTop_toBottomOf="@+id/curEpText" />
 
@@ -229,7 +237,7 @@
 
     <View
         android:id="@+id/divider5"
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toTopOf="@+id/resultContainer"
@@ -242,9 +250,9 @@
         android:id="@+id/resultContainer"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="32dp"
         android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"

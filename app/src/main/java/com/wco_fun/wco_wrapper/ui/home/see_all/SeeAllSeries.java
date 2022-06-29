@@ -3,13 +3,16 @@ package com.wco_fun.wco_wrapper.ui.home.see_all;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.wco_fun.wco_wrapper.R;
 import com.wco_fun.wco_wrapper.databinding.FragmentSeriesSeeAllBinding;
 import com.wco_fun.wco_wrapper.MainActivity;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.WatchgroupAdapter;
@@ -42,8 +45,8 @@ public class SeeAllSeries extends Fragment {
         int variant = getArguments().getInt("variant");
 
         recycler = binding.seeAllRecycler;
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
-        recycler.setLayoutManager(layoutManager);
+        RecyclerView.LayoutManager layoutManager = new GridAutofitLayoutManager(this.getContext(), 320);
+            recycler.setLayoutManager(layoutManager);
         if (variant <= 3){
             WatchgroupAdapter adapter = new WatchgroupAdapter(((MainActivity)getActivity()).getSeeAllCache());
             recycler.setAdapter(adapter);
@@ -57,4 +60,7 @@ public class SeeAllSeries extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
+
+
 }

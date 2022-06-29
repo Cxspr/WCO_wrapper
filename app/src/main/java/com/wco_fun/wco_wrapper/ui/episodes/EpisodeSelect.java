@@ -74,21 +74,6 @@ public class EpisodeSelect extends Fragment {
                 ? watchData.get(refSeries.getTitle())
                 : new SeriesControllable(refSeries);
 
-//        watchlist = ((MainActivity)getActivity()).getWatchlist();
-//        watchData = ((MainActivity)getActivity()).getWatchData();
-//        series = (watchData.contains(refSeries.getTitle()))
-//                ? watchData.get(refSeries.getTitle())
-//                : new SeriesControllable(refSeries);
-//        if (watchData.contains(refSeries.getTitle())) {
-//            SeriesControllable storedSeries = watchData.get(refSeries.getTitle());
-//            if (!storedSeries.getSrc().equals(src)) {
-//                storedSeries.setSrc(src); //override due to change in preferred domain
-//            }
-//            series = storedSeries;
-//        } else {
-//            series = new SeriesControllable(refSeries);
-//        }
-
         epAdapter = new EpisodeAdapter(series, watchData);
         epAdapter.attachProgBar(binding.epSearchProg);
         epAdapter.attachRetryBtn(binding.epSearchRetry);

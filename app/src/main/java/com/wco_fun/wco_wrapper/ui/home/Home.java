@@ -55,16 +55,17 @@ public class Home extends Fragment {
         watchgroups = new ArrayList<>();
         wd = ((MainActivity)getActivity()).getWatchData();
         wl = ((MainActivity)getActivity()).getWatchlist();
+        if (wd.isEmpty() && wl.isEmpty()) {
+            binding.homeEmptyNotif.setVisibility(View.VISIBLE);
+        }
         newEpArchive = ((MainActivity)getActivity()).getNewEpGroup();
 
-        if (newEpArchive.isEmpty()) {
+        if (!((MainActivity)getActivity()).newEpGroupSet) {
             NewEpGroup newEpGroup = new NewEpGroup(wl.getWatchgroup(), (MainActivity)getActivity());
             watchgroups.add(newEpGroup);
-        } else {
+        } else if (!newEpArchive.isEmpty()) {
             watchgroups.add(new GenericGroup("New Episodes", newEpArchive));
         }
-
-
 
         watchlist = new ArrayList<Series>(wl.getWatchgroup());
         Collections.reverse(watchlist);
@@ -86,18 +87,10 @@ public class Home extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
-//        menu.findItem(R.id.menu_search).setVisible(false);
-//        menu.findItem(R.id.menu_settings).setVisible(false);
-//        menu.findItem(R.id.menu_genres).setVisible(false);
-    }
 }
