@@ -23,4 +23,4 @@ In order to install the app simply download the latest APK from the releases tab
 This App is not officially affiliated with the WCO brand of streaming sites but rather it is simply a fan project to improve the user experience of the sites and attempt to better adapt them for mobile devices. With this in mind, please do not direct issues regarding the app towards the site admins but instead to the issues page on this repository.
 
 ## Additional Notes
-The app's UI was designed primarily to look best when using dark mode so there may be inconsistancies when dark mode is not enabled.
+The app's UI was designed primarily to look best when using dark mode so there may be inconsistancies when dark mode is not enabled. Additionally, the UI is not currently formatted properly to support devices with larger screens like tablets and the text sizes may appear small.
