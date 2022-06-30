@@ -1,6 +1,8 @@
 package com.wco_fun.wco_wrapper.ui.genres;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +26,7 @@ public class GenreSelection extends Fragment {
     private FragmentGenreSelectionBinding binding;
     private GenreList genreList;
     private RecyclerView recyclerView;
-    private TextView textView;
+    private TextView title;
 
     public GenreSelection() {
         // Required empty public constructor
@@ -36,9 +38,25 @@ public class GenreSelection extends Fragment {
         binding = FragmentGenreSelectionBinding.inflate(inflater, container, false);
         // Inflate the layout for this fragment
 
-        textView = binding.textView;
-        textView.setText("Genres");
-        textView.setTextSize(32);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) getContext())
+                .getWindowManager()
+                .getDefaultDisplay()
+                .getMetrics(displayMetrics);
+
+        double displayHeightDP = displayMetrics.heightPixels / displayMetrics.density; //get height, convert to dp
+        final double uiScalar = displayHeightDP / 800; //UI was built on a simulated display with ~800dp height
+
+
+        title = binding.textView;
+        title.setText("Genres");
+        title.post(new Runnable() {
+            @Override
+            public void run() {
+                title.setTextSize(0, (float) (title.getTextSize() * uiScalar));
+            }
+        });
 
         genreList = ((MainActivity)getActivity()).getGenreList();
         recyclerView = binding.genreSelectionRecycler;
@@ -47,7 +65,7 @@ public class GenreSelection extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 recyclerView.getContext(), DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
-        recyclerView.setAdapter(new GenreSelectionAdapter(genreList));
+        recyclerView.setAdapter(new GenreSelectionAdapter(genreList, displayMetrics));
 
         return binding.getRoot();
     }

@@ -22,7 +22,9 @@ public class Episode {
             src = node.hasAttr("href")
                     ? node.attr("href")
                     : null;
-//            abrTitle = abrString();
+            if (title.indexOf("Watch ") != -1) {
+                title = title.substring(6);
+            }
         }
     }
 
@@ -36,16 +38,36 @@ public class Episode {
     public String getTitle() {return title;}
     public String getSrc() {return src;}
     public void setSrc(String src) {this.src = src;}
-    public String getAbrTitle() {return genAbrTitle();}
+    public String getAbrTitle() {return genAbrTitle("");}
+    public String getAbrTitle(String seriesName) {return genAbrTitle(seriesName);}
     public int getIdx() {return idx;}
     public void setIdx(int idx) {this.idx = idx;}
 
-    public String genAbrTitle() {
-        String res = "";
+    public String genAbrTitle() { return genAbrTitle(""); }
 
+    public String genAbrTitle(String seriesName) {
+        boolean  seriesNameGiven = !seriesName.equals("");
+        String res = "";
+        Pattern pattern;
+        Matcher matcher;
+
+        if (seriesNameGiven) {
+            //{seriesName} ... Arc Episode x: movie title //main culprit here is demon slayer
+            pattern = Pattern.compile(seriesName + "[: ]*.* Arc Episode [0-9]*", Pattern.CASE_INSENSITIVE);
+            matcher = pattern.matcher(title);
+            if (matcher.find()){
+                res = title.substring(matcher.start(), matcher.end());
+                int padding = (title.indexOf(seriesName + ": ") == -1)
+                        ? 1
+                        : 2;
+                res = res.substring((seriesName.length() + padding - 1));
+                res = res.replace("Episode", "Ep.");
+                return res;
+            }
+        }
         //Season xyz Episode xyz
-        Pattern pattern = Pattern.compile(".*Season [0-9]* Episode [0-9]*", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(title);
+        pattern = Pattern.compile(".*Season [0-9]* Episode [0-9]*", Pattern.CASE_INSENSITIVE);
+        matcher = pattern.matcher(title);
         if (matcher.find()){
             int a = title.lastIndexOf("Season "),b = title.indexOf("Episode ");
             a+=("Season ").length();
@@ -115,32 +137,19 @@ public class Episode {
         }
 
         //Movie xyz: movie title
-        pattern = Pattern.compile(".*Movie[ :[0-9]]*", Pattern.CASE_INSENSITIVE);
+        pattern = Pattern.compile("Movie[ :[0-9]]*", Pattern.CASE_INSENSITIVE);
         matcher = pattern.matcher(title);
         if (matcher.find()){
-            res = "Movie ";
-            int b = title.indexOf("Movie") + ("Movie").length();
+            res = title.substring(matcher.start(), matcher.end());
+            int b = title.indexOf("Movie") + res.length();
             int fin = (title.contains("English"))
                     ? title.lastIndexOf("English")
                     : title.length();
             if (fin <= b) fin = title.length(); //if the actual series title contains english
-            if (fin == b) return res; //title ends with movie
+            if (fin == b) return "Movie"; //title ends with movie
             boolean numberFound = false;
 
-            for (b=b ; b < title.length(); b++) {
-                if (!numberFound) {
-                    try {
-                        int eNum = Integer.parseInt(String.valueOf(title.charAt(b)));
-                        //if here then char was an int
-                        res = res.concat(String.valueOf(title.charAt(b)));
-                    } catch (NumberFormatException e) {
-                        if (!(String.valueOf(title.charAt(b)).matches("[ :]"))) {
-                            break;
-                        }
-                    }
-                }
-            }
-            res = res.concat("\n" + title.substring(b, fin-1));
+            res = res.concat(title.substring(b, fin-1));
             return res;
         }
 

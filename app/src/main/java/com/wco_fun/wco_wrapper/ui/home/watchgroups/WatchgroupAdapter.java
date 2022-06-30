@@ -1,22 +1,19 @@
 package com.wco_fun.wco_wrapper.ui.home.watchgroups;
 
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wco_fun.wco_wrapper.MainActivity;
 import com.wco_fun.wco_wrapper.R;
 import com.wco_fun.wco_wrapper.classes.series.Series;
-import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
 import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesCard.SeriesCard;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesCard.SeriesCardGeneric;
@@ -32,11 +29,16 @@ public class WatchgroupAdapter extends RecyclerView.Adapter<WatchgroupAdapter.Wa
     private ImageButton refresh;
     private SeriesGroup seriesGroup;
     private MultigroupAdapter host;
+    private DisplayMetrics displayMetrics;
 
     public WatchgroupAdapter () { this.seriesData = new ArrayList<>(); }
-    public WatchgroupAdapter (ArrayList<SeriesCard> seriesData){
+    public WatchgroupAdapter (ArrayList<SeriesCard> seriesData){ this.seriesData = seriesData; }
+    public WatchgroupAdapter (ArrayList<SeriesCard> seriesData, DisplayMetrics displayMetrics){
         this.seriesData = seriesData;
+        this.displayMetrics = displayMetrics;
     }
+
+    public DisplayMetrics getDisplayMetrics() { return this.displayMetrics; }
 
     public void attachEls(ProgressBar progBar, ImageButton refresh, SeriesGroup seriesGroup, MultigroupAdapter host){
         this.progBar = progBar;
@@ -58,7 +60,7 @@ public class WatchgroupAdapter extends RecyclerView.Adapter<WatchgroupAdapter.Wa
     @Override
     public WatchgroupAdapter.WatchgroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.home_recycler_entry, parent, false);
+                .inflate(R.layout.series_card, parent, false);
         return new WatchgroupViewHolder(view);
     }
 

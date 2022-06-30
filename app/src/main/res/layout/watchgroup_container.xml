@@ -37,22 +37,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif-medium"
         android:text="Watchlist"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/watchgroup_see_all"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/watchgroup_see_all" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/watchgroup_see_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="-5dp"
+        android:layout_marginEnd="8dp"
         android:background="#00C69999"
+        android:scaleType="centerCrop"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
         android:tint="?android:attr/textColorPrimary"
+        app:layout_constraintBottom_toBottomOf="@+id/watchgroup_title"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/watchgroup_title"
         app:srcCompat="@drawable/ic_arrow_right_alt" />
 
     <View
@@ -69,17 +75,17 @@
 
     <ImageButton
         android:id="@+id/watchgroup_refresh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="40dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:background="#00FFFFFF"
+        android:foregroundGravity="center"
+        android:scaleType="centerCrop"
         android:tint="?attr/colorAccent"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/watchgroup_prog"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/watchgroup_recycler"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider"
         app:srcCompat="@drawable/ic_refresh"
         tools:visibility="visible" />
@@ -87,17 +93,16 @@
     <ProgressBar
         android:id="@+id/watchgroup_prog"
         style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="40dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:indeterminateTint="?android:attr/colorActivatedHighlight"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:layout_constraintTop_toBottomOf="@+id/watchgroup_refresh"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

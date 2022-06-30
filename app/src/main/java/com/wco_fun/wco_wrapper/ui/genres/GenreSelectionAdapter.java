@@ -1,6 +1,7 @@
 package com.wco_fun.wco_wrapper.ui.genres;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +19,10 @@ import java.util.ArrayList;
 public class GenreSelectionAdapter extends RecyclerView.Adapter<GenreSelectionAdapter.ViewHolder> {
 
     private ArrayList<GenreList.Genre> genreList = new ArrayList<>();
-    public GenreSelectionAdapter(GenreList genreList) {
+    private DisplayMetrics displayMetrics;
+    public GenreSelectionAdapter(GenreList genreList, DisplayMetrics displayMetrics) {
         this.genreList = genreList.getGenreList();
+        this.displayMetrics = displayMetrics;
     }
 
     @NonNull
@@ -63,6 +66,17 @@ public class GenreSelectionAdapter extends RecyclerView.Adapter<GenreSelectionAd
             });
 
             textView = (TextView) view.findViewById(R.id.series_card_title);
+
+            double displayHeightDP = displayMetrics.heightPixels / displayMetrics.density; //get height, convert to dp
+            final double uiScalar = displayHeightDP / 800; //UI was built on a simulated display with ~800dp height
+
+            //ensure text adapts to ui size
+            textView.post(new Runnable() {
+                @Override
+                public void run() {
+                    textView.setTextSize(0, (float) ( textView.getTextSize() * (uiScalar * 1.125) ));
+                }
+            });
         }
     }
 }

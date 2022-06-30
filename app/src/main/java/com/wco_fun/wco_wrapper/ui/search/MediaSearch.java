@@ -1,10 +1,12 @@
 package com.wco_fun.wco_wrapper.ui.search;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +59,13 @@ public class MediaSearch extends Fragment {
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         url = getArguments().getString("link");
 
-        searchAdapter = new SearchAdapter(binding.searchStateContainer);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) getActivity())
+                .getWindowManager()
+                .getDefaultDisplay()
+                .getMetrics(displayMetrics);
+
+        searchAdapter = new SearchAdapter(binding.searchStateContainer, displayMetrics);
         //check cache for preserved results
         cachedTab = readCache();
         if (cachedTab == -1) {

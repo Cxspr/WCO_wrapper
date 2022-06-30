@@ -22,6 +22,7 @@ public abstract class SeriesCard{
     protected ImageView seriesImg;
     protected ImageButton play, next, remove;
     protected LinearLayout btnContainer;
+    protected ConstraintLayout footer;
     protected WatchgroupAdapter host;
 
     public void attachViews(ViewGroup parent){
@@ -31,6 +32,7 @@ public abstract class SeriesCard{
         this.next = (ImageButton) parent.findViewById(R.id.series_card_next);
         this.remove = (ImageButton) parent.findViewById(R.id.series_card_remove);
         this.btnContainer = (LinearLayout) parent.findViewById(R.id.wg_button_bar);
+        this.footer = (ConstraintLayout) parent.findViewById(R.id.constraintLayout3);
     }
 
     public void attachPrimaryViews(TextView title, ImageView seriesImg){

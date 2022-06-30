@@ -1,5 +1,6 @@
 package com.wco_fun.wco_wrapper.ui.home;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -75,9 +77,16 @@ public class Home extends Fragment {
 
         homeRecycler = binding.homeRecycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+
         homeRecycler.setLayoutManager(layoutManager);
 
-        multiAdapter = new MultigroupAdapter(watchgroups, (MainActivity)getActivity());
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) this.getContext())
+                .getWindowManager()
+                .getDefaultDisplay()
+                .getMetrics(displayMetrics);
+
+        multiAdapter = new MultigroupAdapter(watchgroups, (MainActivity)getActivity(), displayMetrics);
         homeRecycler.setAdapter(multiAdapter);
 
         return binding.getRoot();

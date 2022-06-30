@@ -1,6 +1,9 @@
 package com.wco_fun.wco_wrapper.classes.series;
 
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import androidx.cardview.widget.CardView;
 
 import com.squareup.picasso.Picasso;
 
@@ -45,30 +48,31 @@ public class Series {
         Picasso.get().load(imgUrl).resize((int) (240*imgScalar), (int) (340*imgScalar)).into(view);
     }
 
-    public void fitSeriesImage2Width(ImageView view){
+    public void fitSeriesImage2Width(ImageView view){ this.fitSeriesImage2Width(view, -1);}
+    public void fitSeriesImage2Width(ImageView view, final int width){
         if (!hasSeriesImage()) return;
         final double w2h_scalar = 1.42;
         view.post(new Runnable() {
             @Override
             public void run() {
-                final int width = view.getWidth();
-                Picasso.get().load(imgUrl).resize((int) (width), (int) (width*w2h_scalar)).into(view);
+                int thisWidth = (width != -1) ? width : view.getWidth();
+                Picasso.get().load(imgUrl).resize((int) (thisWidth), (int) (thisWidth*w2h_scalar)).into(view);
             }
         });
     }
 
-    public void fitSeriesImage(ImageView view){
+    public void fitSeriesImage2Height(ImageView view){ this.fitSeriesImage2Height(view, -1);}
+    public void fitSeriesImage2Height(ImageView view, final int height){
         if (!hasSeriesImage()) return;
-        final double h2w_scalar = 0.706;
+        final double h2w_scalar = 0.7;
         view.post(new Runnable() {
             @Override
             public void run() {
-                final int height = view.getHeight();
-                Picasso.get().load(imgUrl).resize((int) (height*h2w_scalar), (int) (height)).into(view);
+                int thisHeight = (height != -1) ? height : view.getHeight();
+                Picasso.get().load(imgUrl).resize((int) (thisHeight*h2w_scalar), (int) (thisHeight)).into(view);
             }
         });
     }
-
 
     public void setTitle(String title) {this.title = title;}
     public String getTitle() {return title; }

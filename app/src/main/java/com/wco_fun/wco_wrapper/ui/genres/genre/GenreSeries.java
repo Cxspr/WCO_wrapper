@@ -1,5 +1,6 @@
 package com.wco_fun.wco_wrapper.ui.genres.genre;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,11 +46,28 @@ public class GenreSeries extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentGenreSeriesBinding.inflate(inflater,container,false);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) getActivity())
+                .getWindowManager()
+                .getDefaultDisplay()
+                .getMetrics(displayMetrics);
+
+        double displayHeightDP = displayMetrics.heightPixels / displayMetrics.density; //get height, convert to dp
+        final double uiScalar = displayHeightDP / 800; //UI was built on a simulated display with ~800dp height
+
         textView = binding.textView11;
         textView.setText(getArguments().getString("title"));
+        textView.post(new Runnable() {
+            @Override
+            public void run() {
+                textView.setTextSize(0, (float) ( textView.getTextSize() * (uiScalar) ));
+            }
+        });
+
         url = getArguments().getString("link");
 
-        genreAdapter = new GenreSeriesAdapter(binding.genreStateContainer);
+        genreAdapter = new GenreSeriesAdapter(binding.genreStateContainer, displayMetrics);
 
         SearchCache cache = ((MainActivity)getActivity()).getSearchCache();
         if (cache.hasReturnTab()) {

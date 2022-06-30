@@ -3,6 +3,7 @@ package com.wco_fun.wco_wrapper.ui.search;
 import static com.wco_fun.wco_wrapper.ui.search.ConnectedSearchThread.ERR_CODES.*;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,14 +30,16 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     private ImageButton retryBtn;
     private TextView errorText;
     private Group errorGroup;
+    private DisplayMetrics displayMetrics;
 
     public SearchAdapter() {}
 
-    public SearchAdapter(ViewGroup searchEl){
+    public SearchAdapter(ViewGroup searchEl, DisplayMetrics displayMetrics){
         this.progressBar = searchEl.findViewById(R.id.search_prog);
         this.errorGroup = searchEl.findViewById(R.id.search_retry_group);
         this.retryBtn = searchEl.findViewById(R.id.search_retry);
         this.errorText = searchEl.findViewById(R.id.search_fail_response);
+        this.displayMetrics = displayMetrics;
     }
 
     //TODO remove if deprecated
@@ -44,7 +47,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         legacyData = res;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
         private SeriesSearchable series;
         private NavController host;
@@ -69,7 +72,19 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             });
 
             textView = (TextView) view.findViewById(R.id.series_card_title);
+
+            double displayHeightDP = displayMetrics.heightPixels / displayMetrics.density; //get height, convert to dp
+            final double uiScalar = displayHeightDP / 800; //UI was built on a simulated display with ~800dp height
+
+            textView.post(new Runnable() {
+                @Override
+                public void run() {
+                    textView.setTextSize(0, (float) ( textView.getTextSize() * (uiScalar * 1.125) ));
+                }
+            });
         }
+
+
 
         public TextView getTextView() {
             return textView;
