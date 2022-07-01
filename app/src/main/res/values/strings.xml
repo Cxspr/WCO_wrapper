@@ -8,5 +8,7 @@
     <string name="preferred_domain">Preferred Domain</string>
     <string name="preload_limit">Episode Queue Preload Limit</string>
     <string name="preload_limit_desc">The number of episode urls ahead of the current episode to store for later. Can reduce the number of errors caused by request timeouts and other connection issues.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

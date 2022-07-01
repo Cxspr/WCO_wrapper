@@ -1,5 +1,6 @@
 package com.wco_fun.wco_wrapper.ui.home;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,12 +8,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.wco_fun.wco_wrapper.MainActivity;
+import com.wco_fun.wco_wrapper.R;
 import com.wco_fun.wco_wrapper.classes.series.Series;
 import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 import com.wco_fun.wco_wrapper.classes.user_data.Watchlist;
@@ -37,6 +42,7 @@ public class Home extends Fragment {
     private Watchlist wl;
     private WatchData wd;
     private ArrayList<Series> watchlist;
+    private ArrayList<Series> newEpArchive;
 
     private MultigroupAdapter multiAdapter;
     private RecyclerView homeRecycler;
@@ -51,21 +57,38 @@ public class Home extends Fragment {
         watchgroups = new ArrayList<>();
         wd = ((MainActivity)getActivity()).getWatchData();
         wl = ((MainActivity)getActivity()).getWatchlist();
+        if (wd.isEmpty() && wl.isEmpty()) {
+            binding.homeEmptyNotif.setVisibility(View.VISIBLE);
+        }
+        newEpArchive = ((MainActivity)getActivity()).getNewEpGroup();
 
-        NewEpGroup newEpGroup = new NewEpGroup(wl.getWatchgroup(), (MainActivity)getActivity());
-        watchgroups.add(newEpGroup);
 
         watchlist = new ArrayList<Series>(wl.getWatchgroup());
         Collections.reverse(watchlist);
+        //add watchlist container
         watchgroups.add(new GenericGroup("Watchlist", watchlist));
-
+        //add watchdata container
         watchgroups.add(new ReflectiveGroup(wd));
+        //add new ep container
+        if (!((MainActivity)getActivity()).epGroupUpToDate) {
+            NewEpGroup newEpGroup = new NewEpGroup(wl.getWatchgroup(), (MainActivity)getActivity());
+            watchgroups.add(newEpGroup);
+        } else if (!newEpArchive.isEmpty()) {
+            watchgroups.add(new GenericGroup("New Episodes", newEpArchive));
+        }
 
         homeRecycler = binding.homeRecycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+
         homeRecycler.setLayoutManager(layoutManager);
 
-        multiAdapter = new MultigroupAdapter(watchgroups, (MainActivity)getActivity());
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) this.getContext())
+                .getWindowManager()
+                .getDefaultDisplay()
+                .getMetrics(displayMetrics);
+
+        multiAdapter = new MultigroupAdapter(watchgroups, (MainActivity)getActivity(), displayMetrics);
         homeRecycler.setAdapter(multiAdapter);
 
         return binding.getRoot();
@@ -75,12 +98,10 @@ public class Home extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
-
 
 }

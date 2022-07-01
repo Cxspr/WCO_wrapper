@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
 
+import com.wco_fun.wco_wrapper.MainActivity;
 import com.wco_fun.wco_wrapper.classes.series.SeriesSearchable;
 
 import org.jsoup.Connection;
@@ -23,6 +24,7 @@ public class ConnectedSearchThread extends Thread {
     private Handler resHandler;
     private String url;
     private SearchAdapter retLoc;
+    private MainActivity mainActivity;
 
     public static final class ERR_CODES {
         public static final int INTERRUPT = 0;
@@ -34,6 +36,7 @@ public class ConnectedSearchThread extends Thread {
         this.url = url;
         this.resHandler = new Handler(mainActivity.getMainLooper());
         this.retLoc = retLoc; //return location being a SearchAdapter object
+        this.mainActivity = (MainActivity) mainActivity;
     }
 
     public void setUrl(String url) {
@@ -77,6 +80,7 @@ public class ConnectedSearchThread extends Thread {
                     }
                     SeriesSearchable s = new SeriesSearchable((el.child(0)));
                     if (s.isValid()){
+                        s.setSrc((mainActivity.getDomain()) + s.getSrc());
                         retList.add(s);
                     }
 //                    Log.d("Search Thread: ", "PROG: " + (++i) + "/" + numEntries );

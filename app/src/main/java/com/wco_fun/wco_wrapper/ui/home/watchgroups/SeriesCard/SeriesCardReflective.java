@@ -2,15 +2,16 @@ package com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesCard;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.browser.customtabs.CustomTabsIntent;
-import androidx.navigation.Navigation;
 
 import com.wco_fun.wco_wrapper.R;
 import com.wco_fun.wco_wrapper.classes.episode.Episode;
+import com.wco_fun.wco_wrapper.classes.series.Series;
 import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
 import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 
@@ -30,13 +31,38 @@ public class SeriesCardReflective extends SeriesCard{
 
     @Override
     public void setSeriesImage() {
-        series.getSeriesImage(seriesImg);
+        seriesImg.post(new Runnable() {
+            @Override
+            public void run() {
+                DisplayMetrics displayMetrics = host.getDisplayMetrics();
+                double displayWidthDP = displayMetrics.widthPixels / displayMetrics.density; //get width, convert to dp
+                final double uiScalar = displayWidthDP / 400; //UI was built on a simulated display with ~400dp width
+
+                int width = (int) ((host.getDisplayMetrics().widthPixels) / (4 + (uiScalar / 2.5)) );
+
+                ViewGroup.LayoutParams params = seriesImg.getLayoutParams();
+                params.width = (int) (width);
+                seriesImg.setLayoutParams(params);
+                series.fitSeriesImage2Width(seriesImg, width, container);
+
+                ViewGroup.LayoutParams footerParams = footer.getLayoutParams();
+                footerParams.height = (int) ((width * 1.42) * 0.25);//20% of the height
+                footerParams.width = width;
+                footer.setLayoutParams(footerParams);
+                ViewGroup.LayoutParams removeParams = remove.getLayoutParams();
+                removeParams.width = (int) (width * .35);
+                remove.setLayoutParams(removeParams);
+            }
+        });
     }
 
     @Override
     public void setSeries(SeriesControllable series) {
         this.series = series;
     }
+
+    @Override
+    public Series getSeries() { return series; }
 
     @Override
     public void configureVariant() {
@@ -73,7 +99,9 @@ public class SeriesCardReflective extends SeriesCard{
 
         //next button on click listener config
         if (series.hasMoreEps()){ //has a next episode
-            next.setColorFilter(next.getContext().getColor(R.color.yellow_200));
+            final TypedValue value = new TypedValue ();
+            next.getContext().getTheme().resolveAttribute(android.R.attr.colorAccent, value, true);
+            next.setColorFilter(value.data);
             next.setEnabled(true);
             next.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -102,5 +130,7 @@ public class SeriesCardReflective extends SeriesCard{
         bundle.putString("title", series.getTitle());
         return bundle;
     }
+
+
 
 }

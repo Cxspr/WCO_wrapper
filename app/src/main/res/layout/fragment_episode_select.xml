@@ -10,17 +10,18 @@
         android:id="@+id/ep_select_header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         android:layout_weight=".6"
         android:clipToPadding="false"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/resultContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside"
+        app:layout_constraintVertical_weight="1.125">
 
         <LinearLayout
             android:id="@+id/linearLayout2"
@@ -29,16 +30,18 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="1"
+            app:layout_constraintBottom_toTopOf="@+id/curEpText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintVertical_weight="6">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_weight=".65"
                 app:cardBackgroundColor="#00FFFFFF"
                 app:cardCornerRadius="5dp"
@@ -51,8 +54,10 @@
                     <ProgressBar
                         android:id="@+id/progressBar"
                         style="?android:attr/progressBarStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="48dp"
+                        android:layout_marginEnd="48dp"
                         android:indeterminateTint="?android:attr/colorActivatedHighlight"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -60,14 +65,21 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <androidx.constraintlayout.utils.widget.MockView
+                        android:id="@+id/mockView2"
+                        android:layout_width="260dp"
+                        android:layout_height="340dp"
+                        android:visibility="gone" />
+
                     <ImageView
                         android:id="@+id/seriesImage"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_weight=".4"
                         android:background="#00FFFFFF"
                         android:src="@android:drawable/ic_popup_disk_full"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="1:1.42"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
@@ -80,35 +92,41 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight=".35">
 
                 <TextView
                     android:id="@+id/seriesTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:autoSizeTextType="uniform"
+                    android:gravity="bottom"
+                    android:maxLines="3"
                     android:text="Title goes here"
                     android:textAlignment="center"
                     android:textSize="20sp"
+                    app:layout_constraintBottom_toTopOf="@+id/linearLayout"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    app:layout_constraintVertical_weight="1.25" />
 
                 <LinearLayout
                     android:id="@+id/linearLayout"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_height="0dp"
                     android:orientation="horizontal"
-                    android:weightSum="3.02
-        "
+                    android:weightSum="3"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/seriesTitle">
+                    app:layout_constraintTop_toBottomOf="@+id/seriesTitle"
+                    app:layout_constraintVertical_weight="2">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -117,28 +135,42 @@
 
                         <ImageButton
                             android:id="@+id/button_save"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:backgroundTint="#00FFFFFF"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="12dp"
+                            android:background="#00FFFFFF"
+                            android:scaleType="centerCrop"
                             android:scaleX="1.5"
                             android:scaleY="1.5"
                             android:src="@drawable/ic_add"
                             android:tint="?attr/colorAccent"
+                            app:layout_constraintBottom_toTopOf="@+id/textView2"
+                            app:layout_constraintDimensionRatio="1:1"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_chainStyle="packed"
+                            app:layout_constraintVertical_weight="2" />
 
                         <TextView
                             android:id="@+id/textView2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:autoSizeTextType="uniform"
+                            android:lines="1"
                             android:text="Watchlist"
                             android:textAlignment="center"
-                            app:layout_constraintEnd_toEndOf="@+id/button_save"
-                            app:layout_constraintStart_toStartOf="@+id/button_save"
-                            app:layout_constraintTop_toBottomOf="@+id/button_save" />
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/button_save"
+                            app:layout_constraintVertical_weight="1" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -148,28 +180,42 @@
 
                         <ImageButton
                             android:id="@+id/button_play"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:backgroundTint="#00FFFFFF"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="12dp"
+                            android:background="#00FFFFFF"
+                            android:scaleType="centerCrop"
                             android:scaleX="1.5"
                             android:scaleY="1.5"
                             android:src="@drawable/ic_play_arrow"
                             android:tint="?attr/colorAccent"
+                            app:layout_constraintBottom_toTopOf="@+id/textView4"
+                            app:layout_constraintDimensionRatio="1:1"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_chainStyle="packed"
+                            app:layout_constraintVertical_weight="2" />
 
                         <TextView
                             android:id="@+id/textView4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:autoSizeTextType="uniform"
+                            android:lines="1"
                             android:text="Play"
                             android:textAlignment="center"
-                            app:layout_constraintEnd_toEndOf="@+id/button_play"
-                            app:layout_constraintStart_toStartOf="@+id/button_play"
-                            app:layout_constraintTop_toBottomOf="@+id/button_play" />
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/button_play"
+                            app:layout_constraintVertical_weight="1" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -179,57 +225,84 @@
 
                         <ImageButton
                             android:id="@+id/button_next"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:backgroundTint="#00FFFFFF"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="12dp"
+                            android:background="#00FFFFFF"
+                            android:scaleType="centerCrop"
                             android:scaleX="1.5"
                             android:scaleY="1.5"
                             android:src="@drawable/ic_skip_next"
                             android:tint="@color/dark_grey"
+                            app:layout_constraintBottom_toTopOf="@+id/textView5"
+                            app:layout_constraintDimensionRatio="1:1"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_chainStyle="packed"
+                            app:layout_constraintVertical_weight="2" />
 
                         <TextView
                             android:id="@+id/textView5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:autoSizeTextType="uniform"
+                            android:lines="1"
                             android:text="Play Next"
                             android:textAlignment="center"
-                            app:layout_constraintEnd_toEndOf="@+id/button_next"
-                            app:layout_constraintStart_toStartOf="@+id/button_next"
-                            app:layout_constraintTop_toBottomOf="@+id/button_next" />
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/button_next"
+                            app:layout_constraintVertical_weight="1" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/curEpText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:autoSizeMaxTextSize="36dp"
             android:text="TextView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+            android:textAlignment="viewStart"
+            android:textSize="@dimen/base_text_cat3"
+            app:layout_constraintBottom_toTopOf="@+id/nextEpText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/linearLayout2"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+            app:layout_constraintVertical_weight="1" />
 
         <TextView
             android:id="@+id/nextEpText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:autoSizeMaxTextSize="36dp"
             android:text="TextView"
+            android:textSize="@dimen/base_text_cat3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/curEpText"
-            app:layout_constraintTop_toBottomOf="@+id/curEpText" />
+            app:layout_constraintTop_toBottomOf="@+id/curEpText"
+            app:layout_constraintVertical_weight="1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:id="@+id/divider5"
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toTopOf="@+id/resultContainer"
@@ -242,41 +315,45 @@
         android:id="@+id/resultContainer"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="32dp"
         android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ep_select_header"
+        app:layout_constraintVertical_weight="1.5"
         tools:visibility="visible">
 
     </androidx.recyclerview.widget.RecyclerView>
 
     <ImageButton
         android:id="@+id/ep_search_retry"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_width="@dimen/base_loading_icon_dim"
+        android:layout_height="0dp"
+        android:layout_marginTop="100dp"
         android:background="#00FFFFFF"
+        android:scaleType="fitCenter"
         android:src="@drawable/ic_refresh"
         android:tint="?attr/colorAccent"
         android:visibility="gone"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="@+id/divider5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider5" />
+        app:layout_constraintTop_toBottomOf="@+id/divider5"
+        tools:visibility="visible" />
 
     <ProgressBar
         android:id="@+id/ep_search_prog"
         style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_width="@dimen/base_loading_icon_dim"
+        android:layout_height="0dp"
+        android:layout_marginTop="100dp"
         android:indeterminateTint="?android:attr/colorActivatedHighlight"
         android:progressTint="?android:attr/colorActivatedHighlight"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

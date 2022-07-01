@@ -1,6 +1,10 @@
 package com.wco_fun.wco_wrapper.classes.series;
 
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import androidx.cardview.widget.CardView;
 
 import com.squareup.picasso.Picasso;
 
@@ -45,26 +49,27 @@ public class Series {
         Picasso.get().load(imgUrl).resize((int) (240*imgScalar), (int) (340*imgScalar)).into(view);
     }
 
-    public void fitSeriesImage2Width(ImageView view){
+    public void fitSeriesImage2Width(ImageView view){ this.fitSeriesImage2Width(view, -1);}
+    public void fitSeriesImage2Width(ImageView view, final int width){
         if (!hasSeriesImage()) return;
         final double w2h_scalar = 1.42;
         view.post(new Runnable() {
             @Override
             public void run() {
-                final int width = view.getWidth();
-                Picasso.get().load(imgUrl).resize((int) (width), (int) (width*w2h_scalar)).into(view);
+                int thisWidth = (width != -1) ? width : view.getWidth();
+                Picasso.get().load(imgUrl).resize((int) (thisWidth), (int) (thisWidth*w2h_scalar)).into(view);
             }
         });
     }
-
-    public void fitSeriesImage(ImageView view){
+    public void fitSeriesImage2Width(ImageView view, final int width, CardView container){
         if (!hasSeriesImage()) return;
-        final double h2w_scalar = 0.706;
+        final double w2h_scalar = 1.42;
         view.post(new Runnable() {
             @Override
             public void run() {
-                final int height = view.getHeight();
-                Picasso.get().load(imgUrl).resize((int) (height*h2w_scalar), (int) (height)).into(view);
+                int thisWidth = (width != -1) ? width : view.getWidth();
+                Picasso.get().load(imgUrl).resize((int) (thisWidth), (int) (thisWidth*w2h_scalar)).into(view);
+                container.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -90,8 +95,8 @@ public class Series {
     }
 
     public boolean equals(Series s) {
-        return (this.title.matches(s.getTitle()) &&
-                this.src.matches(s.getSrc())
+        return (this.title.matches(s.getTitle())
+//                this.src.matches(s.getSrc())
 //                && this.imgUrl.matches(s.getImgUrl())
         );
     }

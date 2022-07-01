@@ -1,6 +1,8 @@
 package com.wco_fun.wco_wrapper.ui.episodes;
 
 import android.net.Uri;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +13,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.wco_fun.wco_wrapper.MainActivity;
 import com.wco_fun.wco_wrapper.R;
 import com.wco_fun.wco_wrapper.classes.episode.Episode;
 import com.wco_fun.wco_wrapper.classes.series.Series;
@@ -30,11 +34,15 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
     private ImageView seriesImg;
     private WatchData watchData;
     private Watchlist watchlist;
+    private MainActivity mainActivity;
+    private DisplayMetrics displayMetrics;
 
     public EpisodeAdapter(){}
-    public EpisodeAdapter(SeriesControllable hostSeries, WatchData watchData){
+    public EpisodeAdapter(SeriesControllable hostSeries, WatchData watchData, MainActivity mainActivity, DisplayMetrics displayMetrics){
         this.hostSeries = hostSeries;
         this.watchData = watchData;
+        this.mainActivity = mainActivity;
+        this.displayMetrics = displayMetrics;
     }
 
     public EpisodeAdapter(ArrayList<Episode> eps, SeriesControllable hostSeries, WatchData watchData){
@@ -43,7 +51,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
         this.watchData = watchData;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
         private SeriesControllable hostSeries;
         private WatchData watchData;
@@ -87,6 +95,18 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
             });
 
             textView = (TextView) view.findViewById(R.id.series_card_title);
+            textView.setVisibility(View.INVISIBLE);
+
+            double displayHeightDP = displayMetrics.heightPixels / displayMetrics.density; //get height, convert to dp
+            final double uiScalar = displayHeightDP / 800; //UI was built on a simulated display with ~800dp height
+
+            textView.post(new Runnable() {
+                @Override
+                public void run() {
+                    textView.setTextSize(0, (float) ( textView.getTextSize() * (uiScalar * 1.125) ));
+                    textView.setVisibility(View.VISIBLE);
+                }
+            });
         }
 
         public TextView getTextView() {
@@ -103,7 +123,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull EpisodeAdapter.ViewHolder holder, int position) {
-        if (!episodes.isEmpty()) holder.getTextView().setText(episodes.get(position).getTitle().substring(6));
+        if (!episodes.isEmpty()) holder.getTextView().setText(episodes.get(position).getTitle());
         holder.setHostSeries(hostSeries);
         holder.setWatchData(watchData);
         ArrayList<Episode> epQueue = new ArrayList<>();
@@ -167,6 +187,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
         Series refSeries = watchlist.get(hostSeries);
         if (refSeries != null) {
             if (hostSeries.getNumEps() > refSeries.getNumEps()){
+                mainActivity.epGroupUpToDate = false;
                 refSeries.setNumEps(hostSeries.getNumEps());
                 watchlist.pushChanges();
             }

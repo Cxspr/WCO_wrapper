@@ -1,6 +1,8 @@
 package com.wco_fun.wco_wrapper.ui.home.watchgroups;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.wco_fun.wco_wrapper.MainActivity;
 import com.wco_fun.wco_wrapper.R;
-import com.wco_fun.wco_wrapper.classes.series.Series;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesCard.SeriesCard;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup.SeriesGroup;
 
@@ -25,20 +26,24 @@ public class MultigroupAdapter extends RecyclerView.Adapter<MultigroupAdapter.Mu
     private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
     private ArrayList<SeriesGroup> seriesGroups = new ArrayList<>();
     private MainActivity activity;
+    private DisplayMetrics displayMetrics;
+    private int heightPerContainer;
+    final int spreadAcross = 3;
 
-    public MultigroupAdapter(ArrayList<SeriesGroup> seriesGroups, MainActivity activity){
+    public MultigroupAdapter(ArrayList<SeriesGroup> seriesGroups, MainActivity activity, DisplayMetrics displayMetrics){
         for (SeriesGroup s: seriesGroups){
             if (s.getVariant() < 2 && s.getContents().isEmpty()) continue;
             this.seriesGroups.add(s);
         }
         this.activity = activity;
+        this.displayMetrics = displayMetrics;
     }
 
     @NonNull
     @Override
     public MultigroupAdapter.MultigroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.home_display_catagory, parent, false);
+                .inflate(R.layout.watchgroup_container, parent, false);
         return new MultigroupViewHolder(view, this);
     }
 
@@ -49,10 +54,7 @@ public class MultigroupAdapter extends RecyclerView.Adapter<MultigroupAdapter.Mu
         holder.setSeriesGroup(group);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(holder.getRecycler().getContext(), LinearLayoutManager.HORIZONTAL, false);
-//        layoutManager.setInitialPrefetchItemCount(group.getContents().size());
-
-        //TODO implement loadable constructor on variant 3
-        WatchgroupAdapter adapter = new WatchgroupAdapter(group.getContents());
+        WatchgroupAdapter adapter = new WatchgroupAdapter(group.getContents(), displayMetrics);
         if (group.getVariant() >= 2) {
             group.attachAdapter(adapter);
         }
@@ -95,6 +97,20 @@ public class MultigroupAdapter extends RecyclerView.Adapter<MultigroupAdapter.Mu
                             .navigate(R.id.action_homeScreen_to_seeAllSeries, bundle);
                 }
             });
+
+            double displayHeightDP = displayMetrics.heightPixels / displayMetrics.density; //get height, convert to dp
+            final double uiScalar = displayHeightDP / 800; //UI was built on a simulated display with ~800dp height
+            title.post(new Runnable() {
+                @Override
+                public void run() {
+                    title.setTextSize(0, (float) (title.getTextSize() * uiScalar));
+                    ViewGroup.LayoutParams params = seeAll.getLayoutParams();
+                    params.height = (int) (params.height * uiScalar);
+                    params.width = (int) (params.width * uiScalar);
+                    seeAll.setLayoutParams(params);
+                }
+            });
+
 
         }
 

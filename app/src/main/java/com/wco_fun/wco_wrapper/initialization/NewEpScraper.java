@@ -54,7 +54,7 @@ public class NewEpScraper extends Thread {
 
     @Override
     public void run() {
-        Log.i(TAG, "STARTED");
+//        Log.i(TAG, "STARTED");
         long startTime = new Date().getTime();
         ArrayList<Series> retSeries = new ArrayList<>();
         try {
@@ -67,10 +67,10 @@ public class NewEpScraper extends Thread {
                         .maxBodySize(0)
                         .get();
 
-                Log.i(TAG, "HTML RETRIEVED");
+//                Log.i(TAG, "HTML RETRIEVED");
 
                 if (Thread.currentThread().isInterrupted()) { //check for external interrupt call
-                    Log.i(TAG, "INTERRUPTION");
+//                    Log.i(TAG, "INTERRUPTION");
                     notifyError();
                     throw new InterruptedException();
                 } //escape clause
@@ -83,11 +83,11 @@ public class NewEpScraper extends Thread {
 
 
             }
-            Log.i(TAG, "SUCCESS||TIME: " + ((new Date().getTime()) - startTime));
+//            Log.i(TAG, "SUCCESS||TIME: " + ((new Date().getTime()) - startTime));
             notifyResult(retSeries);
 
         } catch (SocketTimeoutException e) {
-            Log.i(TAG, "TIMEOUT");
+//            Log.i(TAG, "TIMEOUT");
             notifyError();
         } catch (IOException e) {
             notifyError();
@@ -102,6 +102,7 @@ public class NewEpScraper extends Thread {
         resHandler.post(new Runnable() {
             @Override
             public void run() {
+                ((MainActivity) retActivity).updateNewEpGroup(retList);
                 retLoc.onThreadConcluded(retList);
             }
         });

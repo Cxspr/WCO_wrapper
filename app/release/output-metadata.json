@@ -12,8 +12,8 @@
       "filters": [],
       "attributes": [],
       "versionCode": 1,
-      "versionName": "0.8.2",
-      "outputFile": "app-release.apk"
+      "versionName": "1.0",
+      "outputFile": "WCO_Wrapper_v1.0.apk"
     }
   ],
   "elementType": "File"

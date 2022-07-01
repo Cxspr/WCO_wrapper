@@ -13,7 +13,6 @@ import java.util.ArrayList;
 public class NewEpGroup extends SeriesGroup{
     NewEpScraper runThread;
     WatchgroupAdapter adapter;
-    Activity activity;
     ArrayList<Series> series;
 
     public NewEpGroup(ArrayList<Series> series, MainActivity activity){

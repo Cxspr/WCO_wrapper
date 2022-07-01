@@ -39,6 +39,9 @@
         <action
             android:id="@+id/action_homeScreen_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_homeScreen_to_genreSelection"
+            app:destination="@id/genreSelection" />
     </fragment>
     <fragment
         android:id="@+id/seeAllSeries"
@@ -53,4 +56,22 @@
         android:id="@+id/settingsFragment"
         android:name="com.wco_fun.wco_wrapper.SettingsFragment"
         android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/genreSelection"
+        android:name="com.wco_fun.wco_wrapper.ui.genres.GenreSelection"
+        android:label="fragment_genre_selection"
+        tools:layout="@layout/fragment_genre_selection" >
+        <action
+            android:id="@+id/action_genreSelection_to_genreSeries"
+            app:destination="@id/genreSeries" />
+    </fragment>
+    <fragment
+        android:id="@+id/genreSeries"
+        android:name="com.wco_fun.wco_wrapper.ui.genres.genre.GenreSeries"
+        android:label="fragment_genre_series"
+        tools:layout="@layout/fragment_genre_series" >
+        <action
+            android:id="@+id/action_genreSeries_to_episode_select"
+            app:destination="@id/episode_select" />
+    </fragment>
 </navigation>

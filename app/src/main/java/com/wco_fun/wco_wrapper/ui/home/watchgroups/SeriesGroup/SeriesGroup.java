@@ -1,5 +1,7 @@
 package com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesGroup;
 
+import android.app.Activity;
+
 import com.wco_fun.wco_wrapper.classes.series.Series;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesCard.SeriesCard;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesCard.SeriesCardGeneric;
@@ -12,6 +14,7 @@ public abstract class SeriesGroup {
     protected String title;
     protected ArrayList<SeriesCard> contents = new ArrayList<>();
     protected int variant;
+    protected Activity activity;
 
     public void setTitle(String title) {this.title = title;}
     public String getTitle() {return this.title;}
@@ -21,6 +24,10 @@ public abstract class SeriesGroup {
     }
     public void setContents(ArrayList<SeriesCard> contents) {
         this.contents = contents;
+    }
+
+    public Activity getActivity() {
+        return activity;
     }
 
     public int getVariant() {

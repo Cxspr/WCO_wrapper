@@ -1,21 +1,21 @@
 package com.wco_fun.wco_wrapper.ui.home.watchgroups;
 
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.cardview.widget.CardView;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.wco_fun.wco_wrapper.MainActivity;
 import com.wco_fun.wco_wrapper.R;
 import com.wco_fun.wco_wrapper.classes.series.Series;
-import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
 import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesCard.SeriesCard;
 import com.wco_fun.wco_wrapper.ui.home.watchgroups.SeriesCard.SeriesCardGeneric;
@@ -31,11 +31,16 @@ public class WatchgroupAdapter extends RecyclerView.Adapter<WatchgroupAdapter.Wa
     private ImageButton refresh;
     private SeriesGroup seriesGroup;
     private MultigroupAdapter host;
+    private DisplayMetrics displayMetrics;
 
     public WatchgroupAdapter () { this.seriesData = new ArrayList<>(); }
-    public WatchgroupAdapter (ArrayList<SeriesCard> seriesData){
+    public WatchgroupAdapter (ArrayList<SeriesCard> seriesData){ this.seriesData = seriesData; }
+    public WatchgroupAdapter (ArrayList<SeriesCard> seriesData, DisplayMetrics displayMetrics){
         this.seriesData = seriesData;
+        this.displayMetrics = displayMetrics;
     }
+
+    public DisplayMetrics getDisplayMetrics() { return this.displayMetrics; }
 
     public void attachEls(ProgressBar progBar, ImageButton refresh, SeriesGroup seriesGroup, MultigroupAdapter host){
         this.progBar = progBar;
@@ -57,7 +62,7 @@ public class WatchgroupAdapter extends RecyclerView.Adapter<WatchgroupAdapter.Wa
     @Override
     public WatchgroupAdapter.WatchgroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.home_recycler_entry, parent, false);
+                .inflate(R.layout.series_card, parent, false);
         return new WatchgroupViewHolder(view);
     }
 
@@ -81,19 +86,28 @@ public class WatchgroupAdapter extends RecyclerView.Adapter<WatchgroupAdapter.Wa
 
     public class WatchgroupViewHolder extends RecyclerView.ViewHolder{
         private SeriesCard seriesCard;
-        private ViewGroup viewParent;
+        private CardView viewParent;
 
         public WatchgroupViewHolder(@NonNull View view) {
             super(view);
-            viewParent = view.findViewById(R.id.series_card_container);
+            viewParent = view.findViewById(R.id.container_card);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+//                    String TAG = "SERIES CARD DEBUG:\n";
+//                    Series series = seriesCard.getSeries();
+//                    Log.i(TAG,
+//                            "Series: " + series.getTitle() + "\n" +
+//                                    "Source: " + series.getSrc() + "\n" +
+//                                    "Num Eps: " + series.getNumEps() + "\n" +
+//                                    "Img Link: " + series.getImgUrl()
+//                    );
                     Navigation.findNavController(view)
                             .navigate(R.id.episode_select, seriesCard.configureClickEvent());
                 }
             });
+
         }
 
         public void bindViews(SeriesCard s) {
@@ -134,6 +148,10 @@ public class WatchgroupAdapter extends RecyclerView.Adapter<WatchgroupAdapter.Wa
         }
         this.seriesGroup.setContents(seriesData);
         this.notifyDataSetChanged();
+
+        if (this.seriesGroup.getVariant() == 3) {
+            ((MainActivity) this.seriesGroup.getActivity()).updateNewEpGroup(retList);
+        }
     }
 
     public void onThreadErr(){
