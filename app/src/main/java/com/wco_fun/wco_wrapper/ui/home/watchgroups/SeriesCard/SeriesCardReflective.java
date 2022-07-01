@@ -11,6 +11,7 @@ import androidx.browser.customtabs.CustomTabsIntent;
 
 import com.wco_fun.wco_wrapper.R;
 import com.wco_fun.wco_wrapper.classes.episode.Episode;
+import com.wco_fun.wco_wrapper.classes.series.Series;
 import com.wco_fun.wco_wrapper.classes.series.SeriesControllable;
 import com.wco_fun.wco_wrapper.classes.user_data.WatchData;
 
@@ -41,9 +42,8 @@ public class SeriesCardReflective extends SeriesCard{
 
                 ViewGroup.LayoutParams params = seriesImg.getLayoutParams();
                 params.width = (int) (width);
-//                final int width = params.width;
                 seriesImg.setLayoutParams(params);
-                series.fitSeriesImage2Width(seriesImg, width);
+                series.fitSeriesImage2Width(seriesImg, width, container);
 
                 ViewGroup.LayoutParams footerParams = footer.getLayoutParams();
                 footerParams.height = (int) ((width * 1.42) * 0.25);//20% of the height
@@ -60,6 +60,9 @@ public class SeriesCardReflective extends SeriesCard{
     public void setSeries(SeriesControllable series) {
         this.series = series;
     }
+
+    @Override
+    public Series getSeries() { return series; }
 
     @Override
     public void configureVariant() {
@@ -127,5 +130,7 @@ public class SeriesCardReflective extends SeriesCard{
         bundle.putString("title", series.getTitle());
         return bundle;
     }
+
+
 
 }

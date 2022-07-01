@@ -72,6 +72,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             });
 
             textView = (TextView) view.findViewById(R.id.series_card_title);
+            textView.setVisibility(View.INVISIBLE);
 
             double displayHeightDP = displayMetrics.heightPixels / displayMetrics.density; //get height, convert to dp
             final double uiScalar = displayHeightDP / 800; //UI was built on a simulated display with ~800dp height
@@ -80,6 +81,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                 @Override
                 public void run() {
                     textView.setTextSize(0, (float) ( textView.getTextSize() * (uiScalar * 1.125) ));
+                    textView.setVisibility(View.VISIBLE);
                 }
             });
         }
@@ -195,6 +197,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         switch (errCode) {
             case INTERRUPT: //TODO: interrupt would be user-triggered. Is it really an error?
 //                errorText.setText("Error while running search...");
+                this.searchState(-1);
                 break;
             case TIMEOUT:
                 errorText.setText("Search request timed out...");

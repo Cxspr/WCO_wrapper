@@ -1,9 +1,13 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="list_item_height">60dp</dimen>
-    <dimen name="episode_item_height">40dp</dimen>
-    <dimen name="margin_medium">32dp</dimen>
-    <dimen name="margin_small">8dp</dimen>
     <dimen name="text_margin">16dp</dimen>
-    <dimen name="watchlist_entry_height">200dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+
+    <dimen name="base_loading_icon_dim">75dp</dimen>
+
+    <dimen name="base_text_cat1">24sp</dimen>
+    <dimen name="base_text_cat2">20sp</dimen>
+    <dimen name="base_text_cat3">18sp</dimen>
+    <dimen name="base_text_cat4">14sp</dimen>
 </resources>

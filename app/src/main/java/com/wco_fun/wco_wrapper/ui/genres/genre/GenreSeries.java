@@ -62,6 +62,7 @@ public class GenreSeries extends Fragment {
             @Override
             public void run() {
                 textView.setTextSize(0, (float) ( textView.getTextSize() * (uiScalar) ));
+                textView.setVisibility(View.VISIBLE);
             }
         });
 
@@ -88,6 +89,21 @@ public class GenreSeries extends Fragment {
         recyclerView.setAdapter(genreAdapter);
 
         searchbar = binding.searchBar;
+        searchbar.post(new Runnable() {
+            @Override
+            public void run() {
+                TextView[] textViews = { binding.resultIndicator, binding.genreFailResponse, binding.textView3};
+                ViewGroup.LayoutParams params = searchbar.getLayoutParams();
+                params.height *= uiScalar;
+                searchbar.setLayoutParams(params);
+                searchbar.setTextSize(0, (float) (searchbar.getTextSize()));
+                searchbar.setVisibility(View.VISIBLE);
+                for (TextView textView : textViews) {
+                    textView.setTextSize(0, (float) (textView.getTextSize() * uiScalar));
+                    textView.setVisibility(View.GONE);
+                }
+            }
+        });
         searchbar.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -97,8 +113,7 @@ public class GenreSeries extends Fragment {
                 if (!(s.toString() == null)){ //added to address infrequent error due to the argument being a null reference
                     genreAdapter.reflectSearch(s.toString());
                     if (s.toString().length() == 0) {
-                        binding.resultIndicator.setVisibility(View.VISIBLE);
-                        binding.resultIndicator.setText("Start typing to search...");
+                        binding.resultIndicator.setVisibility(View.GONE);
                     } else if (genreAdapter.getItemCount() == 0) {
                         binding.resultIndicator.setVisibility(View.VISIBLE);
                         binding.resultIndicator.setText("No results found...");

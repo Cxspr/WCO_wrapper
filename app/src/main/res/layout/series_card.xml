@@ -10,12 +10,15 @@
     android:padding="0dp">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/container_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="invisible"
         app:cardBackgroundColor="@color/darkest_grey"
         app:cardCornerRadius="5dp"
         app:cardElevation="3dp"
-        app:cardUseCompatPadding="true">
+        app:cardUseCompatPadding="true"
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/series_card_container"
@@ -43,9 +46,10 @@
 
                     <androidx.constraintlayout.utils.widget.MockView
                         android:id="@+id/mockView"
-                        android:layout_width="91dp"
-                        android:layout_height="126dp"
-                        android:visibility="gone" />
+                        android:layout_width="240dp"
+                        android:layout_height="360dp"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
 
                     <ImageView
                         android:id="@+id/series_card_img"
@@ -83,6 +87,13 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/cardView"
                 app:layout_constraintTop_toBottomOf="@+id/cardView">
+
+                <androidx.constraintlayout.utils.widget.MockView
+                    android:id="@+id/mockView3"
+                    android:layout_width="240dp"
+                    android:layout_height="90dp"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
 
                 <TextView
                     android:id="@+id/series_card_title"

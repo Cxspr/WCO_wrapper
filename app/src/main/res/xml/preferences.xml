@@ -25,7 +25,14 @@
         <Preference
             app:key="regen_genre_list"
             app:title="Regenerate Genre List"/>
+    </PreferenceCategory>
 
+    <PreferenceCategory app:title="Feedback">
+        <Preference
+            app:key="report_feedback"
+            app:title="Submit a report"
+            app:summary="Submit a bug/issue report or an idea for improving the app."
+            />
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -2,6 +2,7 @@ package com.wco_fun.wco_wrapper.ui.episodes;
 
 import android.net.Uri;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.wco_fun.wco_wrapper.MainActivity;
 import com.wco_fun.wco_wrapper.R;
 import com.wco_fun.wco_wrapper.classes.episode.Episode;
 import com.wco_fun.wco_wrapper.classes.series.Series;
@@ -32,12 +34,14 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
     private ImageView seriesImg;
     private WatchData watchData;
     private Watchlist watchlist;
+    private MainActivity mainActivity;
     private DisplayMetrics displayMetrics;
 
     public EpisodeAdapter(){}
-    public EpisodeAdapter(SeriesControllable hostSeries, WatchData watchData, DisplayMetrics displayMetrics){
+    public EpisodeAdapter(SeriesControllable hostSeries, WatchData watchData, MainActivity mainActivity, DisplayMetrics displayMetrics){
         this.hostSeries = hostSeries;
         this.watchData = watchData;
+        this.mainActivity = mainActivity;
         this.displayMetrics = displayMetrics;
     }
 
@@ -91,15 +95,16 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
             });
 
             textView = (TextView) view.findViewById(R.id.series_card_title);
+            textView.setVisibility(View.INVISIBLE);
 
             double displayHeightDP = displayMetrics.heightPixels / displayMetrics.density; //get height, convert to dp
             final double uiScalar = displayHeightDP / 800; //UI was built on a simulated display with ~800dp height
 
-            //ensure ep title previous are the same size
             textView.post(new Runnable() {
                 @Override
                 public void run() {
                     textView.setTextSize(0, (float) ( textView.getTextSize() * (uiScalar * 1.125) ));
+                    textView.setVisibility(View.VISIBLE);
                 }
             });
         }
@@ -182,6 +187,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
         Series refSeries = watchlist.get(hostSeries);
         if (refSeries != null) {
             if (hostSeries.getNumEps() > refSeries.getNumEps()){
+                mainActivity.epGroupUpToDate = false;
                 refSeries.setNumEps(hostSeries.getNumEps());
                 watchlist.pushChanges();
             }

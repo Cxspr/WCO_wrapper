@@ -1,6 +1,7 @@
 package com.wco_fun.wco_wrapper.ui.home.watchgroups;
 
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -84,19 +86,28 @@ public class WatchgroupAdapter extends RecyclerView.Adapter<WatchgroupAdapter.Wa
 
     public class WatchgroupViewHolder extends RecyclerView.ViewHolder{
         private SeriesCard seriesCard;
-        private ViewGroup viewParent;
+        private CardView viewParent;
 
         public WatchgroupViewHolder(@NonNull View view) {
             super(view);
-            viewParent = view.findViewById(R.id.series_card_container);
+            viewParent = view.findViewById(R.id.container_card);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+//                    String TAG = "SERIES CARD DEBUG:\n";
+//                    Series series = seriesCard.getSeries();
+//                    Log.i(TAG,
+//                            "Series: " + series.getTitle() + "\n" +
+//                                    "Source: " + series.getSrc() + "\n" +
+//                                    "Num Eps: " + series.getNumEps() + "\n" +
+//                                    "Img Link: " + series.getImgUrl()
+//                    );
                     Navigation.findNavController(view)
                             .navigate(R.id.episode_select, seriesCard.configureClickEvent());
                 }
             });
+
         }
 
         public void bindViews(SeriesCard s) {

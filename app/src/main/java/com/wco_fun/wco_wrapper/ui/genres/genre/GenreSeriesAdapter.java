@@ -71,6 +71,7 @@ public class GenreSeriesAdapter extends RecyclerView.Adapter<GenreSeriesAdapter.
             });
 
             textView = (TextView) view.findViewById(R.id.series_card_title);
+            textView.setVisibility(View.INVISIBLE);
 
             double displayHeightDP = displayMetrics.heightPixels / displayMetrics.density; //get height, convert to dp
             final double uiScalar = displayHeightDP / 800; //UI was built on a simulated display with ~800dp height
@@ -79,6 +80,7 @@ public class GenreSeriesAdapter extends RecyclerView.Adapter<GenreSeriesAdapter.
                 @Override
                 public void run() {
                     textView.setTextSize(0, (float) ( textView.getTextSize() * (uiScalar * 1.125) ));
+                    textView.setVisibility(View.VISIBLE);
                 }
             });
         }

@@ -1,5 +1,6 @@
 package com.wco_fun.wco_wrapper.classes.series;
 
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -60,19 +61,19 @@ public class Series {
             }
         });
     }
-
-    public void fitSeriesImage2Height(ImageView view){ this.fitSeriesImage2Height(view, -1);}
-    public void fitSeriesImage2Height(ImageView view, final int height){
+    public void fitSeriesImage2Width(ImageView view, final int width, CardView container){
         if (!hasSeriesImage()) return;
-        final double h2w_scalar = 0.7;
+        final double w2h_scalar = 1.42;
         view.post(new Runnable() {
             @Override
             public void run() {
-                int thisHeight = (height != -1) ? height : view.getHeight();
-                Picasso.get().load(imgUrl).resize((int) (thisHeight*h2w_scalar), (int) (thisHeight)).into(view);
+                int thisWidth = (width != -1) ? width : view.getWidth();
+                Picasso.get().load(imgUrl).resize((int) (thisWidth), (int) (thisWidth*w2h_scalar)).into(view);
+                container.setVisibility(View.VISIBLE);
             }
         });
     }
+
 
     public void setTitle(String title) {this.title = title;}
     public String getTitle() {return title; }
@@ -94,8 +95,8 @@ public class Series {
     }
 
     public boolean equals(Series s) {
-        return (this.title.matches(s.getTitle()) &&
-                this.src.matches(s.getSrc())
+        return (this.title.matches(s.getTitle())
+//                this.src.matches(s.getSrc())
 //                && this.imgUrl.matches(s.getImgUrl())
         );
     }

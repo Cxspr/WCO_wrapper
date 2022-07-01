@@ -62,18 +62,20 @@ public class Home extends Fragment {
         }
         newEpArchive = ((MainActivity)getActivity()).getNewEpGroup();
 
-        if (!((MainActivity)getActivity()).newEpGroupSet) {
+
+        watchlist = new ArrayList<Series>(wl.getWatchgroup());
+        Collections.reverse(watchlist);
+        //add watchlist container
+        watchgroups.add(new GenericGroup("Watchlist", watchlist));
+        //add watchdata container
+        watchgroups.add(new ReflectiveGroup(wd));
+        //add new ep container
+        if (!((MainActivity)getActivity()).epGroupUpToDate) {
             NewEpGroup newEpGroup = new NewEpGroup(wl.getWatchgroup(), (MainActivity)getActivity());
             watchgroups.add(newEpGroup);
         } else if (!newEpArchive.isEmpty()) {
             watchgroups.add(new GenericGroup("New Episodes", newEpArchive));
         }
-
-        watchlist = new ArrayList<Series>(wl.getWatchgroup());
-        Collections.reverse(watchlist);
-        watchgroups.add(new GenericGroup("Watchlist", watchlist));
-
-        watchgroups.add(new ReflectiveGroup(wd));
 
         homeRecycler = binding.homeRecycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);

@@ -1,6 +1,9 @@
 package com.wco_fun.wco_wrapper;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -34,7 +37,6 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
     private Menu menu;
@@ -47,14 +49,13 @@ public class MainActivity extends AppCompatActivity {
     private SearchCache searchCache = new SearchCache();
     private ArrayList<SeriesCard> seeAllCache = new ArrayList();
     private SharedPreferences sharedPrefs;
-    public boolean newEpGroupSet = false;
-
+    public boolean epGroupUpToDate = false;
 
     //globalized GETTER for globally accessible data classes
     public ArrayList<Series> getNewEpGroup() { return this.newEpGroup; }
     public void updateNewEpGroup(ArrayList<Series> newGroup) {
         this.newEpGroup = newGroup;
-        this.newEpGroupSet = true;
+        this.epGroupUpToDate = true;
     }
     public Watchlist getWatchlist() {
         return watchlist;
@@ -69,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
                 this.parentDir);
     }
 
+    public String getDomain() {
+        return sharedPrefs.getString("domain_pref", "https://www.wcofun.com");
+    }
+
     public void setSeeAllCache(ArrayList<SeriesCard> seeAllCache) { this.seeAllCache = seeAllCache; }
     public ArrayList<SeriesCard> getSeeAllCache() { return seeAllCache; }
     public void updateDomainPreference(String oldDomain, String newDomain) {
@@ -78,6 +83,13 @@ public class MainActivity extends AppCompatActivity {
     public void updatePreloadLimit(int limit) {
         this.watchData.updatePreloadLimit(limit);
     }
+
+    private BroadcastReceiver customTabReciever = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

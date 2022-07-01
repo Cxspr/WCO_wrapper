@@ -41,11 +41,14 @@
         android:layout_marginEnd="32dp"
         android:backgroundTint="?android:attr/statusBarColor"
         android:ems="10"
+        android:hint="Start typing to search..."
         android:inputType="textNoSuggestions"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout"
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/resultContainer"
@@ -54,7 +57,6 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -65,9 +67,11 @@
         android:id="@+id/resultIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="sans-serif"
         android:text="Start typing to search..."
+        android:textAlignment="center"
         android:textSize="20sp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="@+id/resultContainer"
         app:layout_constraintStart_toStartOf="@+id/resultContainer"
         app:layout_constraintTop_toBottomOf="@+id/searchbar"
@@ -75,23 +79,22 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/search_state_container"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintEnd_toEndOf="@+id/searchbar"
-        app:layout_constraintStart_toStartOf="@+id/searchbar"
-        app:layout_constraintTop_toBottomOf="@+id/resultIndicator">
+        app:layout_constraintBottom_toBottomOf="@+id/resultContainer"
+        app:layout_constraintEnd_toEndOf="@+id/resultContainer"
+        app:layout_constraintStart_toStartOf="@+id/resultContainer"
+        app:layout_constraintTop_toTopOf="@+id/resultContainer">
 
         <ProgressBar
             android:id="@+id/search_prog"
             style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="40dp"
+            android:layout_width="@dimen/base_loading_icon_dim"
+            android:layout_height="0dp"
+            android:layout_marginTop="100dp"
             android:indeterminateTint="?android:attr/colorActivatedHighlight"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -105,41 +108,44 @@
 
         <ImageButton
             android:id="@+id/search_retry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="40dp"
+            android:layout_width="@dimen/base_loading_icon_dim"
+            android:layout_height="0dp"
+            android:layout_marginTop="100dp"
             android:background="#00FFFFFF"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_refresh"
             android:tint="?attr/colorAccent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/search_fail_response"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="sans-serif"
             android:text="Unable to retrieve search results..."
-            android:textSize="20sp"
+            android:textAlignment="center"
+            android:textSize="@dimen/base_text_cat2"
             app:layout_constraintBottom_toTopOf="@+id/search_retry"
-            app:layout_constraintEnd_toEndOf="@+id/search_retry"
-            app:layout_constraintStart_toStartOf="@+id/search_retry" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="sans-serif"
             android:text="Try again?"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="@+id/search_retry"
-            app:layout_constraintStart_toStartOf="@+id/search_retry"
-            app:layout_constraintTop_toTopOf="@+id/search_retry" />
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_retry" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

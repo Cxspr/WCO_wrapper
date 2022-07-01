@@ -36,8 +36,6 @@ public class GenreSelection extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentGenreSelectionBinding.inflate(inflater, container, false);
-        // Inflate the layout for this fragment
-
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) getContext())
@@ -47,7 +45,6 @@ public class GenreSelection extends Fragment {
 
         double displayHeightDP = displayMetrics.heightPixels / displayMetrics.density; //get height, convert to dp
         final double uiScalar = displayHeightDP / 800; //UI was built on a simulated display with ~800dp height
-
 
         title = binding.textView;
         title.setText("Genres");

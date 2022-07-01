@@ -14,7 +14,6 @@
         <item name="colorOnTertiary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
-        <item name="android:navigationIcon"> @drawable/ic_arrow_back</item>
         <!-- Customize your theme here. -->
     </style>
 

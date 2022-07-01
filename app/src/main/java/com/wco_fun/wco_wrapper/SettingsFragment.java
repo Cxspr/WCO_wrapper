@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
@@ -24,6 +25,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference preload_limit_pref = findPreference("preload_limit_pref");
         Preference use_genre_list = findPreference("use_genre_list");
         Preference regen_genre_list = findPreference("regen_genre_list");
+        Preference report_feedback = findPreference("report_feedback");
+
         domain_pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newDomain) {
@@ -72,6 +75,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             public boolean onPreferenceClick(Preference preference) {
                 ((MainActivity) getActivity()).genGenreList(getActivity());
                 return false;
+            }
+        });
+
+        report_feedback.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String url = "https://forms.gle/FK9fKKvkU1955gbW7";
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                CustomTabsIntent customTabsIntent = builder.build();
+                customTabsIntent.launchUrl(getActivity(), Uri.parse(url));
+                return true;
             }
         });
 

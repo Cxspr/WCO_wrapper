@@ -28,9 +28,8 @@ public class SeriesCardGeneric extends SeriesCard{
 
                 ViewGroup.LayoutParams params = seriesImg.getLayoutParams();
                 params.width = (int) (width);
-//                final int width = params.width;
                 seriesImg.setLayoutParams(params);
-                series.fitSeriesImage2Width(seriesImg, width);
+                series.fitSeriesImage2Width(seriesImg, width, container);
 
                 ViewGroup.LayoutParams footerParams = footer.getLayoutParams();
                 footerParams.height = (int) ((width * 1.42) * 0.25);//20% of the height
@@ -39,6 +38,9 @@ public class SeriesCardGeneric extends SeriesCard{
             }
         });
     }
+
+    @Override
+    public Series getSeries() { return series; }
 
     @Override
     public void setSeries(SeriesControllable series) {

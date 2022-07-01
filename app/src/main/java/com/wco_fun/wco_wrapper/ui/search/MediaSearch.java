@@ -86,13 +86,29 @@ public class MediaSearch extends Fragment {
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setAdapter(searchAdapter);
 
-        binding.resultIndicator.setVisibility(View.VISIBLE);
-        binding.resultIndicator.setText("Start typing to search...");
+
+        double displayHeightDP = displayMetrics.heightPixels / displayMetrics.density; //get height, convert to dp
+        final double uiScalar = displayHeightDP / 800; //UI was built on a simulated display with ~800dp height
+
+        searchbar = binding.searchbar;
+        searchbar.post(new Runnable() {
+            @Override
+            public void run() {
+                TextView[] textViews = {binding.resultIndicator, binding.searchFailResponse, binding.textView3};
+                ViewGroup.LayoutParams params = searchbar.getLayoutParams();
+                params.height *= uiScalar;
+                searchbar.setLayoutParams(params);
+                searchbar.setTextSize(0, (float) (searchbar.getTextSize()));
+                searchbar.setVisibility(View.VISIBLE);
+                for (TextView textView : textViews) {
+                    textView.setTextSize(0, (float) (textView.getTextSize() * uiScalar));
+                    textView.setVisibility(View.GONE);
+                }
+            }
+        });
 
         //responsive search listener
-        searchbar = binding.searchbar;
         searchbar.addTextChangedListener(new TextWatcher() {
-
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
@@ -100,8 +116,8 @@ public class MediaSearch extends Fragment {
                 if (!(s.toString() == null)){ //added to address infrequent error due to the argument being a null reference
                     searchAdapter.reflectSearch(s.toString());
                     if (s.toString().length() == 0) {
-                        binding.resultIndicator.setVisibility(View.VISIBLE);
-                        binding.resultIndicator.setText("Start typing to search...");
+                        binding.resultIndicator.setVisibility(View.GONE);
+//                        binding.resultIndicator.setText("Start typing to search...");
                     } else if (searchAdapter.getItemCount() == 0) {
                         binding.resultIndicator.setVisibility(View.VISIBLE);
                         binding.resultIndicator.setText("No results found...");

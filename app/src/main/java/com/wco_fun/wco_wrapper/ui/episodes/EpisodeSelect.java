@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,7 +86,7 @@ public class EpisodeSelect extends Fragment {
                 .getDefaultDisplay()
                 .getMetrics(displayMetrics);
 
-        epAdapter = new EpisodeAdapter(series, watchData, displayMetrics);
+        epAdapter = new EpisodeAdapter(series, watchData, (MainActivity) getActivity(), displayMetrics);
         epAdapter.attachProgBar(binding.epSearchProg);
         epAdapter.attachRetryBtn(binding.epSearchRetry);
         epAdapter.attachSeriesImg(binding.seriesImage);
