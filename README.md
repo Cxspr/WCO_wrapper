@@ -31,5 +31,8 @@ If you have issues within the browser such as forced redirects, it is recommende
 
 ## Disclaimers
 This App is not officially affiliated with the WCO brand of streaming sites but rather it is simply a fan project to improve the user experience of the sites and attempt to better adapt them for mobile devices. With this in mind, please do not direct issues regarding the app towards the site admins but instead to the issues page on this repository.
+
+Due to the nature of the app being designed to wrap around a third party site, functionalities and features are prone to break without warning in the event of unexpected changes to the layout and structure of said site. If this happens the authors will attempt to patch the issues in a timely manner however will promise no support nor significant backward compatibility for older version of the app.
+
 ### Legal Disclaimer
 Neither the WCO Wrapper nor its authors are not responsible for any infringing content linked to or referred to by the app. WCO Wrapper has no control over what is linked to by the WCO sites and the app iteself does not host any infringing content.
