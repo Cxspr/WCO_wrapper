@@ -106,6 +106,9 @@ public class SeriesCardReflective extends SeriesCard{
             next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (series.getEpQueue().size() <= 2){
+                        disableNext();
+                    }
                     Episode refEp = series.popEpQueue();//pull next ep and trigger updater
 
                     CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
@@ -121,6 +124,11 @@ public class SeriesCardReflective extends SeriesCard{
             next.setColorFilter(next.getContext().getColor(R.color.dark_grey));
             next.setEnabled(false);
         }
+    }
+
+    private void disableNext() {
+        next.setColorFilter(next.getContext().getColor(R.color.dark_grey));
+        next.setEnabled(false);
     }
 
     @Override

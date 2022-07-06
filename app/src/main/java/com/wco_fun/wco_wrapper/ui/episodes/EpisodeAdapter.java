@@ -229,7 +229,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
                     String url = hostSeries.getNextEp().getSrc(); //update episodes
 
                     ArrayList<Episode> epQueue = new ArrayList<Episode>();
-                    for (int i = hostSeries.getNextEp().getIdx(); (i < hostSeries.getNextEp().getIdx() + 3) || (i >= episodes.size()); i++) {
+                    for (int i = hostSeries.getNextEp().getIdx(); (i < hostSeries.getNextEp().getIdx() + 3) || (i < episodes.size()); i++) {
                         epQueue.add(episodes.get(i));//preload with up to 3 episodes
                     } hostSeries.overrideEpQueue(epQueue);
 
