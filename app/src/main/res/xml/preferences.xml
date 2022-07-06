@@ -35,4 +35,12 @@
             />
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="App Version">
+        <Preference
+            app:key="app_version"
+            app:title="Check for update"
+            app:summary=""
+            />
+    </PreferenceCategory>
+
 </PreferenceScreen>
