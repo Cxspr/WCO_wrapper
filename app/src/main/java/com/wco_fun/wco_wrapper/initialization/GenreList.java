@@ -100,7 +100,7 @@ public class GenreList {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(activity.getApplicationContext(), "Genre List Loaded", Toast.LENGTH_LONG);
+                            Toast.makeText(activity.getApplicationContext(), "Genre List Loaded", Toast.LENGTH_LONG).show();
                         }
                     });
                     Collections.sort(genreList, new Comparator<Genre>() {
