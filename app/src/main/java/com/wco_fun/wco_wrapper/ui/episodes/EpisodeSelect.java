@@ -187,6 +187,7 @@ public class EpisodeSelect extends Fragment {
         }
         epAdapter.makePlayRqst(binding.buttonPlay);
 
+        epAdapter.makeNextRqst(binding.buttonNext, binding.nextEpText, getContext());
         if (series.hasMoreEps()){
             final TypedValue value = new TypedValue ();
             getContext().getTheme().resolveAttribute(android.R.attr.colorAccent, value, true);
@@ -195,7 +196,6 @@ public class EpisodeSelect extends Fragment {
             binding.nextEpText.setText("Next Ep: " + ((series.getNextEp().getAbrTitle(seriesName)==null)
                     ? "Ep. " + ((Integer) (series.getNextEp().getIdx() + 2)).toString()
                     : series.getNextEp().getAbrTitle(seriesName)));
-            epAdapter.makeNextRqst(binding.buttonNext);
 
         } else {
             binding.buttonNext.setColorFilter(getContext().getColor(R.color.dark_grey));
