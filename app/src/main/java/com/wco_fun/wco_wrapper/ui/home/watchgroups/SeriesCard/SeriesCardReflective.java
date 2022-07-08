@@ -106,7 +106,7 @@ public class SeriesCardReflective extends SeriesCard{
             next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (series.getEpQueue().size() <= 2){
+                    if (!series.hasMoreEps()){
                         disableNext();
                     }
                     Episode refEp = series.popEpQueue();//pull next ep and trigger updater

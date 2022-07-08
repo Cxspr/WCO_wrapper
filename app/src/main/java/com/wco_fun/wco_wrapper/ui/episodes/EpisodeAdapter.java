@@ -1,8 +1,10 @@
 package com.wco_fun.wco_wrapper.ui.episodes;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -181,6 +183,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
         searchState(-1);
     }
 
+    boolean newEps = false;
     public void onThreadMilestone(int numEps, String imgUrl){
         hostSeries.setImgUrl(imgUrl);
         hostSeries.setNumEps(numEps);
@@ -190,6 +193,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
                 mainActivity.epGroupUpToDate = false;
                 refSeries.setNumEps(hostSeries.getNumEps());
                 watchlist.pushChanges();
+                this.newEps = true;
             }
         }
 
@@ -197,6 +201,8 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
     }
 
     ImageButton playBtn, nextBtn;
+    TextView nextTxt;
+    Context context;
     boolean playRqst, nextRqst;
     private void fulfillBtnRqsts() {
         if (playRqst) {
@@ -221,16 +227,27 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
             });
             playRqst = false;
         }
-        if (nextRqst) {
+        if (nextRqst && hostSeries.hasMoreEps()){
+            final TypedValue value = new TypedValue ();
+            context.getTheme().resolveAttribute(android.R.attr.colorAccent, value, true);
+            nextBtn.setColorFilter(value.data);
+            nextBtn.setEnabled(true);
+            nextTxt.setText("Next Ep: " + ((hostSeries.getNextEp().getAbrTitle(hostSeries.getTitle())==null)
+                    ? "Ep. " + ((Integer) (hostSeries.getNextEp().getIdx() + 2)).toString()
+                    : hostSeries.getNextEp().getAbrTitle(hostSeries.getTitle())));
             nextBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     hostSeries.updateLastWatched();
                     String url = hostSeries.getNextEp().getSrc(); //update episodes
 
-                    ArrayList<Episode> epQueue = new ArrayList<Episode>();
-                    for (int i = hostSeries.getNextEp().getIdx(); (i < hostSeries.getNextEp().getIdx() + 3) || (i < episodes.size()); i++) {
-                        epQueue.add(episodes.get(i));//preload with up to 3 episodes
+                    ArrayList<Episode> epQueue = new ArrayList<>(hostSeries.getEpQueue());
+                    epQueue.remove(0);
+                    int preloadLimit = hostSeries.getPreloadLimit();
+                    for  (int i = epQueue.get(epQueue.size() - 1).getIdx() + 1;
+                         (epQueue.size() <= preloadLimit) && (i < episodes.size());
+                         i++) {
+                        epQueue.add(episodes.get(i));//preload with episodes
                     } hostSeries.overrideEpQueue(epQueue);
 
                     //sync with watchdata
@@ -243,7 +260,18 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
                 }
             });
             nextRqst = false;
+        } else {
+            nextBtn.setColorFilter(context.getColor(R.color.dark_grey));
+            nextBtn.setEnabled(false);
+            nextTxt.setText("Next Ep: none");
         }
+//        if (nextRqst && hostSeries.hasMoreEps()) {
+//
+//            nextRqst = false;
+//        } else {
+//            nextBtn.setColorFilter(getContext().getColor(R.color.dark_grey));
+//            nextBtn.setEnabled(false);
+//        }
         postBtn = true;
     }
 
@@ -251,8 +279,10 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
         this.playBtn = playBtn;
         playRqst = true;
     }
-    public void makeNextRqst(ImageButton nextBtn) {
+    public void makeNextRqst(ImageButton nextBtn, TextView nextTxt, Context context) {
         this.nextBtn = nextBtn;
+        this.nextTxt = nextTxt;
+        this.context = context;
         nextRqst = true;
         if (postBtn) fulfillBtnRqsts();
     }

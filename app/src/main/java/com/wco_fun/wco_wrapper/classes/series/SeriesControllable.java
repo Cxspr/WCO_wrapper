@@ -46,7 +46,7 @@ public class SeriesControllable extends Series{
     }
 
     public boolean hasEp() {return !epQueue.isEmpty();}
-    public boolean hasMoreEps() {return epQueue.size()>= 2;}
+    public boolean hasMoreEps() {return (epQueue.get(0).getIdx() < (numEps - 1));}
     public Episode getCurEp() {return epQueue.get(0);}
     public Episode getNextEp() {return (hasMoreEps()) ? epQueue.get(1) : null;}
     public Episode popEpQueue() {
