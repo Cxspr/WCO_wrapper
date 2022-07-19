@@ -228,6 +228,9 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
             playRqst = false;
         }
         if (nextRqst && hostSeries.hasMoreEps()){
+            if (hostSeries.getNextEp() == null) {
+                hostSeries.addEp(episodes.get(episodes.size() - 1));
+            }
             final TypedValue value = new TypedValue ();
             context.getTheme().resolveAttribute(android.R.attr.colorAccent, value, true);
             nextBtn.setColorFilter(value.data);

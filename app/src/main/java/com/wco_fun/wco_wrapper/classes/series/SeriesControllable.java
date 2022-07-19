@@ -53,7 +53,13 @@ public class SeriesControllable extends Series{
         return (epQueue.get(0).getIdx() < (numEps - 1));
     }
     public Episode getCurEp() {return epQueue.get(0);}
-    public Episode getNextEp() {return (hasMoreEps()) ? epQueue.get(1) : null;}
+    public Episode getNextEp() {
+        if (this.hasMoreEps() && epQueue.size() >= 2) {
+            return epQueue.get(1);
+        } else {
+            return null;
+        }
+    }
     public Episode popEpQueue() {
         shiftEpQueue();//remove old curEp and start parallel ep retrieval process
         return getCurEp();//return former nextEp
